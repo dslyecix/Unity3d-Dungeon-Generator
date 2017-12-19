@@ -391,5 +391,14 @@ public class DungeonGenerator : MonoBehaviour {
         return lastRoomDoor;
         //we return lastRoomDoor because we don't know what door it will grab, but we know newRoom will always grab firstOpenDoor()
     }
+
+    void Update() 
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.ToString());
+        }
+    }
 }
   
