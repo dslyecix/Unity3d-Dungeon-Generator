@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/DungeonGenerator/DungeonGenerator.unity
+- path: Assets/DungeonGenerator.unity
   isLoaded: 1
   isActive: 1
