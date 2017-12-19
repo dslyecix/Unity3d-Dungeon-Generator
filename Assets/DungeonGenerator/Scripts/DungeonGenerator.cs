@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
 using EL.Dungeon;
 #if Unity_Editor
 using UnityEditor;
@@ -18,13 +20,12 @@ public class DungeonGenerator : MonoBehaviour {
     public bool generationComplete = false;
     public int targetRooms = 10;
     public int roomsCount;
-    private List<string> parts = new List<string>();
     public List<Room> rooms = new List<Room>();
     public List<Door> doors = new List<Door>();
 
     public float voxelPixelSize = 10f;
 
-    public List<EL.Dungeon.Room> openSet = new List<EL.Dungeon.Room>();
+    public List<Room> openSet = new List<Room>();
     public Dictionary<Vector3, GameObject> globalVoxels = new Dictionary<Vector3, GameObject>();
     public List<GameObject> doorVoxelsTest = new List<GameObject>();
 
@@ -53,7 +54,7 @@ public class DungeonGenerator : MonoBehaviour {
         //Debug.Log("Generating dungeon with data:");
         //Debug.Log("Rooms count: " + targetRooms);
         //Debug.Log("Using set: " + data.sets[dungeonSet].name);
-
+        Debug.Log("Starting Generation");
         StartGeneration();
 
      
@@ -65,14 +66,15 @@ public class DungeonGenerator : MonoBehaviour {
         rooms = new List<Room>();
         doors = new List<Door>();
 
-        int spawn = random.range(0, data.sets[dungeonSet].spawns.Count - 1);
-        GameObject room = (GameObject)Instantiate(data.sets[dungeonSet].spawns[spawn].gameObject);
+        int spawnIndex = random.range(0, data.sets[dungeonSet].spawns.Count - 1);
+        GameObject room = (GameObject)Instantiate(data.sets[dungeonSet].spawns[spawnIndex].gameObject);
         startRoom = room;
         rooms.Add(room.GetComponent<Room>());
         room.transform.parent = this.gameObject.transform;
-        openSet.Add(room.GetComponent<EL.Dungeon.Room>());
-        room.GetComponent<Volume>().RecalculateBounds();
-        AddGlobalVoxels(room.GetComponent<Volume>().voxels);
+        openSet.Add(room.GetComponent<Room>());
+        Volume volume = room.GetComponent<Volume>();
+        volume.RecalculateBounds();
+        AddGlobalVoxels(volume.voxels);
         roomsCount++;
 
         while (openSet.Count > 0) {
@@ -134,38 +136,36 @@ public class DungeonGenerator : MonoBehaviour {
             bool tryAgain = false;
             GameObject roomToTry;
             int r = random.range(0, possibleRooms.Count - 1);
-            ////Debug.Log("r: " + r);
-            ////Debug.Log(possibleRooms.Count);
             roomToTry = possibleRooms[r].gameObject;
             doors = roomToTry.GetComponent<Room>().doors.Count;
 
-            if(doors == 1 && possibleRooms.Count > 1) {
-                //Debug.Log("we're adding a room with one door when we have other's we could try first..");
-                float chance = 1f - Mathf.Sqrt(((float)roomsCount / (float)targetRooms)); //the closer we are to target the less of a chance of changing rooms
-                float randomValue = random.value();
-                //Debug.Log("Chance: " + chance + " | Random value: " + randomValue);
-                if (randomValue < chance) {
-                    r = random.range(0, possibleRooms.Count - 1);
-                    roomToTry = possibleRooms[r].gameObject;
-                    //Debug.Log("trying a new room");
-                    //Debug.Log("New room has doors: " + roomToTry.GetComponent<Room>().doors.Count);
+            // if(doors == 1 && possibleRooms.Count > 1) {
+            //     //Debug.Log("we're adding a room with one door when we have other's we could try first..");
+            //     float chance = 1f - Mathf.Sqrt(((float)roomsCount / (float)targetRooms)); //the closer we are to target the less of a chance of changing rooms
+            //     float randomValue = random.value();
+            //     //Debug.Log("Chance: " + chance + " | Random value: " + randomValue);
+            //     if (randomValue < chance) {
+            //         r = random.range(0, possibleRooms.Count - 1);
+            //         roomToTry = possibleRooms[r].gameObject;
+            //         //Debug.Log("trying a new room");
+            //         //Debug.Log("New room has doors: " + roomToTry.GetComponent<Room>().doors.Count);
 
-                    doors = roomToTry.GetComponent<Room>().doors.Count;
-                    if (doors == 1 && possibleRooms.Count > 1) {
-                        float chance2 = 1f - Mathf.Sqrt(((float)roomsCount / (float)targetRooms)); //the closer we are to target the less of a chance of changing rooms
-                        float randomValue2 = random.value();
-                        if (randomValue2 < chance2) {
-                            r = random.range(0, possibleRooms.Count - 1);
-                            roomToTry = possibleRooms[r].gameObject;
-                        } else {
-                            //Debug.Log("Oh well again..");
-                        }
+            //         doors = roomToTry.GetComponent<Room>().doors.Count;
+            //         if (doors == 1 && possibleRooms.Count > 1) {
+            //             float chance2 = 1f - Mathf.Sqrt(((float)roomsCount / (float)targetRooms)); //the closer we are to target the less of a chance of changing rooms
+            //             float randomValue2 = random.value();
+            //             if (randomValue2 < chance2) {
+            //                 r = random.range(0, possibleRooms.Count - 1);
+            //                 roomToTry = possibleRooms[r].gameObject;
+            //             } else {
+            //                 //Debug.Log("Oh well again..");
+            //             }
 
-                    }
-                } else {
-                    //Debug.Log("Oh well!");
-                }
-            }
+            //         }
+            //     } else {
+            //         //Debug.Log("Oh well!");
+            //     }
+            // }
             possibleRooms.RemoveAt(r);
               
             newRoom = (GameObject)Instantiate(roomToTry);
@@ -278,11 +278,11 @@ public class DungeonGenerator : MonoBehaviour {
                                     direction2 = new Vector3(0f, 0f, 1f);
                                 }
 
-                                if (RoundVec3ToInt(ro.doors[i].voxelOwner.transform.position + (direction*v.voxelScale)) == RoundVec3ToInt(openSet[j].doors[k].voxelOwner.transform.position + (direction2*v.voxelScale))) {
-                                    hasSpace = false;
-                                    //Debug.Log("TWo door voxels overlapping!");
-                                    break;
-                                }
+                                // if (RoundVec3ToInt(ro.doors[i].voxelOwner.transform.position + (direction*v.voxelScale)) == RoundVec3ToInt(openSet[j].doors[k].voxelOwner.transform.position + (direction2*v.voxelScale))) {
+                                //     hasSpace = false;
+                                //     //Debug.Log("TWo door voxels overlapping!");
+                                //     break;
+                                // }
                             }
                             if (!hasSpace) break;
                         }
@@ -303,12 +303,12 @@ public class DungeonGenerator : MonoBehaviour {
             //we failed!
             //Debug.Log("NO ROoms THAT FIT, THIS IS BAAAAD! ... but should never happen!");
         } else {
-            GeneratorDoor otherDoor = newRoom.GetComponent<Room>().GetFirstOpenDoor();
+            GeneratorDoor otherDoor = newRoom.GetComponent<Room>().GetRandomDoor(random);
             door.sharedDoor = otherDoor;
             otherDoor.sharedDoor = door;
 
             door.open = false;
-            newRoom.GetComponent<Room>().GetFirstOpenDoor().open = false;
+            newRoom.GetComponent<Room>().GetRandomDoor(random).open = false;
 
             rooms.Add(newRoom.GetComponent<Room>());
 
@@ -399,7 +399,8 @@ public class DungeonGenerator : MonoBehaviour {
         //    //Debug.Log(roomsCount + " | " + roomsCalledStart);
         //}
         if (Input.GetKeyDown(KeyCode.Return)) {
-            Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene(0);
+            //Application.LoadLevel(Application.loadedLevel);
         }
     }
 }

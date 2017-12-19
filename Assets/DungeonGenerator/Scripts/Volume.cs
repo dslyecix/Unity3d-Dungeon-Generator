@@ -19,7 +19,7 @@ namespace EL.Dungeon {
        
         public void OnDrawGizmos() {
             if (!drawVolume) {
-                if (bounds == null) return;
+                if (bounds.Equals(null)) return;
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireCube(bounds.center, bounds.size);
             } else {
@@ -87,12 +87,13 @@ namespace EL.Dungeon {
                 if (pos.z > max.z) max.z = pos.z;
             }
 
-            Debug.Log("Voxel::AssignVoxelsToList() | " + min + " : " + max);
+            //Debug.Log("Voxel::AssignVoxelsToList() | " + min + " : " + max);
 
             Vector3 size = new Vector3(0.5f * voxelScale, 0.5f * voxelScale, 0.5f * voxelScale);
             bounds = new Bounds((min + max)/2f, ((max + size) - (min - size))); 
         }
 
+        [ContextMenu("Recalculate Bounds")]
         public void RecalculateBounds() {
 
             Vector3 min = new Vector3(voxels[0].transform.position.x,
