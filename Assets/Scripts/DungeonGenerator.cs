@@ -9,25 +9,25 @@ using UnityEditor;
 
 public class DungeonGenerator : MonoBehaviour {
 
-    public EL.Dungeon.DungeonData data;
+    public DungeonData data;
     public int dungeonSet = 0;
 
     public int seed = 0;
     public bool randomizeSeedOnStart = true;
     public bool randomizeRoomSize = true;
-    public DRandom random;
+    private DRandom random;
 
-    public bool generationComplete = false;
+    private bool generationComplete = false;
     public int targetRooms = 10;
-    public int roomsCount;
-    public List<Room> rooms = new List<Room>();
-    public List<Door> doors = new List<Door>();
+    [SerializeField]private int roomsCount;
+    private List<Room> rooms = new List<Room>();
+    private List<Door> doors = new List<Door>();
 
-    public List<Room> openSet = new List<Room>();
-    public Dictionary<Vector3, GameObject> globalVoxels = new Dictionary<Vector3, GameObject>();
-    public List<GameObject> doorVoxelsTest = new List<GameObject>();
+    private List<Room> openSet = new List<Room>();
+    private Dictionary<Vector3, GameObject> globalVoxels = new Dictionary<Vector3, GameObject>();
+    private List<GameObject> doorVoxelsTest = new List<GameObject>();
 
-    public GameObject startRoom;
+    private GameObject startRoom;
     public static int roomsCalledStart = 0;
 
 	void Start () 

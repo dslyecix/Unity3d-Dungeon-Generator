@@ -2,16 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public class DungeonSet : ScriptableObject {
 
-namespace EL.Dungeon {
-    public class DungeonSet : ScriptableObject {
+    public string Name = "";
 
-        public string Name = "";
-
-        public List<Room> spawns = new List<Room>();
-        public List<Room> bosses = new List<Room>();
-        public List<Door> doors = new List<Door>();
-        public List<Room> roomTemplates = new List<Room>();
-        
-    }
+    public List<Room> spawns = new List<Room>();
+    public List<Room> bosses = new List<Room>();
+    public List<Door> doors = new List<Door>();
+    public List<Room> roomTemplates = new List<Room>();
+    
 }
