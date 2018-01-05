@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity3d-Dungeon-Generator", "Assembly-CSharp.csproj", "{4288D916-3CAE-A37C-E08C-235BC874475E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity3d-Dungeon-Generator", "Assembly-CSharp-Editor.csproj", "{2B8CC682-AE78-A52C-130B-A867019B3E2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{4288D916-3CAE-A37C-E08C-235BC874475E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4288D916-3CAE-A37C-E08C-235BC874475E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4288D916-3CAE-A37C-E08C-235BC874475E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B8CC682-AE78-A52C-130B-A867019B3E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B8CC682-AE78-A52C-130B-A867019B3E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B8CC682-AE78-A52C-130B-A867019B3E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B8CC682-AE78-A52C-130B-A867019B3E2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

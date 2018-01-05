@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 #endif
 
-public class DungeonGenerator : MonoBehaviour {
+public class DungeonGenerator : Singleton {
 
     public DungeonData data;
+
     public int dungeonSet = 0;
 
     public int seed = 0;
@@ -28,7 +29,10 @@ public class DungeonGenerator : MonoBehaviour {
     private List<GameObject> doorVoxelsTest = new List<GameObject>();
 
     private GameObject startRoom;
-    public static int roomsCalledStart = 0;
+    private Vector3 spawnLocation;
+    public bool spawnPlayer;
+    public GameObject playerPrefab;
+
 
 	void Start () 
     {
@@ -73,6 +77,19 @@ public class DungeonGenerator : MonoBehaviour {
         generationComplete = true;
         Debug.Log("DungeonGenerator::Generation completed : " + DDebugTimer.Lap() + "ms");
 
+        if (spawnPlayer) 
+        {    
+            //transform.localScale = Vector3.one * 5f;
+            SpawnPlayer(spawnLocation);
+        }
+    }
+
+    private void SpawnPlayer(Vector3 spawnLocation)
+    {
+        GameObject player = Instantiate(playerPrefab,spawnLocation,Quaternion.identity);
+        Cinemachine.CinemachineVirtualCamera virtCam = GameObject.Find("VirtualCamera").GetComponent<Cinemachine.CinemachineVirtualCamera>();
+        virtCam.Follow = player.transform;
+        virtCam.LookAt = player.transform;
     }
 
     private void CreateSpawnRoom()
@@ -87,6 +104,11 @@ public class DungeonGenerator : MonoBehaviour {
         volume.RecalculateBounds();
         AddGlobalVoxels(volume.voxels);
         roomsCount++;
+        LoadAppropriateFeatures(room.GetComponent<Room>());
+
+        spawnLocation = volume.bounds.center;
+
+
     }
 
     private void ProcessDoors()
@@ -311,6 +333,7 @@ public class DungeonGenerator : MonoBehaviour {
             //we failed!
             //Debug.Log("NO ROoms THAT FIT, THIS IS BAAAAD! ... but should never happen!");
         } else {
+
             GeneratorDoor otherDoor = newRoom.GetComponent<Room>().GetFirstOpenDoor();
             door.sharedDoor = otherDoor;
             otherDoor.sharedDoor = door;
@@ -324,9 +347,39 @@ public class DungeonGenerator : MonoBehaviour {
             if (!lastRoom.hasOpenDoors()) openSet.Remove(lastRoom);
             if (newRoom.GetComponent<Room>().hasOpenDoors()) openSet.Add(newRoom.GetComponent<Room>());
             roomsCount++;
-
+            LoadAppropriateFeatures(newRoom.GetComponent<Room>());
             //Debug.Log("Openset: " + openSet.Count);
         }       
+    }
+
+    private void LoadAppropriateFeatures(Room room)
+    {
+        room.SaveFeaturePositionAndDirection();
+
+        if (room.gameGeometryParent == null) 
+        {
+            room.gameGeometryParent = new GameObject("Geometry");
+        } 
+
+        room.gameGeometryParent.transform.parent = room.transform;
+
+        foreach (Feature feature in room.features)
+        {   
+            
+            Vector3 pos = feature.Position;
+            Vector3 dir = feature.Direction;
+            Feature.Type type = feature.type;
+
+            Quaternion rotation = Quaternion.Euler(dir) ;
+            GameObject featureToSpawn = (GameObject)data.sets[dungeonSet].BiomeFeatureSet.ReturnFeature(type);
+            if (featureToSpawn != null) {
+                GameObject spawnedFeature = Instantiate(featureToSpawn,pos,rotation);
+                spawnedFeature.transform.parent = room.gameGeometryParent.transform;
+            }
+        }
+
+        GameObject geometryParent = room.transform.Find("GeneratorGeometry").gameObject;
+        geometryParent.SetActive(false);
     }
 
     private float NormalizeAngle(int rotation) {
@@ -391,5 +444,7 @@ public class DungeonGenerator : MonoBehaviour {
         return lastRoomDoor;
         //we return lastRoomDoor because we don't know what door it will grab, but we know newRoom will always grab firstOpenDoor()
     }
+
+    
 }
   
