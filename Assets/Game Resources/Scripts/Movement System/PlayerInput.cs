@@ -18,7 +18,7 @@ public class PlayerInput : MonoBehaviour
     private Vector3 _lookInputVector = Vector3.zero;
 
    
-    private Cinemachine.CinemachineVirtualCamera camera;
+    private new Cinemachine.CinemachineVirtualCamera camera;
     private bool canAttack;
     
     private float attackCooldownTimer;
