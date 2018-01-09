@@ -12,30 +12,39 @@ public class ColourChangeEffect : Effect
 
 	public Length length;
 
-    public override void Execute(GameObject source, List<GameObject> targets)
+    public Color color;
+
+    public override void Execute(GameObject source, ref List<GameObject> targets)
     {
+        Debug.Log("Executing Colour Change Effect");
+        foreach (var target in targets)
+        {
+            Debug.Log(target.name);
+        }
+
 		foreach (var target in targets)
 		{
 			Renderer renderer = target.GetComponent<Renderer>();
 			if (renderer != null)
 			{
-				ActiveSpellManager.instance.StartCoroutine(ColorCoroutine(renderer));
+                renderer.material.color = color;
+				//ActiveSpellManager.instance.StartCoroutine(ColorCoroutine(renderer));
 			}
 		}
 
-        ExecuteSubEffects(source, targets);
+        ExecuteEffects(source, ref targets);
     }
 
-	public IEnumerator ColorCoroutine(Renderer renderer)
-	{	
-		Material oldMat = renderer.material;
-		Material newMat = renderer.material;
-		newMat.color = Color.red;
-		renderer.material = newMat;
+	// public IEnumerator ColorCoroutine(Renderer renderer)
+	// {	
+    //     Debug.Log("Starting a Coroutine");
+	// 	Material oldMat = renderer.material;
+	// 	Material newMat = renderer.material;
+	// 	newMat.color = Color.red;
+	// 	renderer.material = newMat;
 
-		yield return new WaitForSeconds((float)length);
+	// 	yield return new WaitForSeconds((float)length);
 
-		renderer.material = oldMat;
-		ActiveSpellManager.instance.StopCoroutine(ColorCoroutine(renderer));
-	}
+	// 	renderer.material = oldMat;
+	// }
 }

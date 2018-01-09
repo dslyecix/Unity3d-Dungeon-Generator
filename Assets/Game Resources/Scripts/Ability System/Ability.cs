@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [CreateAssetMenu(menuName = "Abilities/New Ability")]
 public class Ability : Effect
 {
-	public new string name;
-	public int manaCost;
+    public int manaCost;
+	[TextArea(5, 3)] public string description;
 
-    public override void Execute(GameObject source, List<GameObject> targets)
+    public override void Execute(GameObject source, ref List<GameObject> targets)
     {
-		ExecuteSubEffects(source, targets);
+        Debug.Log("Ability has been cast!");
+        ExecuteEffects(source, ref targets);
     }
 
 }

@@ -13,7 +13,7 @@ public class AbilityCaster : MonoBehaviour {
 		{
 			Debug.Log("P pressed");
 			
-			ability.Execute(this.gameObject, targets);
+			ability.Execute(this.gameObject, ref targets);
 
 		}
 	}

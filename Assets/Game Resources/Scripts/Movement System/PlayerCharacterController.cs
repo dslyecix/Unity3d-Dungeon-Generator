@@ -222,7 +222,7 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
                 // If we're on a ground surface, reset jumping values
                 if (!_jumpedThisFrame)
                 {
-                    Debug.Log("Ground jump reset");
+                    //Debug.Log("Ground jump reset");
                     //if (_doubleJumpConsumed) player.PlayParticles(player.jumpParticles);
                     _doubleJumpConsumed = false;
                     _jumpConsumed = false;
@@ -331,7 +331,7 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     {
         _timeSinceJumpRequested = 0f;
         _jumpRequested = true;
-        Debug.Log("Jump requested");
+        //Debug.Log("Jump requested");
     }
 
     public void Crouch(bool crouch)
@@ -392,7 +392,7 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
 
         if (animator){
             animator.SetFloat("moveSpeedPercent",horizontalMoveSpeedPercent);
-            animator.SetBool("isMoving", isMoving);
+            //animator.SetBool("isMoving", isMoving);
             animator.SetBool("isGrounded", isGrounded);
             animator.SetFloat("verticalVelocity", verticalMoveSpeed);
         }

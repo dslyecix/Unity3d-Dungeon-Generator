@@ -5,16 +5,21 @@ using System;
 
 public abstract class Effect : ScriptableObject
 {
-	// Sub-effects are the effects to be executed (in order) by this effect
+    public new string name { get; set; }
+
 	public List<Effect> subEffects;
 
-	public abstract void Execute(GameObject source, List<GameObject> targets);
+	public abstract void Execute(GameObject source, ref List<GameObject> targets);
 
-	public void ExecuteSubEffects(GameObject source, List<GameObject> targets)
+	public void ExecuteEffects(GameObject source, ref List<GameObject> targets)
 	{
-		foreach (var effect in subEffects)
-		{
-			effect.Execute(source, targets);
-		}
+        if (subEffects.Count > 0)
+        {
+            Debug.Log("Executing subeffects");
+            foreach (var effect in subEffects)
+            {
+                effect.Execute(source, ref targets);
+            }
+        }
 	}
 }
