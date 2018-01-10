@@ -13,6 +13,6 @@ public class Ability : Effect
     {
         Debug.Log("Ability has been cast!");
         ExecuteEffects(source, ref targets);
+    
     }
-
 }

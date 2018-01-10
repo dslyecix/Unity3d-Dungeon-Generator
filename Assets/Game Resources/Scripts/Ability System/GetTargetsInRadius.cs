@@ -20,35 +20,25 @@ public class GetTargetsInRadius : Effect
         Debug.Log("Executing Get Targets in Radius Effect");
 
         List<GameObject> temporaryTargets = new List<GameObject>();
-        temporaryTargets = new List<GameObject>(targets);
 
         foreach (var target in targets)
         {
-            Collider[] newTargets = Physics.OverlapSphere(source.transform.position, (float)radius);
-
-            List<GameObject> newTargetGOs = new List<GameObject>();
+            Collider[] newTargets = Physics.OverlapSphere(target.transform.position, (float)radius);
 
             for (int i = 0; i < newTargets.Length; i++)
             {
-                GameObject currentGO = newTargets[i].gameObject;
-                if(!newTargetGOs.Contains(currentGO))
+                GameObject newGO = newTargets[i].gameObject;
+                if (!temporaryTargets.Contains(newGO) && !targets.Contains(newGO))
                 {
-                    
-                    newTargetGOs.Add(newTargets[i].gameObject);
-                }
-            }
-
-            foreach (var newTargetGO in newTargetGOs)
-            {
-                if (!temporaryTargets.Contains(newTargetGO))
-                {
-                    Debug.Log(newTargetGO.name + "is not in list of existing targets");
-                    temporaryTargets.Add(newTargetGO);
+                    temporaryTargets.Add(newTargets[i].gameObject);
                 }   
-            }
+            }        
         }
-        targets.Clear();
-        targets = temporaryTargets;
+        
+        targets.AddRange(temporaryTargets);
+
         ExecuteEffects(source, ref targets);
+        
     }
+
 }
