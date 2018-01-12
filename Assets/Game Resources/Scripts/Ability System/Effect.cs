@@ -15,10 +15,11 @@ public abstract class Effect : ScriptableObject
 	{
         if (subEffects.Count > 0)
         {
-            Debug.Log("Executing subeffects");
+            //Debug.Log("Executing subeffects");
             foreach (var effect in subEffects)
             {
                 effect.Execute(source, ref targets);
+                Debug.Log("Executing " + effect.name);
             }
         }
 	}

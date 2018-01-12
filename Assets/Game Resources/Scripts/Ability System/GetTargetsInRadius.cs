@@ -17,8 +17,6 @@ public class GetTargetsInRadius : Effect
 
     public override void Execute(GameObject source, ref List<GameObject> targets)
     {
-        Debug.Log("Executing Get Targets in Radius Effect");
-
         List<GameObject> temporaryTargets = new List<GameObject>();
 
         foreach (var target in targets)
@@ -28,17 +26,12 @@ public class GetTargetsInRadius : Effect
             for (int i = 0; i < newTargets.Length; i++)
             {
                 GameObject newGO = newTargets[i].gameObject;
-                if (!temporaryTargets.Contains(newGO) && !targets.Contains(newGO))
-                {
-                    temporaryTargets.Add(newTargets[i].gameObject);
-                }   
+                temporaryTargets.Add(newTargets[i].gameObject);
             }        
         }
         
         targets.AddRange(temporaryTargets);
 
-        ExecuteEffects(source, ref targets);
-        
+        if (subEffects.Count > 0) ExecuteEffects(source, ref targets);        
     }
-
 }

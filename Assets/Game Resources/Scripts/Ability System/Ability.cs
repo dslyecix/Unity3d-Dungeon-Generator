@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CreateAssetMenu(menuName = "Abilities/New Ability")]
+[System.Serializable]
 public class Ability : Effect
 {
     public int manaCost;

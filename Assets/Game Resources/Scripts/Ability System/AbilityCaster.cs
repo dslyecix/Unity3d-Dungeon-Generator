@@ -7,28 +7,29 @@ public class AbilityCaster : MonoBehaviour {
 	public List<Ability> abilities;
 
     public List<GameObject> targets;
-    private List<GameObject> originalTargets;
+    private List<GameObject> originalTargets = new List<GameObject>();
 
     void Start () {
-        originalTargets = targets;
+        originalTargets.AddRange(targets);
     }
 
-
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.P))
+		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
-			Debug.Log("P pressed");
-			
 			abilities[0].Execute(this.gameObject, ref targets);
-            targets = originalTargets;
+            ClearTargets();
 		}
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
-			Debug.Log("O pressed");
-			
 			abilities[1].Execute(this.gameObject, ref targets);
-             targets = originalTargets;
+            ClearTargets();
 		}
 	}
+
+    void ClearTargets()
+    {
+        targets.Clear();
+        targets.AddRange(originalTargets);
+    }
 }

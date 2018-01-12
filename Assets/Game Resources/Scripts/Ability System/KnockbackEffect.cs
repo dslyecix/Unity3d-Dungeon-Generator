@@ -6,7 +6,7 @@ using UnityEditor;
 [CreateAssetMenu(menuName = "Abilities/Effects/Knockback Effect")]
 public class KnockbackEffect : Effect
 {
-    public enum KnockbackDirection { forward, backwards, upwards, towards, away }
+    public enum KnockbackDirection { forward, backwards, upwards, towards, away, flungaway, flungtowards }
 	[SerializeField] private KnockbackDirection knockbackDirection;
 
 	public float force;
@@ -16,8 +16,6 @@ public class KnockbackEffect : Effect
 
     public override void Execute(GameObject source, ref List<GameObject> targets)
     {
-        Debug.Log("Executing Knockback Effect");
-
         foreach (var target in targets)
         {        
             if (target.tag == tag.ToString())
@@ -35,7 +33,7 @@ public class KnockbackEffect : Effect
                             dir = -target.transform.forward;  
                             break;
                         case KnockbackDirection.upwards: 
-                            dir = target.transform.up;   
+                            dir = Vector3.up;   
                             break;
                         case KnockbackDirection.towards: 
                             dir = (source.transform.position - target.transform.position).normalized;
@@ -43,17 +41,23 @@ public class KnockbackEffect : Effect
                         case KnockbackDirection.away: 
                             dir = (target.transform.position - source.transform.position).normalized;
                             break;
+                        case KnockbackDirection.flungaway:
+                            dir = ((target.transform.position - source.transform.position) + Vector3.up).normalized;
+                            break;
+                        case KnockbackDirection.flungtowards:
+                            dir = ((source.transform.position - target.transform.position) + Vector3.up).normalized;
+                            break;
                         default:
                             dir = Vector3.zero;
                             break;
                     }
                 
-                    Debug.Log("Adding force in " + knockbackDirection + " !");
+                    //Debug.Log("Adding force in " + knockbackDirection + " !");
                     rigidbody.AddForce(dir * force);
                 }
             }
         }
 
-        ExecuteEffects(source, ref targets);
+        if (subEffects.Count > 0) ExecuteEffects(source, ref targets);
     }
 }
