@@ -51,14 +51,12 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     private float _timeSinceWallTouch = 0f;
     private bool _isTryingToUncrouch = false;
 
-    private Animator animator;
     private bool isGrounded;
 
     private PlayerInput player;
 
     void Start () 
     {
-        animator = GetComponentInChildren<Animator>();
         player = GetComponent<PlayerInput>();
     }
 
@@ -148,7 +146,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
                     // Add to the return velocity and reset jump state
                     currentVelocity += (KinematicCharacterMotor.CharacterUp * JumpSpeed) - Vector3.Project(currentVelocity, KinematicCharacterMotor.CharacterUp);
                     _jumpRequested = false;
-                    animator.SetTrigger("jumped");
                     
                     _doubleJumpConsumed = true;
                     _jumpedThisFrame = true;
@@ -166,8 +163,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
                     jumpDirection += _wallJumpNormal;
                     jumpDirection = jumpDirection.normalized;
                     _canWallJump = false;
-                    animator.SetTrigger("jumped");
-                    animator.SetBool("canWallJump", false);
                     //if (_doubleJumpConsumed) player.PlayParticles(player.jumpParticles);
                     _doubleJumpConsumed = false;
                     
@@ -185,7 +180,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
 
                 // Add to the return velocity and reset jump state
                 currentVelocity += (jumpDirection * JumpSpeed) - Vector3.Project(currentVelocity, KinematicCharacterMotor.CharacterUp);
-                animator.SetTrigger("jumped");
                 _jumpRequested = false;
                 _jumpConsumed = true;
                 _jumpedThisFrame = true;
@@ -204,7 +198,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     {
         if (_canWallJump && _timeSinceWallTouch >= JumpPostWallGraceTime) {
             _canWallJump = false;
-            animator.SetBool("canWallJump", false);
         } else {
             _timeSinceWallTouch += deltaTime;
         }
@@ -280,7 +273,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
             }
         }
 
-        SetAnimationValues();
     }
 
     public override bool IsColliderValidForCollisions(Collider coll)
@@ -316,7 +308,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
         if (AllowWallJump && !KinematicCharacterMotor.IsStableOnGround && !isStableOnHit && !_canWallJump && jumpableAngle)
         {   
             _canWallJump = true;
-            animator.SetBool("canWallJump", true);
             _timeSinceWallTouch = 0f;
             _wallJumpNormal = hitNormal;
         }
@@ -360,7 +351,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
 
     public void Attack()
     {
-        animator.SetTrigger("Attack1");
     }
 
     protected void OnLanded()
@@ -380,22 +370,21 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     {
         if (!KinematicCharacterMotor.IsStableOnGround) 
         {
-            animator.SetTrigger("flip");
         }    
     }
 
-    void SetAnimationValues()
-    {
-        float horizontalMoveSpeedPercent = Vector3.ProjectOnPlane(KinematicCharacterMotor.Velocity, KinematicCharacterMotor.GroundNormal).magnitude / MaxStableMoveSpeed;
-        float verticalMoveSpeed = KinematicCharacterMotor.Velocity.normalized.y;
-        bool isMoving = (horizontalMoveSpeedPercent <= 0.05f && horizontalMoveSpeedPercent >= -0.05f) ? false : true;
+    // void SetAnimationValues()
+    // {
+    //     float horizontalMoveSpeedPercent = Vector3.ProjectOnPlane(KinematicCharacterMotor.Velocity, KinematicCharacterMotor.GroundNormal).magnitude / MaxStableMoveSpeed;
+    //     float verticalMoveSpeed = KinematicCharacterMotor.Velocity.normalized.y;
+    //     bool isMoving = (horizontalMoveSpeedPercent <= 0.05f && horizontalMoveSpeedPercent >= -0.05f) ? false : true;
 
-        if (animator){
-            animator.SetFloat("moveSpeedPercent",horizontalMoveSpeedPercent);
-            //animator.SetBool("isMoving", isMoving);
-            animator.SetBool("isGrounded", isGrounded);
-            animator.SetFloat("verticalVelocity", verticalMoveSpeed);
-        }
-    }
+    //     if (animator){
+    //         animator.SetFloat("moveSpeedPercent",horizontalMoveSpeedPercent);
+    //         //animator.SetBool("isMoving", isMoving);
+    //         animator.SetBool("isGrounded", isGrounded);
+    //         animator.SetFloat("verticalVelocity", verticalMoveSpeed);
+    //     }
+    // }
 
 }

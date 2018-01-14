@@ -13,6 +13,11 @@ public class ResetObject : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.R)) transform.position = startPosition;
+		if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = startPosition;
+            Rigidbody rb = this.GetComponent<Rigidbody>();
+            if (rb) rb.velocity = Vector3.zero;
+        }
 	}
 }

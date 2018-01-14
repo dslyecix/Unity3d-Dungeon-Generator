@@ -298,8 +298,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Flip
       takeName: Flip
-      firstFrame: -1
-      lastFrame: 26
+      firstFrame: 0
+      lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
