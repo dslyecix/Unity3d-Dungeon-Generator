@@ -40,11 +40,11 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     private Vector3 _internalVelocityAdd = Vector3.zero;
     private bool _isWalking = false;
     private bool _jumpRequested = false;
-    private bool _jumpConsumed = false;
+    public bool _jumpConsumed = false;
     private bool _doubleJumpConsumed = false;
     private bool _canWallJump = false;
     private Vector3 _wallJumpNormal;
-    private bool _jumpedThisFrame = false;
+    public bool _jumpedThisFrame = false;
     private Vector3 _jumpDirection = Vector3.up;
     private float _timeSinceJumpRequested = Mathf.Infinity;
     private float _timeSinceLastAbleToJump = 0f;
@@ -53,17 +53,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
 
     private bool isGrounded;
 
-    private PlayerInput player;
-
-    void Start () 
-    {
-        player = GetComponent<PlayerInput>();
-    }
-
-
-    /// <summary>
-    /// This is called by the ExamplePlayer or the ExampleAIController to set the character's movement and look input vectors
-    /// </summary>
     public void SetInputs(Vector3 moveInput, Vector3 lookInput)
     {
         _moveInputVector = Vector3.ProjectOnPlane(moveInput, KinematicCharacterMotor.CharacterUp).normalized * moveInput.magnitude;
@@ -163,7 +152,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
                     jumpDirection += _wallJumpNormal;
                     jumpDirection = jumpDirection.normalized;
                     _canWallJump = false;
-                    //if (_doubleJumpConsumed) player.PlayParticles(player.jumpParticles);
                     _doubleJumpConsumed = false;
                     
                     
@@ -216,7 +204,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
                 if (!_jumpedThisFrame)
                 {
                     //Debug.Log("Ground jump reset");
-                    //if (_doubleJumpConsumed) player.PlayParticles(player.jumpParticles);
                     _doubleJumpConsumed = false;
                     _jumpConsumed = false;
                 }
@@ -356,7 +343,6 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
     protected void OnLanded()
     {
         isGrounded = true;
-        //if (_doubleJumpConsumed) player.PlayParticles(player.jumpParticles);
         _doubleJumpConsumed = false;
     }
 
@@ -372,19 +358,4 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
         {
         }    
     }
-
-    // void SetAnimationValues()
-    // {
-    //     float horizontalMoveSpeedPercent = Vector3.ProjectOnPlane(KinematicCharacterMotor.Velocity, KinematicCharacterMotor.GroundNormal).magnitude / MaxStableMoveSpeed;
-    //     float verticalMoveSpeed = KinematicCharacterMotor.Velocity.normalized.y;
-    //     bool isMoving = (horizontalMoveSpeedPercent <= 0.05f && horizontalMoveSpeedPercent >= -0.05f) ? false : true;
-
-    //     if (animator){
-    //         animator.SetFloat("moveSpeedPercent",horizontalMoveSpeedPercent);
-    //         //animator.SetBool("isMoving", isMoving);
-    //         animator.SetBool("isGrounded", isGrounded);
-    //         animator.SetFloat("verticalVelocity", verticalMoveSpeed);
-    //     }
-    // }
-
 }

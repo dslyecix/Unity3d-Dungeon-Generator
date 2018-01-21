@@ -51,10 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\ActiveSpellManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\Ability.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityCaster.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityTargettingMethod.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Ability System\ActiveSpellManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\ColourChangeEffect.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\DelayTimeEffect.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\Effect.cs" />
@@ -62,6 +62,7 @@
      <Compile Include="Assets\Game Resources\Scripts\Ability System\KnockbackEffect.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\PlayerToMouseRaycast.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\CameraController.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Camera System\SetSaddlePosition.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnData.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\DUtils\Billboard.cs" />
@@ -91,8 +92,10 @@
      <Compile Include="Assets\Game Resources\Scripts\Movement System\BaseMoverController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\KinematicCharacterSystem.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PhysicsMover.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerAnimationController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerCharacterController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerInput.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerPhysicsTranslator.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ResetObject.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBlendListCamera.cs" />
@@ -188,7 +191,6 @@
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
-     <Compile Include="Assets\PlayerPhysicsTranslator.cs" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\DepthOfField.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\MotionBlur.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Fog.shader" />

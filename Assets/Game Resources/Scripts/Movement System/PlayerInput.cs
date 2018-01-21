@@ -6,21 +6,18 @@ using System;
 
 public class PlayerInput : MonoBehaviour
 {
-
     public PlayerCharacterController character;
     public float MouseSensitivity = 0.02f;
     public float attackCooldown = 5;
     public Collider[] IgnoredColliders;
-
-    //public ParticleSystem jumpParticles;
+    public Vector3 worldRelativeInput;
+    public Vector3 lookDirection;
+    public Vector3 mouseWorldPosition;
 
     private Vector3 _moveInputVector = Vector3.zero;
     private Vector3 _lookInputVector = Vector3.zero;
-
-   
     private new Camera camera;
     private bool canAttack;
-    
     private float attackCooldownTimer;
 
     private void Start()
@@ -44,31 +41,26 @@ public class PlayerInput : MonoBehaviour
 
         bool isWalking = Input.GetKey(KeyCode.LeftShift);
 
-
-        if (Cursor.lockState != CursorLockMode.Locked)
-        {
-            //_lookInputVector = Vector3.zero;
-        }
-
         if (character)
         {
+            worldRelativeInput = Vector3.zero;
             // Apply move input to character
             // Vector3 worldSpaceInput = Quaternion.LookRotation(Vector3.forward,Vector3.up) * _moveInputVector;
             // Vector3 lookDirection = new Vector3(worldSpaceInput.x, 0, 0);
             // character.Walk(isWalking);
             // character.SetInputs(worldSpaceInput, lookDirection);
-            Plane mousePlane = new Plane(Vector3.up,this.transform.position);
+            Plane characterPlane = new Plane(Vector3.up,character.transform.position);
             Ray cameraRay = camera.ScreenPointToRay(Input.mousePosition);
             float mouseDistanceFromCamera;
-            mousePlane.Raycast(cameraRay, out mouseDistanceFromCamera);
+            characterPlane.Raycast(cameraRay, out mouseDistanceFromCamera);
             Debug.DrawRay(cameraRay.origin, cameraRay.direction * mouseDistanceFromCamera, Color.red, 0.01f);
             
-            Vector3 mouseWorldPosition = cameraRay.origin + cameraRay.direction * mouseDistanceFromCamera;
+            mouseWorldPosition = cameraRay.origin + cameraRay.direction * mouseDistanceFromCamera;
             mouseWorldPosition.y = transform.position.y;
             Vector3 playerLookDirection = (mouseWorldPosition - this.transform.position).normalized;
 
-            Vector3 worldRelativeInput = Quaternion.LookRotation(Vector3.forward,Vector3.up) * _moveInputVector;
-            Vector3 lookDirection = playerLookDirection;
+            worldRelativeInput = Quaternion.LookRotation(Vector3.forward,Vector3.up) * _moveInputVector;
+            lookDirection = playerLookDirection;
             character.Walk(isWalking);
             character.SetInputs(worldRelativeInput, lookDirection);
 
@@ -108,16 +100,6 @@ public class PlayerInput : MonoBehaviour
             {
                 character.Crouch(false);
             }
-
-            // Apply input to virtualCamera
-            float scrollInput = -Input.GetAxis("Mouse ScrollWheel");
-            #if UNITY_WEBGL
-            scrollInput = 0f;
-            #endif
         }
     }
-
-    // public void PlayParticles(ParticleSystem _particleSystem) {
-    //     _particleSystem.Play(); 
-    // }
 }
