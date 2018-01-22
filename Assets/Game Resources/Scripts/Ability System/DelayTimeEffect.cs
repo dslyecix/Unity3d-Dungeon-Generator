@@ -21,14 +21,9 @@ public class DelayTimeEffect : Effect
         startTime = Time.time;
         endTime = startTime + (float)length;
         Debug.Log("Waiting for " + length + " seconds!");
+        
+        AbilityHelper instance = AbilityHelper.Instance;
+        instance.StartCoroutine(instance.WaitForTime((float)length));
 
-       // ActiveSpellManager.Instance.StartCoroutine(Wait((float)length));
-       
     }
-
-    // IEnumerator Wait(float time)
-    // {
-    //     yield return 
-    // }
-
 }

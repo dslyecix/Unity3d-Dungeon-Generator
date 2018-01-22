@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEditor;
 
 [CreateAssetMenu(menuName = "Abilities/New Ability")]
-[System.Serializable]
 public class Ability : Effect
 {
+    public new string name { get; set; }
     public Sprite sprite;
 
     public int manaCost;

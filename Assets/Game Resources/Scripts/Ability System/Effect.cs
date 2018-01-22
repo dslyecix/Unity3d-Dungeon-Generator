@@ -7,13 +7,13 @@ public abstract class Effect : ScriptableObject
 {
     public new string name { get; set; }
 
-	public List<Effect> subEffects;
+	public EffectCollection effects;
 
 	public abstract void Execute(GameObject source, ref List<GameObject> targets);
 
 	public void ExecuteEffects(GameObject source, ref List<GameObject> targets)
 	{
-        if (subEffects.Count > 0)
+        if (effects.Count > 0)
         {
             //Debug.Log("Executing subeffects");
             foreach (var effect in subEffects)
