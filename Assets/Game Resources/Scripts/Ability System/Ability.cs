@@ -7,6 +7,8 @@ using UnityEditor;
 [System.Serializable]
 public class Ability : Effect
 {
+    public Sprite sprite;
+
     public int manaCost;
 	[TextArea(5, 3)] public string description;
 

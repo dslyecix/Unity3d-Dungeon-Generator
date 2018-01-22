@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Game Resources\Scripts\Editor\AbilityInventory\AbilityInventoryEditor.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Editor\Editors\CinemachineBasicMultiChannelPerlinEditor.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Editor\Editors\CinemachineBlenderSettingsEditor.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Editor\Editors\CinemachineBlendListCameraEditor.cs" />
