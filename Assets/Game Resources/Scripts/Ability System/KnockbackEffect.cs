@@ -58,6 +58,6 @@ public class KnockbackEffect : Effect
             }
         }
 
-        if (subEffects.Count > 0) ExecuteEffects(source, ref targets);
+        ExecuteSubEffects(source, ref targets);        
     }
 }

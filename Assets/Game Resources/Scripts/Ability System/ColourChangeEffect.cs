@@ -25,6 +25,7 @@ public class ColourChangeEffect : Effect
 				//ActiveSpellManager.instance.StartCoroutine(ColourCoroutine(renderer));
 			}
 		}
-        if (subEffects.Count > 0) ExecuteEffects(source, ref targets);
+
+        ExecuteSubEffects(source, ref targets);        
     }
 }

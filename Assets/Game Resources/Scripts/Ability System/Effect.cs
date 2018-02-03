@@ -7,19 +7,25 @@ public abstract class Effect : ScriptableObject
 {
     public new string name { get; set; }
 
-	public EffectCollection effects;
+    public ConditionCollection conditionCollection;
+	public EffectCollection effectCollection;
 
 	public abstract void Execute(GameObject source, ref List<GameObject> targets);
 
-	public void ExecuteEffects(GameObject source, ref List<GameObject> targets)
+	public void ExecuteSubEffects(GameObject source, ref List<GameObject> targets)
 	{
-        if (effects.Count > 0)
+        if (effectCollection != null) 
         {
-            //Debug.Log("Executing subeffects");
-            foreach (var effect in subEffects)
+            if (effectCollection.effects.Length > 0)
             {
-                effect.Execute(source, ref targets);
-                Debug.Log("Executing " + effect.name);
+                if (conditionCollection.CheckConditions())
+                    {
+                    foreach (var effect in effectCollection.effects)
+                    {
+                        effect.Execute(source, ref targets);
+                        Debug.Log("Executing " + effect.name);
+                    }
+                }
             }
         }
 	}

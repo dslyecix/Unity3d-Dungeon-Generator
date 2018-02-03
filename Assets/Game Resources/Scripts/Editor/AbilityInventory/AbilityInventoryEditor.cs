@@ -7,7 +7,7 @@ public class AbilityInventoryEditor : Editor {
 
     private SerializedProperty abilityImagesProperty;
     private SerializedProperty abilitiesProperty;
-    private bool[] showAbilitySlots = new bool[AbilityInventory.numbAbilitySlots];
+    private bool[] expandAbilitySlots = new bool[AbilityInventory.numAbilitySlots];
 
     private const string abilityInventoryPropAbilityImagesName = "abilityImages";
     private const string abilityInventoryProprAbilitiesName = "abilities";
@@ -22,7 +22,7 @@ public class AbilityInventoryEditor : Editor {
     {
         serializedObject.Update();
 
-        for (int i = 0; i < AbilityInventory.numbAbilitySlots; i++)
+        for (int i = 0; i < AbilityInventory.numAbilitySlots; i++)
         {
             AbilitySlotGUI(i);
         }
@@ -35,9 +35,9 @@ public class AbilityInventoryEditor : Editor {
         EditorGUILayout.BeginVertical(GUI.skin.box);
         EditorGUI.indentLevel++;
 
-        showAbilitySlots[index] = EditorGUILayout.Foldout(showAbilitySlots[index], "Ability slot " + index);
+        expandAbilitySlots[index] = EditorGUILayout.Foldout(expandAbilitySlots[index], "Ability slot " + index);
         
-        if (showAbilitySlots[index])
+        if (expandAbilitySlots[index])
         {
             EditorGUILayout.PropertyField(abilityImagesProperty.GetArrayElementAtIndex(index));
             EditorGUILayout.PropertyField(abilitiesProperty.GetArrayElementAtIndex(index));

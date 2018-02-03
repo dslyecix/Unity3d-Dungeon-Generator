@@ -15,7 +15,7 @@ public class Ability : Effect
     public override void Execute(GameObject source, ref List<GameObject> targets)
     {
         Debug.Log("Ability has been cast!");
-        ExecuteEffects(source, ref targets);
+        ExecuteSubEffects(source, ref targets);        
     
     }
 }

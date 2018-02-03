@@ -20,6 +20,8 @@ public class PlayerInput : MonoBehaviour
     private bool canAttack;
     private float attackCooldownTimer;
 
+    PlayerAnimationController playerAnimationController;
+
     private void Start()
     {
         attackCooldownTimer = attackCooldown;
@@ -27,6 +29,7 @@ public class PlayerInput : MonoBehaviour
         character.IgnoredColliders = IgnoredColliders;
 
         camera = FindObjectOfType<Camera>();
+        playerAnimationController = GetComponent<PlayerAnimationController>();
     }
 
     private void Update()
@@ -85,7 +88,7 @@ public class PlayerInput : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))
             {
                 if (canAttack) {
-                    character.Attack();
+                    playerAnimationController.Attack();
                     attackCooldownTimer = attackCooldown;
                     canAttack = false;
                 } 

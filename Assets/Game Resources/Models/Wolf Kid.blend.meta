@@ -59,6 +59,8 @@ ModelImporter:
     7400020: StrafeRight
     7400022: StrafeLeft
     7400024: RunBackwards
+    7400026: GroundAttack1
+    7400028: AirAttack1
     9500000: //RootNode
     13700000: Body
   materials:
@@ -74,10 +76,16 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Jump' has import animation warnings that might
+    animationImportWarnings: "\nClip 'Default Take' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'LowerLeg_L' has scale animation that will
+      be discarded.\n\nClip 'AirAttack1' has import animation warnings that might
       lower retargeting quality:\nNote: Activate translation DOF on avatar to improve
-      retargeting quality.\n\t'UpperArm_L' has translation animation that will be
-      discarded.\n\t'UpperArm_R' has translation animation that will be discarded.\n"
+      retargeting quality.\n\t'LowerLeg_L' has scale animation that will be discarded.\n\nClip
+      'Jump' has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'UpperArm_L'
+      has translation animation that will be discarded.\n\t'UpperArm_R' has translation
+      animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 3
@@ -296,6 +304,102 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: GroundAttack1
+      takeName: GroundAttack1
+      firstFrame: 0
+      lastFrame: 15
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Hip
+        weight: 1
+      - path: Armature/Hip/Spine
+        weight: 1
+      - path: Armature/Hip/Spine/Head
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_L
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_L/LowerArm_L
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_L/LowerArm_L/Hand_L
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_R
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_R/LowerArm_R
+        weight: 1
+      - path: Armature/Hip/Spine/UpperArm_R/LowerArm_R/Hand_R
+        weight: 1
+      - path: Armature/Hip/UpperLeg_L
+        weight: 1
+      - path: Armature/Hip/UpperLeg_L/LowerLeg_L
+        weight: 1
+      - path: Armature/Hip/UpperLeg_L/LowerLeg_L/Foot_L
+        weight: 1
+      - path: Armature/Hip/UpperLeg_L/LowerLeg_L/Foot_L/Toes_L
+        weight: 1
+      - path: Armature/Hip/UpperLeg_R
+        weight: 1
+      - path: Armature/Hip/UpperLeg_R/LowerLeg_R
+        weight: 1
+      - path: Armature/Hip/UpperLeg_R/LowerLeg_R/Foot_R
+        weight: 1
+      - path: Armature/Hip/UpperLeg_R/LowerLeg_R/Foot_R/Toes_R
+        weight: 1
+      - path: Body
+        weight: 0
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: AirAttack1
+      takeName: AirAttack1
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

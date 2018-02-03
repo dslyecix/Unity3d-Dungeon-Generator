@@ -338,6 +338,7 @@ public class PlayerCharacterController : KinematicCharacterController.BaseCharac
 
     public void Attack()
     {
+        
     }
 
     protected void OnLanded()

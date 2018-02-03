@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class AbilityInventory : MonoBehaviour {
 
-    public const int numbAbilitySlots = 6;
+    public const int numAbilitySlots = 6;
 
-    public Image[] abilityImages = new Image[numbAbilitySlots];
-    public Ability[] abilities = new Ability[numbAbilitySlots];
+    public Image[] abilityImages = new Image[numAbilitySlots];
+    public Ability[] abilities = new Ability[numAbilitySlots];
 
     public void AddAbility(Ability abilityToAdd)
     {
@@ -20,8 +20,10 @@ public class AbilityInventory : MonoBehaviour {
                 abilityImages[i].sprite = abilityToAdd.sprite;
                 abilityImages[i].enabled = true;
                 return;
-            }
+            } 
         }
+
+        Debug.Log("No room for " + abilityToAdd.name);
     }
 
     public void RemoveAbility(Ability abilityToRemove)
@@ -36,6 +38,7 @@ public class AbilityInventory : MonoBehaviour {
                 return;
             }
         }
-    }
-	
+        
+        Debug.Log("No room for " + abilityToRemove.name);
+    }	
 }

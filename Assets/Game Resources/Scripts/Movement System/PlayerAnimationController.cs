@@ -14,9 +14,12 @@ public class PlayerAnimationController : MonoBehaviour {
     Vector3 moveInput;
     Vector3 lookFacing;
     Vector3 mousePos;
+    float verticalVelocity;
 
     bool jumpBool;
     bool groundedBool;
+
+    
 
     void Start ()
     {
@@ -29,6 +32,7 @@ public class PlayerAnimationController : MonoBehaviour {
         moveInput = playerInput.worldRelativeInput;
         lookFacing = playerInput.lookDirection;
         mousePos = playerInput.mouseWorldPosition; 
+        verticalVelocity = playerInput.character.KinematicCharacterMotor.Velocity.y;
 
         forwardAmount = Vector3.Dot(moveInput, lookFacing);
         strafeAmount = Vector3.Dot(moveInput, playerInput.character.KinematicCharacterMotor.CharacterRight);
@@ -46,8 +50,19 @@ public class PlayerAnimationController : MonoBehaviour {
         playerAnimator.SetFloat("Forward Speed", forwardAmount);
         playerAnimator.SetBool("Jump", jumpBool);
         playerAnimator.SetBool("IsGrounded", groundedBool);
-    }
+        playerAnimator.SetFloat("VerticalSpeed", verticalVelocity);
+        
+        }
 
+    public void Attack()
+    {   
+        if (groundedBool) 
+        { 
+            playerAnimator.SetTrigger("GroundAttack1"); 
+        } else {
+            playerAnimator.SetTrigger("AirAttack1");
+        }
+    }
     // void OnDrawGizmos()
     // {
     //     Debug.DrawRay(transform.position, moveInput, Color.red);
