@@ -5,21 +5,23 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour {
     
-    public int currentHealth { get; private set; }
-    public int currentMana { get; private set; }
-    public Stat maxHealth;
-    public Stat healthRegen;
-    public Stat damage;
-    public Stat armour;
-    public Stat moveSpeed;
-    public Stat stamina;
-    public Stat staminaRegen;
-    public Stat maxMana;
-    public Stat manaRegen;
+    public float currentHealth;
+    public float currentMana;
 
-    void Awake ()
+    public CharacterStat maxHealth;
+    public CharacterStat healthRegen;
+    public CharacterStat damage;
+    public CharacterStat armour;
+    public CharacterStat moveSpeed;
+    public CharacterStat stamina;
+    public CharacterStat staminaRegen;
+    public CharacterStat maxMana; 
+    public CharacterStat manaRegen;
+
+    void Start ()
     {
-        currentHealth = maxHealth.GetValue();
+        currentHealth = maxHealth.Value;
+        currentMana = maxMana.Value;
     }
 
     void Update( )
@@ -31,9 +33,9 @@ public class CharacterStats : MonoBehaviour {
         }
     }
 
-    public void TakeDamage (int damage)
+    public void TakeDamage (float damage)
     {
-        damage -= armour.GetValue();
+        damage -= armour.Value;
         damage = Mathf.Clamp(damage, 0, int.MaxValue);
 
         currentHealth -= damage;

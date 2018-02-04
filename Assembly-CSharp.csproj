@@ -68,6 +68,7 @@
      <Compile Include="Assets\Game Resources\Scripts\Ability System\PlayerToMouseRaycast.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\CameraController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\SetSaddlePosition.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\CharacterStat.cs" />
      <Compile Include="Assets\Game Resources\Scripts\CharacterStats.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnData.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnManager.cs" />
@@ -105,7 +106,8 @@
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerPhysicsTranslator.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ResetObject.cs" />
-     <Compile Include="Assets\Game Resources\Scripts\Stat.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\StatModifier.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\UI\PauseMenu.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBlendListCamera.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBrain.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineClearShot.cs" />
@@ -314,11 +316,11 @@
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
- <Reference Include="TextMeshPro-2017.1-1.0.56-Runtime">
- <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Runtime.dll</HintPath>
- </Reference>
  <Reference Include="TextMeshPro-2017.1-1.0.56-Editor">
  <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="TextMeshPro-2017.1-1.0.56-Runtime">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Runtime.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
