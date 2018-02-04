@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\BarFill.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\Ability.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityCaster.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityHelper.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Game Resources\Scripts\Ability System\PlayerToMouseRaycast.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\CameraController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\SetSaddlePosition.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\CharacterStats.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnData.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\DUtils\Billboard.cs" />
@@ -91,6 +93,8 @@
      <Compile Include="Assets\Game Resources\Scripts\Generation System\Room.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\TextureScale.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\Volume.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\IDamageable.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\IHealthSystem.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\BaseCharacterController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\BaseMoverController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\KinematicCharacterSystem.cs" />
@@ -101,6 +105,7 @@
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerPhysicsTranslator.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ResetObject.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Stat.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBlendListCamera.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBrain.cs" />
      <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineClearShot.cs" />
@@ -194,31 +199,82 @@
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
+     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\DepthOfField.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\MotionBlur.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Fog.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\LutGen.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\UI\CurveBackground.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\ScreenSpaceReflection.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Utilities\CustomMotionTexture\Shaders\CustomMotionVectorTexture.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\ACES.cginc" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Uber.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Blit.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\WaveformRender.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\VectorscopeCompute.compute" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\FXAA3.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\MotionBlur.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\AmbientOcclusion.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Bluenoise64\LICENSE.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\BuiltinDebugViews.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald Bold - OFL.txt" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Common.cginc" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Bluenoise64\COPYING.txt" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\NotoSans - License.txt" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\UI\Trackball.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\LiberationSans - OFL.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Bloom.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\TAA.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\EyeHistogram.compute" />
@@ -226,6 +282,7 @@
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\EyeAdaptation.cginc" />
      <None Include="Assets\Game Resources\Materials\WorldGrid.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\GrainGen.shader" />
+     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\FXAA.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\DiskKernels.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\DepthOfField.cginc" />
@@ -256,6 +313,12 @@
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+ </Reference>
+ <Reference Include="TextMeshPro-2017.1-1.0.56-Runtime">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="TextMeshPro-2017.1-1.0.56-Editor">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Editor.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
