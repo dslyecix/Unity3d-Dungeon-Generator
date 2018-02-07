@@ -13,6 +13,7 @@ public class SetSaddlePosition : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
         newPos = new Vector3(transform.parent.position.x, originalOffset.y, transform.parent.position.z + originalOffset.z);
 
 		transform.position = newPos;
