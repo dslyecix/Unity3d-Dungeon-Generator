@@ -1,3 +1,6 @@
+// Amplify Shader Editor - Visual Shader Editing Tool
+// Copyright (c) Amplify Creations, Lda <info@amplify.pt>
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +17,11 @@ namespace AmplifyShaderEditor
 
 		[SerializeField]
 		private List<string> m_additionalPragmas = new List<string>();
+		public List<string> PragmaList { get { return m_additionalPragmas; } set { m_additionalPragmas = value; } }
+
+		[SerializeField]
+		private List<string> m_outsidePragmas = new List<string>();
+		public List<string> OutsideList { get { return m_outsidePragmas; } set { m_outsidePragmas = value; } }
 
 		public void Draw( ParentNode owner )
 		{
@@ -114,6 +122,12 @@ namespace AmplifyShaderEditor
 			{
 				if( !string.IsNullOrEmpty( m_additionalPragmas[ i ] ) )
 					dataCollector.AddToPragmas( -1, m_additionalPragmas[ i ] );
+			}
+
+			for( int i = 0; i < m_outsidePragmas.Count; i++ )
+			{
+				if( !string.IsNullOrEmpty( m_outsidePragmas[ i ] ) )
+					dataCollector.AddToPragmas( -1, m_outsidePragmas[ i ] );
 			}
 		}
 

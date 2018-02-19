@@ -15,6 +15,8 @@ namespace AmplifyShaderEditor
 			AddOutputPort( WirePortDataType.FLOAT, "Out" );
 			m_errorMessageTypeIsError = NodeMessageType.Warning;
 			m_errorMessageTooltip = "This node only returns correct information using a custom light model, otherwise returns 1";
+			m_previewShaderGUID = "4b12227498a5c8d46b6c44ea018e5b56";
+			m_drawPreviewAsSphere = true;
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )

@@ -40,8 +40,10 @@ namespace AmplifyShaderEditor
 	[NodeAttributes( "Texture Object", "Textures", "Represents a Texture Asset. Can be used in samplers <b>Tex</b> inputs or shader function inputs to reuse the same texture multiple times.", SortOrderPriority = 1 )]
 	public class TexturePropertyNode : PropertyNode
 	{
+		private const string ObjectSelectorCmdStr = "ObjectSelectorClosed";
+
 		protected readonly string[] AvailablePropertyTypeLabels = { PropertyType.Property.ToString(), PropertyType.Global.ToString() };
-		protected readonly int[] AvailablePropertyTypeValues = { ( int ) PropertyType.Property, ( int ) PropertyType.Global };
+		protected readonly int[] AvailablePropertyTypeValues = { (int)PropertyType.Property, (int)PropertyType.Global };
 
 		protected const int OriginalFontSizeUpper = 9;
 		protected const int OriginalFontSizeLower = 9;
@@ -99,6 +101,8 @@ namespace AmplifyShaderEditor
 		private TextureType m_previousType = TextureType.Texture2D;
 		private string m_labelText = "None (Texture2D)";
 
+		protected bool m_isEditingPicker;
+
 		public TexturePropertyNode() : base() { }
 		public TexturePropertyNode( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 		protected override void CommonInit( int uniqueId )
@@ -124,6 +128,46 @@ namespace AmplifyShaderEditor
 			m_previewShaderGUID = "e53988745ec6e034694ee2640cd3d372";
 		}
 
+		protected void SetPreviewTexture( Texture newValue )
+		{
+			if( newValue is Cubemap )
+			{
+				PreviewMaterial.SetInt( m_typeId, 3 );
+
+				if( m_cachedSamplerIdCube == -1 )
+					m_cachedSamplerIdCube = Shader.PropertyToID( "_Cube" );
+
+				PreviewMaterial.SetTexture( m_cachedSamplerIdCube, newValue as Cubemap );
+			}
+			else if( newValue is Texture2DArray )
+			{
+				PreviewMaterial.SetInt( m_typeId, 4 );
+
+				if( m_cachedSamplerIdArray == -1 )
+					m_cachedSamplerIdArray = Shader.PropertyToID( "_Array" );
+
+				PreviewMaterial.SetTexture( m_cachedSamplerIdArray, newValue as Texture2DArray );
+			}
+			else if( newValue is Texture3D )
+			{
+				PreviewMaterial.SetInt( m_typeId, 2 );
+
+				if( m_cachedSamplerId3D == -1 )
+					m_cachedSamplerId3D = Shader.PropertyToID( "_Sampler3D" );
+
+				PreviewMaterial.SetTexture( m_cachedSamplerId3D, newValue as Texture3D );
+			}
+			else
+			{
+				PreviewMaterial.SetInt( m_typeId, 1 );
+
+				if( m_cachedSamplerId == -1 )
+					m_cachedSamplerId = Shader.PropertyToID( "_Sampler" );
+
+				PreviewMaterial.SetTexture( m_cachedSamplerId, newValue );
+			}
+		}
+
 		public override void SetPreviewInputs()
 		{
 			base.SetPreviewInputs();
@@ -133,54 +177,55 @@ namespace AmplifyShaderEditor
 				if( m_defaultId == -1 )
 					m_defaultId = Shader.PropertyToID( "_Default" );
 
-				PreviewMaterial.SetInt( m_defaultId, ( ( int ) m_defaultTextureValue ) + 1 );
+				PreviewMaterial.SetInt( m_defaultId, ( (int)m_defaultTextureValue ) + 1 );
 			}
 			else
 			{
 				if( m_defaultId == -1 )
 					m_defaultId = Shader.PropertyToID( "_Default" );
 
-				PreviewMaterial.SetInt( m_defaultId, 0);
+				PreviewMaterial.SetInt( m_defaultId, 0 );
 
 				if( m_typeId == -1 )
 					m_typeId = Shader.PropertyToID( "_Type" );
 
-				if( Value is Cubemap )
-				{
-					PreviewMaterial.SetInt( m_typeId, 3 );
+				SetPreviewTexture( Value );
+				//if( Value is Cubemap )
+				//{
+				//	PreviewMaterial.SetInt( m_typeId, 3 );
 
-					if( m_cachedSamplerIdCube == -1 )
-						m_cachedSamplerIdCube = Shader.PropertyToID( "_Cube" );
+				//	if( m_cachedSamplerIdCube == -1 )
+				//		m_cachedSamplerIdCube = Shader.PropertyToID( "_Cube" );
 
-					PreviewMaterial.SetTexture( m_cachedSamplerIdCube, Value as Cubemap );
-				}
-				else if( Value is Texture2DArray )
-				{
-					PreviewMaterial.SetInt( m_typeId, 4 );
+				//	PreviewMaterial.SetTexture( m_cachedSamplerIdCube, Value as Cubemap );
+				//}
+				//else if( Value is Texture2DArray )
+				//{
+				//	PreviewMaterial.SetInt( m_typeId, 4 );
 
-					if( m_cachedSamplerIdArray == -1 )
-						m_cachedSamplerIdArray = Shader.PropertyToID( "_Array" );
+				//	if( m_cachedSamplerIdArray == -1 )
+				//		m_cachedSamplerIdArray = Shader.PropertyToID( "_Array" );
 
-					PreviewMaterial.SetTexture( m_cachedSamplerIdArray, Value as Texture2DArray );
-				}
-				else if( Value is Texture3D )
-				{
-					PreviewMaterial.SetInt( m_typeId, 2 );
+				//	PreviewMaterial.SetTexture( m_cachedSamplerIdArray, Value as Texture2DArray );
+				//}
+				//else if( Value is Texture3D )
+				//{
+				//	PreviewMaterial.SetInt( m_typeId, 2 );
 
-					if( m_cachedSamplerId3D == -1 )
-						m_cachedSamplerId3D = Shader.PropertyToID( "_Sampler3D" );
+				//	if( m_cachedSamplerId3D == -1 )
+				//		m_cachedSamplerId3D = Shader.PropertyToID( "_Sampler3D" );
 
-					PreviewMaterial.SetTexture( m_cachedSamplerId3D, Value as Texture3D );
-				}
-				else
-				{
-					PreviewMaterial.SetInt( m_typeId, 1 );
+				//	PreviewMaterial.SetTexture( m_cachedSamplerId3D, Value as Texture3D );
+				//}
+				//else
+				//{
+				//	PreviewMaterial.SetInt( m_typeId, 1 );
 
-					if( m_cachedSamplerId == -1 )
-						m_cachedSamplerId = Shader.PropertyToID( "_Sampler" );
+				//	if( m_cachedSamplerId == -1 )
+				//		m_cachedSamplerId = Shader.PropertyToID( "_Sampler" );
 
-					PreviewMaterial.SetTexture( m_cachedSamplerId, Value );
-				}
+				//	PreviewMaterial.SetTexture( m_cachedSamplerId, Value );
+				//}
 			}
 		}
 
@@ -260,17 +305,23 @@ namespace AmplifyShaderEditor
 					m_textureType = typeof( Cubemap );
 				}
 				break;
+#if !UNITY_2018_1_OR_NEWER
+// Disabling Substance Deprecated warning
+#pragma warning disable 0618
 				case TextureType.ProceduralTexture:
 				{
 					m_textureType = typeof( ProceduralTexture );
 				}
 				break;
+#pragma warning restore 0618
+#endif
+
 			}
 		}
 
 		protected void DrawTexturePropertyType()
 		{
-			PropertyType parameterType = ( PropertyType ) EditorGUILayoutIntPopup( ParameterTypeStr, ( int ) m_currentParameterType, AvailablePropertyTypeLabels, AvailablePropertyTypeValues );
+			PropertyType parameterType = (PropertyType)EditorGUILayoutIntPopup( ParameterTypeStr, (int)m_currentParameterType, AvailablePropertyTypeLabels, AvailablePropertyTypeValues );
 			if( parameterType != m_currentParameterType )
 			{
 				ChangeParameterType( parameterType );
@@ -365,12 +416,12 @@ namespace AmplifyShaderEditor
 
 		new void ShowDefaults()
 		{
-			m_defaultTextureValue = ( TexturePropertyValues ) EditorGUILayoutEnumPopup( DefaultTextureStr, m_defaultTextureValue );
+			m_defaultTextureValue = (TexturePropertyValues)EditorGUILayoutEnumPopup( DefaultTextureStr, m_defaultTextureValue );
 
 			if( !m_drawAutocast )
 				return;
 
-			AutoCastType newAutoCast = ( AutoCastType ) EditorGUILayoutEnumPopup( AutoCastModeStr, m_autocastMode );
+			AutoCastType newAutoCast = (AutoCastType)EditorGUILayoutEnumPopup( AutoCastModeStr, m_autocastMode );
 			if( newAutoCast != m_autocastMode )
 			{
 				m_autocastMode = newAutoCast;
@@ -444,11 +495,7 @@ namespace AmplifyShaderEditor
 
 				if( additionalCheck )
 					AdditionalCheck();
-#if UNITY_5_5_OR_NEWER
 				m_linearTexture = !importer.sRGBTexture;
-#else
-				m_linearTexture = importer.linearTexture;
-#endif
 			}
 
 			if( ( texture as Texture2DArray ) != null )
@@ -467,10 +514,15 @@ namespace AmplifyShaderEditor
 			{
 				ConfigTextureData( TextureType.Cube );
 			}
+#if !UNITY_2018_1_OR_NEWER
+// Disabling Substance Deprecated warning
+#pragma warning disable 0618
 			else if( ( texture as ProceduralTexture ) != null )
 			{
 				ConfigTextureData( TextureType.ProceduralTexture );
 			}
+#pragma warning restore 0618
+#endif
 		}
 
 		public override void OnObjectDropped( UnityEngine.Object obj )
@@ -485,18 +537,18 @@ namespace AmplifyShaderEditor
 			ConfigFromObject( obj );
 		}
 
-		protected void ConfigFromObject( UnityEngine.Object obj, bool writeDefault = true )
+		protected void ConfigFromObject( UnityEngine.Object obj, bool writeDefault = true, bool additionalCheck = true )
 		{
 			Texture texture = obj as Texture;
 			if( texture )
 			{
 				m_materialValue = texture;
 				m_defaultValue = texture;
-				CheckTextureImporter( true, writeDefault );
+				CheckTextureImporter( additionalCheck, writeDefault );
 			}
 		}
 
-		protected bool m_isEditingPicker;
+
 
 		public override void DrawGUIControls( DrawInfo drawInfo )
 		{
@@ -507,15 +559,28 @@ namespace AmplifyShaderEditor
 
 			bool insideBox = m_previewRect.Contains( drawInfo.MousePosition );
 
+			bool closePicker = false;
 			if( insideBox )
 			{
 				m_isEditingPicker = true;
 			}
 			else if( m_isEditingPicker && !insideBox && drawInfo.CurrentEventType != EventType.ExecuteCommand )
 			{
+				closePicker = true;
+			}
+
+			if( m_isEditingPicker && drawInfo.CurrentEventType == EventType.ExecuteCommand &&
+				Event.current.commandName.Equals( ObjectSelectorCmdStr ) )
+			{
+				closePicker = true;
+			}
+
+			if( closePicker )
+			{
 				GUI.FocusControl( null );
 				m_isEditingPicker = false;
 			}
+
 		}
 
 		public override void OnNodeLayout( DrawInfo drawInfo )
@@ -536,17 +601,19 @@ namespace AmplifyShaderEditor
 				hitRect.width = 4 * 14 * drawInfo.InvertedZoom;
 
 				bool restoreMouse = false;
-				if( Event.current.type == EventType.mouseDown && hitRect.Contains( drawInfo.MousePosition ) )
+				if( Event.current.type == EventType.MouseDown && hitRect.Contains( drawInfo.MousePosition ) )
 				{
 					restoreMouse = true;
-					Event.current.type = EventType.ignore;
+					Event.current.type = EventType.Ignore;
 				}
 
 				EditorGUI.BeginChangeCheck();
 				m_colorBuffer = GUI.color;
 				GUI.color = Color.clear;
 				if( m_materialMode )
+				{
 					m_materialValue = EditorGUIObjectField( m_previewRect, m_materialValue, m_textureType, false ) as Texture;
+				}
 				else
 					m_defaultValue = EditorGUIObjectField( m_previewRect, m_defaultValue, m_textureType, false ) as Texture;
 				GUI.color = m_colorBuffer;
@@ -568,7 +635,7 @@ namespace AmplifyShaderEditor
 
 				if( restoreMouse )
 				{
-					Event.current.type = EventType.mouseDown;
+					Event.current.type = EventType.MouseDown;
 				}
 
 				if( ( drawInfo.CurrentEventType == EventType.MouseDown || drawInfo.CurrentEventType == EventType.MouseUp ) )
@@ -582,7 +649,7 @@ namespace AmplifyShaderEditor
 				DrawTexturePicker( drawInfo );
 		}
 
-		
+
 
 		protected void DrawTexturePicker( DrawInfo drawInfo )
 		{
@@ -706,15 +773,34 @@ namespace AmplifyShaderEditor
 
 		public virtual void ReadAdditionalData( ref string[] nodeParams )
 		{
-			string textureName = GetCurrentParam( ref nodeParams );
-			m_defaultValue = AssetDatabase.LoadAssetAtPath<Texture>( textureName );
+			string defaultTextureGUID = GetCurrentParam( ref nodeParams );
+			//m_defaultValue = AssetDatabase.LoadAssetAtPath<Texture>( textureName );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+			{
+				m_defaultValue = AssetDatabase.LoadAssetAtPath<Texture>( AssetDatabase.GUIDToAssetPath( defaultTextureGUID ) );
+				string materialTextureGUID = GetCurrentParam( ref nodeParams );
+				m_materialValue = AssetDatabase.LoadAssetAtPath<Texture>( AssetDatabase.GUIDToAssetPath( materialTextureGUID ) );
+			}
+			else
+			{
+				m_defaultValue = AssetDatabase.LoadAssetAtPath<Texture>( defaultTextureGUID );
+			}
+
 			m_isNormalMap = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
-			m_defaultTextureValue = ( TexturePropertyValues ) Enum.Parse( typeof( TexturePropertyValues ), GetCurrentParam( ref nodeParams ) );
-			m_autocastMode = ( AutoCastType ) Enum.Parse( typeof( AutoCastType ), GetCurrentParam( ref nodeParams ) );
+			m_defaultTextureValue = (TexturePropertyValues)Enum.Parse( typeof( TexturePropertyValues ), GetCurrentParam( ref nodeParams ) );
+			m_autocastMode = (AutoCastType)Enum.Parse( typeof( AutoCastType ), GetCurrentParam( ref nodeParams ) );
 
-			ConfigTextureData(TextureType.Texture2D);
+			ConfigTextureData( TextureType.Texture2D );
 
-			ConfigFromObject( m_defaultValue );
+			//ConfigFromObject( m_defaultValue );
+			if( m_materialValue == null )
+			{
+				ConfigFromObject( m_defaultValue );
+			}
+			else
+			{
+				CheckTextureImporter( true, true );
+			}
 			ConfigureInputPorts();
 			ConfigureOutputPorts();
 		}
@@ -734,7 +820,9 @@ namespace AmplifyShaderEditor
 
 		public virtual void WriteAdditionalToString( ref string nodeInfo, ref string connectionsInfo )
 		{
-			IOUtils.AddFieldValueToString( ref nodeInfo, ( m_defaultValue != null ) ? AssetDatabase.GetAssetPath( m_defaultValue ) : Constants.NoStringValue );
+			//IOUtils.AddFieldValueToString( ref nodeInfo, ( m_defaultValue != null ) ? AssetDatabase.GetAssetPath( m_defaultValue ) : Constants.NoStringValue );
+			IOUtils.AddFieldValueToString( ref nodeInfo, ( m_defaultValue != null ) ? AssetDatabase.AssetPathToGUID( AssetDatabase.GetAssetPath( m_defaultValue ) ) : Constants.NoStringValue );
+			IOUtils.AddFieldValueToString( ref nodeInfo, ( m_materialValue != null ) ? AssetDatabase.AssetPathToGUID( AssetDatabase.GetAssetPath( m_materialValue ) ) : Constants.NoStringValue );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_isNormalMap.ToString() );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultTextureValue );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_autocastMode );

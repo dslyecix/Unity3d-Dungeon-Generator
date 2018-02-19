@@ -82,6 +82,7 @@ namespace AmplifyShaderEditor
 		private string m_uniforms;
 		private string m_includes;
 		private string m_pragmas;
+		private string m_defines;
 		private string m_instructions;
 		private string m_localVariables;
 		private string m_vertexLocalVariables;
@@ -97,8 +98,9 @@ namespace AmplifyShaderEditor
 		private List<PropertyDataCollector> m_instancedPropertiesList;
 		private List<PropertyDataCollector> m_uniformsList;
 		private List<PropertyDataCollector> m_includesList;
-		private List<PropertyDataCollector> m_tagsList;
+		//private List<PropertyDataCollector> m_tagsList;
 		private List<PropertyDataCollector> m_pragmasList;
+		private List<PropertyDataCollector> m_definesList;
 		private List<PropertyDataCollector> m_instructionsList;
 		private List<PropertyDataCollector> m_localVariablesList;
 		private List<PropertyDataCollector> m_vertexLocalVariablesList;
@@ -117,8 +119,9 @@ namespace AmplifyShaderEditor
 		private Dictionary<string, PropertyDataCollector> m_instancedPropertiesDict;
 		private Dictionary<string, PropertyDataCollector> m_uniformsDict;
 		private Dictionary<string, PropertyDataCollector> m_includesDict;
-		private Dictionary<string, PropertyDataCollector> m_tagsDict;
+		//private Dictionary<string, PropertyDataCollector> m_tagsDict;
 		private Dictionary<string, PropertyDataCollector> m_pragmasDict;
+		private Dictionary<string, PropertyDataCollector> m_definesDict;
 		private Dictionary<string, int> m_virtualCoordinatesDict;
 		private Dictionary<string, string> m_virtualVariablesDict;
 		private Dictionary<string, PropertyDataCollector> m_localVariablesDict;
@@ -141,6 +144,7 @@ namespace AmplifyShaderEditor
 		private bool m_dirtyUniforms;
 		private bool m_dirtyIncludes;
 		private bool m_dirtyPragmas;
+		private bool m_dirtyDefines;
 		private bool m_dirtyInstructions;
 		private bool m_dirtyLocalVariables;
 		private bool m_dirtyVertexLocalVariables;
@@ -150,6 +154,7 @@ namespace AmplifyShaderEditor
 		private bool m_forceNormal;
 
 		private bool m_usingInternalData;
+		private bool m_usingVertexColor;
 		private bool m_usingWorldPosition;
 		private bool m_usingWorldNormal;
 		private bool m_usingScreenPos;
@@ -161,7 +166,12 @@ namespace AmplifyShaderEditor
 		private bool m_usingHigherSizeTexcoords;
 		private bool m_usingCustomScreenPos;
 
+		private bool m_usingCustomOutlineColor;
+		private bool m_usingCustomOutlineWidth;
+		private int m_customOutlineSelectedAlpha = 0;
 		private bool m_usingCustomOutput;
+
+		private bool m_isOutlineDataCollector = false;
 
 		private bool m_forceNormalIsDirty;
 		private bool m_grabPassIsDirty;
@@ -198,13 +208,14 @@ namespace AmplifyShaderEditor
 		public MasterNodeDataCollector()
 		{
 			//m_masterNode = masterNode;
-			m_input = "\t\tstruct Input\n\t\t{\n";
+			m_input = "struct Input\n\t\t{\n";
 			m_customInput = "\t\tstruct SurfaceOutput{0}\n\t\t{\n";
 			m_properties = IOUtils.PropertiesBegin;//"\tProperties\n\t{\n";
 			m_uniforms = string.Empty;
 			m_instructions = string.Empty;
 			m_includes = string.Empty;
 			m_pragmas = string.Empty;
+			m_defines = string.Empty;
 			m_localVariables = string.Empty;
 			m_specialLocalVariables = string.Empty;
 			m_customOutput = string.Empty;
@@ -215,8 +226,9 @@ namespace AmplifyShaderEditor
 			m_instancedPropertiesList = new List<PropertyDataCollector>();
 			m_uniformsList = new List<PropertyDataCollector>();
 			m_includesList = new List<PropertyDataCollector>();
-			m_tagsList = new List<PropertyDataCollector>();
+			//m_tagsList = new List<PropertyDataCollector>();
 			m_pragmasList = new List<PropertyDataCollector>();
+			m_definesList = new List<PropertyDataCollector>();
 			m_instructionsList = new List<PropertyDataCollector>();
 			m_localVariablesList = new List<PropertyDataCollector>();
 			m_vertexLocalVariablesList = new List<PropertyDataCollector>();
@@ -236,8 +248,9 @@ namespace AmplifyShaderEditor
 			m_instancedPropertiesDict = new Dictionary<string, PropertyDataCollector>();
 			m_uniformsDict = new Dictionary<string, PropertyDataCollector>();
 			m_includesDict = new Dictionary<string, PropertyDataCollector>();
-			m_tagsDict = new Dictionary<string, PropertyDataCollector>();
+			//m_tagsDict = new Dictionary<string, PropertyDataCollector>();
 			m_pragmasDict = new Dictionary<string, PropertyDataCollector>();
+			m_definesDict = new Dictionary<string, PropertyDataCollector>();
 			m_virtualCoordinatesDict = new Dictionary<string, int>();
 			m_localVariablesDict = new Dictionary<string, PropertyDataCollector>();
 			m_virtualVariablesDict = new Dictionary<string, string>();
@@ -258,6 +271,7 @@ namespace AmplifyShaderEditor
 			m_dirtyInstructions = false;
 			m_dirtyIncludes = false;
 			m_dirtyPragmas = false;
+			m_dirtyDefines = false;
 			m_dirtyLocalVariables = false;
 			m_dirtySpecialLocalVariables = false;
 			m_grabPassIsDirty = false;
@@ -283,13 +297,13 @@ namespace AmplifyShaderEditor
 
 		public void SetChannelUsage( int channelId, TextureChannelUsage usage )
 		{
-			if ( channelId > -1 && channelId < 4 )
+			if( channelId > -1 && channelId < 4 )
 				m_requireTextureProperty[ channelId ] = usage;
 		}
 
 		public TextureChannelUsage GetChannelUsage( int channelId )
 		{
-			if ( channelId > -1 && channelId < 4 )
+			if( channelId > -1 && channelId < 4 )
 				return m_requireTextureProperty[ channelId ];
 
 			return TextureChannelUsage.Not_Used;
@@ -297,39 +311,39 @@ namespace AmplifyShaderEditor
 
 		public void OpenPerVertexHeader( bool includeCustomData )
 		{
-			if ( m_dirtyPerVertexData )
+			if( m_dirtyPerVertexData )
 				return;
 
 			m_dirtyPerVertexData = true;
-			if ( m_tesselationActive )
+			if( m_tesselationActive )
 			{
-				m_vertexData = "\t\tvoid " + Constants.VertexDataFunc + "( inout appdata " + Constants.VertexShaderInputStr + " )\n\t\t{\n";
+				m_vertexData = "\t\tvoid " + Constants.VertexDataFunc + "( inout appdata_full " + Constants.VertexShaderInputStr + " )\n\t\t{\n";
 			}
 			else
 			{
 				m_vertexData = "\t\tvoid " + Constants.VertexDataFunc + "( inout appdata_full " + Constants.VertexShaderInputStr + ( includeCustomData ? ( string.Format( ", out Input {0}", Constants.VertexShaderOutputStr ) ) : string.Empty ) + " )\n\t\t{\n";
-				if ( includeCustomData )
+				if( includeCustomData )
 					m_vertexData += string.Format( "\t\t\tUNITY_INITIALIZE_OUTPUT( Input, {0} );\n", Constants.VertexShaderOutputStr );
 			}
 		}
 
 		public void ClosePerVertexHeader()
 		{
-			if ( m_dirtyPerVertexData )
+			if( m_dirtyPerVertexData )
 				m_vertexData += "\t\t}\n\n";
 		}
 
 		public void AddToVertexDisplacement( string value, VertexMode vertexMode )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_dirtyPerVertexData )
+			if( !m_dirtyPerVertexData )
 			{
 				OpenPerVertexHeader( true );
 			}
 
-			switch ( vertexMode )
+			switch( vertexMode )
 			{
 				default:
 				case VertexMode.Relative:
@@ -348,10 +362,10 @@ namespace AmplifyShaderEditor
 
 		public void AddToVertexNormal( string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_dirtyPerVertexData )
+			if( !m_dirtyPerVertexData )
 			{
 				OpenPerVertexHeader( true );
 			}
@@ -362,11 +376,11 @@ namespace AmplifyShaderEditor
 
 		public void AddVertexInstruction( string value, int nodeId = -1, bool addDelimiters = true )
 		{
-			if ( !m_dirtyPerVertexData )
+			if( !m_dirtyPerVertexData && !IsOutlineDataCollector/*&& !(m_usingCustomOutlineColor || m_usingCustomOutlineWidth)*/ )
 			{
 				OpenPerVertexHeader( true );
 			}
-			if ( !m_vertexDataDict.ContainsKey( value ) )
+			if( !m_vertexDataDict.ContainsKey( value ) )
 			{
 				m_vertexDataDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 				m_vertexDataList.Add( m_vertexDataDict[ value ] );
@@ -401,7 +415,8 @@ namespace AmplifyShaderEditor
 						index = 4 - m_packSlotsList[ i ];
 						m_packSlotsList[ i ] -= size;
 						break;
-					} else if( i == m_packSlotsList.Count-1 )
+					}
+					else if( i == m_packSlotsList.Count - 1 )
 					{
 						m_packSlotsList.Add( 4 );
 					}
@@ -433,6 +448,9 @@ namespace AmplifyShaderEditor
 				case SurfaceInputs.INTERNALDATA:
 				UsingInternalData = true;
 				break;
+				case SurfaceInputs.COLOR:
+				UsingVertexColor = true;
+				break;
 			}
 
 			AddToInput( nodeId, UIUtils.GetInputDeclarationFromType( precision, surfaceInput ), addSemiColon );
@@ -446,10 +464,10 @@ namespace AmplifyShaderEditor
 		/// <param name="addSemiColon"></param>
 		public void AddToInput( int nodeId, string value, bool addSemiColon )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_inputDict.ContainsKey( value ) )
+			if( !m_inputDict.ContainsKey( value ) )
 			{
 				m_inputDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 				m_inputList.Add( m_inputDict[ value ] );
@@ -471,10 +489,10 @@ namespace AmplifyShaderEditor
 
 		public void AddToCustomInput( int nodeId, string value, bool addSemiColon )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_customInputDict.ContainsKey( value ) )
+			if( !m_customInputDict.ContainsKey( value ) )
 			{
 				m_customInputDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 				m_customInputList.Add( m_customInputDict[ value ] );
@@ -493,7 +511,7 @@ namespace AmplifyShaderEditor
 		// Used by Template Master Node to add tabs into variable declaration
 		public void TabifyInstancedVars()
 		{
-			for ( int i = 0; i < m_instancedPropertiesList.Count; i++ )
+			for( int i = 0; i < m_instancedPropertiesList.Count; i++ )
 			{
 				m_instancedPropertiesList[ i ].PropertyName = '\t' + m_instancedPropertiesList[ i ].PropertyName;
 			}
@@ -501,13 +519,13 @@ namespace AmplifyShaderEditor
 		// Instanced properties
 		public void SetupInstancePropertiesBlock( string blockName )
 		{
-			if ( IsTemplate )
+			if( IsTemplate )
 			{
 				Debug.LogWarning( "SetupInstancePropertiesBlock should not be used during template mode" );
 			}
 
 
-			if ( m_dirtyInstancedProperties )
+			if( m_dirtyInstancedProperties )
 			{
 				m_instancedProperties = string.Format( IOUtils.InstancedPropertiesBeginTabs, blockName ) + m_instancedProperties + IOUtils.InstancedPropertiesEndTabs;
 			}
@@ -515,10 +533,10 @@ namespace AmplifyShaderEditor
 
 		public void AddToInstancedProperties( int nodeId, string value, int orderIndex )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_instancedPropertiesDict.ContainsKey( value ) )
+			if( !m_instancedPropertiesDict.ContainsKey( value ) )
 			{
 				m_instancedPropertiesDict.Add( value, new PropertyDataCollector( nodeId, value, orderIndex ) );
 				m_instancedPropertiesList.Add( m_instancedPropertiesDict[ value ] );
@@ -529,7 +547,7 @@ namespace AmplifyShaderEditor
 
 		public void CloseInstancedProperties()
 		{
-			if ( m_dirtyInstancedProperties )
+			if( m_dirtyInstancedProperties )
 			{
 				m_instancedProperties += IOUtils.InstancedPropertiesEnd;
 			}
@@ -538,10 +556,10 @@ namespace AmplifyShaderEditor
 		// Properties
 		public void AddToProperties( int nodeId, string value, int orderIndex )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_propertiesDict.ContainsKey( value ) )
+			if( !m_propertiesDict.ContainsKey( value ) )
 			{
 				//Debug.Log( UIUtils );
 				m_propertiesDict.Add( value, new PropertyDataCollector( nodeId, value, orderIndex ) );
@@ -560,8 +578,9 @@ namespace AmplifyShaderEditor
 			//}
 
 			list.Sort( ( x, y ) => { return x.OrderIndex.CompareTo( y.OrderIndex ); } );
+			CleanUpList( ref list );
 			m_properties = IOUtils.PropertiesBegin;
-			for ( int i = 0; i < list.Count; i++ )
+			for( int i = 0; i < list.Count; i++ )
 			{
 				m_properties += string.Format( IOUtils.PropertiesElement, list[ i ].PropertyName );
 				//Debug.Log()
@@ -570,9 +589,36 @@ namespace AmplifyShaderEditor
 			return m_properties;
 		}
 
+		public string[] BuildUnformatedPropertiesStringArr()
+		{
+			List<PropertyDataCollector> list = new List<PropertyDataCollector>( m_propertiesDict.Values );
+			list.Sort( ( x, y ) => { return x.OrderIndex.CompareTo( y.OrderIndex ); } );
+			CleanUpList( ref list );
+			string[] arr = new string[ list.Count ];
+			for( int i = 0; i < list.Count; i++ )
+			{
+				arr[ i ] = list[ i ].PropertyName;
+			}
+			return arr;
+		}
+
+		public void CleanUpList( ref List<PropertyDataCollector> list )
+		{
+			if( list.Count == 0 )
+				return;
+
+			if( list[ list.Count - 1 ].PropertyName.Contains( "[Header(" ) )
+			{
+				list.RemoveAt( list.Count - 1 );
+				CleanUpList( ref list );
+			}
+
+		}
+
+
 		public void CloseProperties()
 		{
-			if ( m_dirtyProperties )
+			if( m_dirtyProperties )
 			{
 				m_properties += IOUtils.PropertiesEnd;
 			}
@@ -586,9 +632,9 @@ namespace AmplifyShaderEditor
 
 			m_grabPassDict.Add( value, value );
 
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 			{
-				if ( !m_grabPassIsDirty )
+				if( !m_grabPassIsDirty )
 					m_grabPass += IOUtils.GrabPassEmpty;
 			}
 			else
@@ -602,18 +648,18 @@ namespace AmplifyShaderEditor
 		// This is used by templates global variables to register already existing globals/properties
 		public void SoftRegisterUniform( string dataName )
 		{
-			if ( !m_uniformsDict.ContainsKey( dataName ) )
+			if( !m_uniformsDict.ContainsKey( dataName ) )
 			{
 				m_uniformsDict.Add( dataName, new PropertyDataCollector( -1, dataName ) );
 			}
 		}
 		public void AddToUniforms( int nodeId, string dataType, string dataName )
 		{
-			if ( string.IsNullOrEmpty( dataName ) || string.IsNullOrEmpty( dataType ) )
+			if( string.IsNullOrEmpty( dataName ) || string.IsNullOrEmpty( dataType ) )
 				return;
 
 			string value = UIUtils.GenerateUniformName( dataType, dataName );
-			if ( !m_uniformsDict.ContainsKey( value ) && !m_uniformsDict.ContainsKey( dataName ) )
+			if( !m_uniformsDict.ContainsKey( value ) && !m_uniformsDict.ContainsKey( dataName ) )
 			{
 				m_uniforms += "\t\t" + value + '\n';
 				m_uniformsDict.Add( value, new PropertyDataCollector( nodeId, value ) );
@@ -628,28 +674,28 @@ namespace AmplifyShaderEditor
 
 		public void AddToUniforms( int nodeId, string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_uniformsDict.ContainsKey( value ) )
+			if( !m_uniformsDict.ContainsKey( value ) )
 			{
 				m_uniforms += "\t\t" + value + '\n';
 				m_uniformsDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 				m_uniformsList.Add( m_uniformsDict[ value ] );
 				m_dirtyUniforms = true;
 			}
-			else if ( m_uniformsDict[ value ].NodeId != nodeId )
+			else if( m_uniformsDict[ value ].NodeId != nodeId )
 			{
-				if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToUniforms:Attempting to add duplicate " + value, MessageSeverity.Warning );
+				if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToUniforms:Attempting to add duplicate " + value, MessageSeverity.Warning );
 			}
 		}
 
 		public void AddToIncludes( int nodeId, string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_includesDict.ContainsKey( value ) )
+			if( !m_includesDict.ContainsKey( value ) )
 			{
 				m_includesDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 				m_includesList.Add( new PropertyDataCollector( nodeId, "#include \"" + value + "\"" ) );
@@ -658,29 +704,29 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToIncludes:Attempting to add duplicate " + value, MessageSeverity.Warning );
+				if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToIncludes:Attempting to add duplicate " + value, MessageSeverity.Warning );
 			}
 		}
 
-		public void AddToTags( int nodeId, string name, string value )
-		{
-			if ( string.IsNullOrEmpty( name ) || string.IsNullOrEmpty( value ) )
-				return;
+		//public void AddToTags( int nodeId, string name, string value )
+		//{
+		//	if( string.IsNullOrEmpty( name ) || string.IsNullOrEmpty( value ) )
+		//		return;
 
-			if ( !m_tagsDict.ContainsKey( name ) )
-			{
-				string finalResult = string.Format( "\"{0}\"=\"{1}\"", name, value );
-				m_tagsDict.Add( name, new PropertyDataCollector( nodeId, finalResult ) );
-				m_tagsList.Add( new PropertyDataCollector( nodeId, finalResult ) );
-			}
-		}
+		//	if( !m_tagsDict.ContainsKey( name ) )
+		//	{
+		//		string finalResult = string.Format( "\"{0}\"=\"{1}\"", name, value );
+		//		m_tagsDict.Add( name, new PropertyDataCollector( nodeId, finalResult ) );
+		//		m_tagsList.Add( new PropertyDataCollector( nodeId, finalResult ) );
+		//	}
+		//}
 
 		public void AddToPragmas( int nodeId, string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
-			if ( !m_pragmasDict.ContainsKey( value ) )
+			if( !m_pragmasDict.ContainsKey( value ) )
 			{
 				m_pragmasDict.Add( value, new PropertyDataCollector( nodeId, "#pragma " + value ) );
 				m_pragmasList.Add( m_pragmasDict[ value ] );
@@ -689,13 +735,31 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToPragmas:Attempting to add duplicate " + value, MessageSeverity.Warning );
+				if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToPragmas:Attempting to add duplicate " + value, MessageSeverity.Warning );
+			}
+		}
+
+		public void AddToDefines( int nodeId, string value )
+		{
+			if( string.IsNullOrEmpty( value ) )
+				return;
+
+			if( !m_definesDict.ContainsKey( value ) )
+			{
+				m_definesDict.Add( value, new PropertyDataCollector( nodeId, "#define " + value ) );
+				m_definesList.Add( m_definesDict[ value ] );
+				m_defines += "\t\t#define " + value + "\n";
+				m_dirtyDefines = true;
+			}
+			else
+			{
+				if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToDefines:Attempting to add duplicate " + value, MessageSeverity.Warning );
 			}
 		}
 
 		public int GetVirtualCoordinatesId( int nodeId, string coord, string lodBias )
 		{
-			if ( !m_virtualCoordinatesDict.ContainsKey( coord ) )
+			if( !m_virtualCoordinatesDict.ContainsKey( coord ) )
 			{
 				m_virtualCoordinatesDict.Add( coord, nodeId );
 				AddLocalVariable( nodeId, "VirtualCoord " + Constants.VirtualCoordNameStr + nodeId + " = VTComputeVirtualCoord" + lodBias + "(" + coord + ");" );
@@ -711,7 +775,7 @@ namespace AmplifyShaderEditor
 
 		public bool AddToLocalVariables( MasterNodePortCategory category, int nodeId, PrecisionType precisionType, WirePortDataType type, string varName, string varValue )
 		{
-			if ( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
+			if( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
 				return false;
 
 			string value = UIUtils.PrecisionWirePortToCgType( precisionType, type ) + " " + varName + " = " + varValue + ";";
@@ -720,7 +784,7 @@ namespace AmplifyShaderEditor
 
 		public bool AddToLocalVariables( int nodeId, PrecisionType precisionType, WirePortDataType type, string varName, string varValue )
 		{
-			if ( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
+			if( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
 				return false;
 
 			string value = UIUtils.PrecisionWirePortToCgType( precisionType, type ) + " " + varName + " = " + varValue + ";";
@@ -729,10 +793,10 @@ namespace AmplifyShaderEditor
 
 		public bool AddToLocalVariables( MasterNodePortCategory category, int nodeId, string value, bool ignoreDuplicates = false )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return false;
 
-			switch ( category )
+			switch( category )
 			{
 				case MasterNodePortCategory.Vertex:
 				case MasterNodePortCategory.Tessellation:
@@ -751,7 +815,7 @@ namespace AmplifyShaderEditor
 
 		public bool AddLocalVariable( int nodeId, PrecisionType precisionType, WirePortDataType type, string varName, string varValue )
 		{
-			if ( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
+			if( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
 				return false;
 
 			string value = UIUtils.PrecisionWirePortToCgType( precisionType, type ) + " " + varName + " = " + varValue + ";";
@@ -765,10 +829,10 @@ namespace AmplifyShaderEditor
 
 		public bool AddLocalVariable( int nodeId, string value, bool ignoreDuplicates = false )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return false;
 
-			switch ( m_portCategory )
+			switch( m_portCategory )
 			{
 				case MasterNodePortCategory.Vertex:
 				case MasterNodePortCategory.Tessellation:
@@ -787,7 +851,7 @@ namespace AmplifyShaderEditor
 
 		public string AddVirtualLocalVariable( int nodeId, string variable, string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return string.Empty;
 
 			string result = string.Empty;
@@ -802,7 +866,7 @@ namespace AmplifyShaderEditor
 			//case MasterNodePortCategory.Fragment:
 			//case MasterNodePortCategory.Debug:
 			//{
-			if ( !m_virtualVariablesDict.ContainsKey( value ) )
+			if( !m_virtualVariablesDict.ContainsKey( value ) )
 			{
 				m_virtualVariablesDict.Add( value, variable );
 				result = variable;
@@ -820,7 +884,7 @@ namespace AmplifyShaderEditor
 
 		public void AddCodeComments( bool forceForwardSlash, params string[] comments )
 		{
-			if ( m_portCategory == MasterNodePortCategory.Tessellation || m_portCategory == MasterNodePortCategory.Vertex )
+			if( m_portCategory == MasterNodePortCategory.Tessellation || m_portCategory == MasterNodePortCategory.Vertex )
 			{
 				AddToVertexLocalVariables( 0, IOUtils.CreateCodeComments( forceForwardSlash, comments ) );
 			}
@@ -832,14 +896,14 @@ namespace AmplifyShaderEditor
 
 		public bool AddToLocalVariables( int nodeId, string value, bool ignoreDuplicates = false )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return false;
 
-			if ( m_usingCustomOutput )
+			if( m_usingCustomOutput )
 			{
-				if ( !m_customOutputDict.ContainsKey( value ) || ignoreDuplicates )
+				if( !m_customOutputDict.ContainsKey( value ) || ignoreDuplicates )
 				{
-					if ( !m_customOutputDict.ContainsKey( value ) )
+					if( !m_customOutputDict.ContainsKey( value ) )
 						m_customOutputDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 
 					m_customOutputList.Add( m_customOutputDict[ value ] );
@@ -848,14 +912,14 @@ namespace AmplifyShaderEditor
 				}
 				else
 				{
-					if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
+					if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
 				}
 			}
 			else
 			{
-				if ( !m_localVariablesDict.ContainsKey( value ) || ignoreDuplicates )
+				if( !m_localVariablesDict.ContainsKey( value ) || ignoreDuplicates )
 				{
-					if ( !m_localVariablesDict.ContainsKey( value ) )
+					if( !m_localVariablesDict.ContainsKey( value ) )
 						m_localVariablesDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 
 					m_localVariablesList.Add( m_localVariablesDict[ value ] );
@@ -864,7 +928,7 @@ namespace AmplifyShaderEditor
 				}
 				else
 				{
-					if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
+					if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
 				}
 			}
 			return false;
@@ -892,7 +956,7 @@ namespace AmplifyShaderEditor
 				}
 			}
 			else
-			{ 
+			{
 				if( !m_specialLocalVariablesDict.ContainsKey( value ) || ignoreDuplicates )
 				{
 					if( !m_specialLocalVariablesDict.ContainsKey( value ) )
@@ -918,7 +982,7 @@ namespace AmplifyShaderEditor
 
 		public bool AddToVertexLocalVariables( int nodeId, string varName, string varValue )
 		{
-			if ( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
+			if( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
 				return false;
 
 			string value = varName + " = " + varValue + ";";
@@ -927,7 +991,7 @@ namespace AmplifyShaderEditor
 
 		public bool AddToVertexLocalVariables( int nodeId, PrecisionType precisionType, WirePortDataType type, string varName, string varValue )
 		{
-			if ( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
+			if( string.IsNullOrEmpty( varName ) || string.IsNullOrEmpty( varValue ) )
 				return false;
 
 			string value = UIUtils.PrecisionWirePortToCgType( precisionType, type ) + " " + varName + " = " + varValue + ";";
@@ -936,12 +1000,12 @@ namespace AmplifyShaderEditor
 
 		public bool AddToVertexLocalVariables( int nodeId, string value, bool ignoreDuplicates = false )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return false;
 
-			if ( !m_vertexLocalVariablesDict.ContainsKey( value ) || ignoreDuplicates )
+			if( !m_vertexLocalVariablesDict.ContainsKey( value ) || ignoreDuplicates )
 			{
-				if ( !m_vertexLocalVariablesDict.ContainsKey( value ) )
+				if( !m_vertexLocalVariablesDict.ContainsKey( value ) )
 					m_vertexLocalVariablesDict.Add( value, new PropertyDataCollector( nodeId, value ) );
 
 				m_vertexLocalVariablesList.Add( m_vertexLocalVariablesDict[ value ] );
@@ -951,7 +1015,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				if ( m_showDebugMessages ) UIUtils.ShowMessage( "AddToVertexLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
+				if( m_showDebugMessages ) UIUtils.ShowMessage( "AddToVertexLocalVariables:Attempting to add duplicate " + value, MessageSeverity.Warning );
 			}
 
 			return false;
@@ -972,10 +1036,10 @@ namespace AmplifyShaderEditor
 
 		public string AddFunctions( string header, string body, params object[] inParams )
 		{
-			if ( !m_localFunctions.ContainsKey( header ) )
+			if( !m_localFunctions.ContainsKey( header ) )
 			{
 				m_localFunctions.Add( header, body );
-				m_functionsList.Add( new PropertyDataCollector( -1, body ) );
+				m_functionsList.Add( new PropertyDataCollector( -1, body.Replace( "\t\t", string.Empty ) ) );
 				m_functions += "\n" + body + "\n";
 				m_dirtyFunctions = true;
 			}
@@ -985,13 +1049,13 @@ namespace AmplifyShaderEditor
 
 		public string AddFunctions( string header, string[] bodyLines, bool addNewLine, params object[] inParams )
 		{
-			if ( !m_localFunctions.ContainsKey( header ) )
+			if( !m_localFunctions.ContainsKey( header ) )
 			{
 				string body = string.Empty;
-				for ( int i = 0; i < bodyLines.Length; i++ )
+				for( int i = 0; i < bodyLines.Length; i++ )
 				{
 					body += ( m_masterNodeCategory == AvailableShaderTypes.Template ) ? bodyLines[ i ] : "\t\t" + bodyLines[ i ];
-					if ( addNewLine )
+					if( addNewLine )
 						body += '\n';
 				}
 
@@ -1011,7 +1075,7 @@ namespace AmplifyShaderEditor
 
 		public void AddFunction( string functionId, string body )
 		{
-			if ( !m_localFunctions.ContainsKey( functionId ) )
+			if( !m_localFunctions.ContainsKey( functionId ) )
 			{
 				m_functionsList.Add( new PropertyDataCollector( -1, body ) );
 
@@ -1023,13 +1087,13 @@ namespace AmplifyShaderEditor
 
 		public void AddFunction( string functionId, string[] bodyLines, bool addNewline )
 		{
-			if ( !m_localFunctions.ContainsKey( functionId ) )
+			if( !m_localFunctions.ContainsKey( functionId ) )
 			{
 				string body = string.Empty;
-				for ( int i = 0; i < bodyLines.Length; i++ )
+				for( int i = 0; i < bodyLines.Length; i++ )
 				{
 					body += ( m_masterNodeCategory == AvailableShaderTypes.Template ) ? bodyLines[ i ] : "\t\t" + bodyLines[ i ];
-					if ( addNewline )
+					if( addNewline )
 						body += '\n';
 
 				}
@@ -1045,7 +1109,7 @@ namespace AmplifyShaderEditor
 		{
 			m_instructionsList.Add( new PropertyDataCollector( -1, value ) );
 			m_instructions += addTabs ? "\t\t\t" + value : value;
-			if ( addLineEnding )
+			if( addLineEnding )
 			{
 				m_instructions += '\n';
 			}
@@ -1055,11 +1119,11 @@ namespace AmplifyShaderEditor
 
 		public void AddInstructions( bool addLineEnding, bool addTabs, params string[] values )
 		{
-			for ( int i = 0; i < values.Length; i++ )
+			for( int i = 0; i < values.Length; i++ )
 			{
 				m_instructionsList.Add( new PropertyDataCollector( -1, values[ i ] ) );
 				m_instructions += addTabs ? "\t\t\t" + values[ i ] : values[ i ];
-				if ( addLineEnding )
+				if( addLineEnding )
 				{
 					m_instructions += '\n';
 				}
@@ -1071,7 +1135,7 @@ namespace AmplifyShaderEditor
 
 		public void AddToStartInstructions( string value )
 		{
-			if ( string.IsNullOrEmpty( value ) )
+			if( string.IsNullOrEmpty( value ) )
 				return;
 
 			m_instructions = value + m_instructions;
@@ -1095,7 +1159,7 @@ namespace AmplifyShaderEditor
 
 		public void AddPropertyNode( PropertyNode node )
 		{
-			if ( !m_propertyNodes.ContainsKey( node.UniqueId ) )
+			if( !m_propertyNodes.ContainsKey( node.UniqueId ) )
 			{
 				m_propertyNodes.Add( node.UniqueId, node );
 			}
@@ -1104,7 +1168,7 @@ namespace AmplifyShaderEditor
 		public void UpdateMaterialOnPropertyNodes( Material material )
 		{
 			m_masterNode.UpdateMaterial( material );
-			foreach ( KeyValuePair<int, PropertyNode> kvp in m_propertyNodes )
+			foreach( KeyValuePair<int, PropertyNode> kvp in m_propertyNodes )
 			{
 				kvp.Value.UpdateMaterial( material );
 			}
@@ -1112,7 +1176,7 @@ namespace AmplifyShaderEditor
 
 		public void AddToVertexInput( string value )
 		{
-			if ( !m_vertexInputDict.ContainsKey( value ) )
+			if( !m_vertexInputDict.ContainsKey( value ) )
 			{
 				m_vertexInputDict.Add( value, value );
 				m_vertexInputList.Add( value );
@@ -1121,7 +1185,7 @@ namespace AmplifyShaderEditor
 
 		public void AddToInterpolators( string value )
 		{
-			if ( !m_interpolatorsDict.ContainsKey( value ) )
+			if( !m_interpolatorsDict.ContainsKey( value ) )
 			{
 				m_interpolatorsDict.Add( value, value );
 				m_interpolatorsList.Add( value );
@@ -1130,7 +1194,7 @@ namespace AmplifyShaderEditor
 
 		public void AddToVertexInterpolatorsDecl( string value )
 		{
-			if ( !m_vertexInterpDeclDict.ContainsKey( value ) )
+			if( !m_vertexInterpDeclDict.ContainsKey( value ) )
 			{
 				m_vertexInterpDeclDict.Add( value, value );
 				m_vertexInterpDeclList.Add( value );
@@ -1139,7 +1203,7 @@ namespace AmplifyShaderEditor
 
 		public void UpdateShaderOnPropertyNodes( ref Shader shader )
 		{
-			if ( m_propertyNodes.Count == 0 )
+			if( m_propertyNodes.Count == 0 )
 				return;
 
 			try
@@ -1147,14 +1211,14 @@ namespace AmplifyShaderEditor
 				bool hasContents = false;
 				//string metaNewcontents = IOUtils.LINE_TERMINATOR.ToString();
 				TextureDefaultsDataColector defaultCol = new TextureDefaultsDataColector();
-				foreach ( KeyValuePair<int, PropertyNode> kvp in m_propertyNodes )
+				foreach( KeyValuePair<int, PropertyNode> kvp in m_propertyNodes )
 				{
 					hasContents = kvp.Value.UpdateShaderDefaults( ref shader, ref defaultCol ) || hasContents;
 				}
 
-				if ( hasContents )
+				if( hasContents )
 				{
-					ShaderImporter importer = ( ShaderImporter ) ShaderImporter.GetAtPath( AssetDatabase.GetAssetPath( shader ) );
+					ShaderImporter importer = (ShaderImporter)ShaderImporter.GetAtPath( AssetDatabase.GetAssetPath( shader ) );
 					importer.SetDefaultTextures( defaultCol.NamesArr, defaultCol.ValuesArr );
 					importer.SaveAndReimport();
 
@@ -1178,7 +1242,7 @@ namespace AmplifyShaderEditor
 					//IOUtils.SaveTextfileToDisk( metaContents, metaFilepath, false );
 				}
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				Debug.LogException( e );
 			}
@@ -1206,11 +1270,14 @@ namespace AmplifyShaderEditor
 			m_includesList.Clear();
 			m_includesList = null;
 
-			m_tagsList.Clear();
-			m_tagsList = null;
+			//m_tagsList.Clear();
+			//m_tagsList = null;
 
 			m_pragmasList.Clear();
 			m_pragmasList = null;
+
+			m_definesList.Clear();
+			m_definesList = null;
 
 			m_instructionsList.Clear();
 			m_instructionsList = null;
@@ -1260,11 +1327,14 @@ namespace AmplifyShaderEditor
 			m_includesDict.Clear();
 			m_includesDict = null;
 
-			m_tagsDict.Clear();
-			m_tagsDict = null;
+			//m_tagsDict.Clear();
+			//m_tagsDict = null;
 
 			m_pragmasDict.Clear();
 			m_pragmasDict = null;
+
+			m_definesDict.Clear();
+			m_definesDict = null;
 
 			m_virtualCoordinatesDict.Clear();
 			m_virtualCoordinatesDict = null;
@@ -1330,9 +1400,23 @@ namespace AmplifyShaderEditor
 		public string Instructions { get { return m_instructions; } }
 		public string Includes { get { return m_includes; } }
 		public string Pragmas { get { return m_pragmas; } }
+		public string Defines { get { return m_defines; } }
 		public string LocalVariables { get { return m_localVariables; } }
 		public string SpecialLocalVariables { get { return m_specialLocalVariables; } }
 		public string VertexLocalVariables { get { return m_vertexLocalVariables; } }
+		public string VertexLocalVariablesFromList
+		{
+			get
+			{
+				string result = string.Empty;
+				int count = m_vertexLocalVariablesList.Count;
+				for( int i = 0; i < count; i++ )
+				{
+					result += m_vertexLocalVariablesList[ i ].PropertyName + "\n";
+				}
+				return result;
+			}
+		}
 		public string VertexData { get { return m_vertexData; } }
 		public string CustomOutput { get { return m_customOutput; } }
 		public string Functions { get { return m_functions; } }
@@ -1345,6 +1429,7 @@ namespace AmplifyShaderEditor
 		public bool DirtyCustomInput { get { return m_dirtyCustomInputs; } }
 		public bool DirtyIncludes { get { return m_dirtyIncludes; } }
 		public bool DirtyPragmas { get { return m_dirtyPragmas; } }
+		public bool DirtyDefines { get { return m_dirtyDefines; } }
 		public bool DirtyLocalVariables { get { return m_dirtyLocalVariables; } }
 		public bool DirtyVertexVariables { get { return m_dirtyVertexLocalVariables; } }
 		public bool DirtySpecialLocalVariables { get { return m_dirtySpecialLocalVariables; } }
@@ -1401,9 +1486,9 @@ namespace AmplifyShaderEditor
 			get { return m_forceNormal; }
 			set
 			{
-				if ( value )
+				if( value )
 				{
-					if ( !m_forceNormalIsDirty )
+					if( !m_forceNormalIsDirty )
 					{
 						m_forceNormal = value;
 						m_forceNormalIsDirty = value;
@@ -1414,6 +1499,12 @@ namespace AmplifyShaderEditor
 					m_forceNormal = value;
 				}
 			}
+		}
+
+		public bool UsingVertexColor
+		{
+			get { return m_usingVertexColor; }
+			set { m_usingVertexColor = value; }
 		}
 
 		public bool UsingInternalData
@@ -1458,6 +1549,30 @@ namespace AmplifyShaderEditor
 			set { m_usingViewDirection = value; }
 		}
 
+		public bool IsOutlineDataCollector
+		{
+			get { return m_isOutlineDataCollector; }
+			set { m_isOutlineDataCollector = value; }
+		}
+
+		public bool UsingCustomOutlineColor
+		{
+			get { return m_usingCustomOutlineColor; }
+			set { m_usingCustomOutlineColor = value; }
+		}
+
+		public bool UsingCustomOutlineWidth
+		{
+			get { return m_usingCustomOutlineWidth; }
+			set { m_usingCustomOutlineWidth = value; }
+		}
+
+		public int CustomOutlineSelectedAlpha
+		{
+			get { return m_customOutlineSelectedAlpha; }
+			set { m_customOutlineSelectedAlpha = value; }
+		}
+
 		public bool UsingCustomOutput
 		{
 			get { return m_usingCustomOutput; }
@@ -1488,8 +1603,9 @@ namespace AmplifyShaderEditor
 		public List<PropertyDataCollector> InstancedPropertiesList { get { return m_instancedPropertiesList; } }
 		public List<PropertyDataCollector> UniformsList { get { return m_uniformsList; } }
 		public List<PropertyDataCollector> IncludesList { get { return m_includesList; } }
-		public List<PropertyDataCollector> TagsList { get { return m_tagsList; } }
+		//public List<PropertyDataCollector> TagsList { get { return m_tagsList; } }
 		public List<PropertyDataCollector> PragmasList { get { return m_pragmasList; } }
+		public List<PropertyDataCollector> DefinesList { get { return m_definesList; } }
 		public List<PropertyDataCollector> InstructionsList { get { return m_instructionsList; } }
 		public List<PropertyDataCollector> LocalVariablesList { get { return m_localVariablesList; } }
 		public List<PropertyDataCollector> VertexLocalVariablesList { get { return m_vertexLocalVariablesList; } }
@@ -1500,7 +1616,7 @@ namespace AmplifyShaderEditor
 		public List<PropertyDataCollector> GrabPassList { get { return m_grabPassList; } }
 		public List<InputCoordsCollector> CustomShadowCoordsList { get { return m_customShadowCoordsList; } }
 		public List<int> PackSlotsList { get { return m_packSlotsList; } }
-
+		public Dictionary<string, string> LocalFunctions { get { return m_localFunctions; } }
 		//Templates
 		public List<string> VertexInputList { get { return m_vertexInputList; } }
 		public List<string> InterpolatorList { get { return m_interpolatorsList; } }

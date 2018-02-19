@@ -31,7 +31,7 @@ namespace AmplifyShaderEditor
 
 		public static void CreateMaterial()
 		{
-			if ( (object) LineMaterial != null && ( object ) m_shader != null )
+			if( (object)LineMaterial != null && (object)m_shader != null )
 				return;
 
 			m_shader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( "50fc796413bac8b40aff70fb5a886273" ) );
@@ -42,16 +42,16 @@ namespace AmplifyShaderEditor
 
 		public static void DrawCurve( Vector3[] allPoints, Vector2[] allNormals, Color[] allColors, int pointCount )
 		{
-			if ( Event.current.type != EventType.repaint )
+			if( Event.current.type != EventType.Repaint )
 				return;
 
 			CreateMaterial();
-			LineMaterial.SetPass( (MultiLine ? 1 : 0) );
+			LineMaterial.SetPass( ( MultiLine ? 1 : 0 ) );
 
 			GL.Begin( GL.TRIANGLE_STRIP );
-			for ( int i = 0; i < pointCount; i++ )
+			for( int i = 0; i < pointCount; i++ )
 			{
-				GL.Color( allColors[i] );
+				GL.Color( allColors[ i ] );
 				GL.TexCoord( Zero );
 				GL.Vertex3( allPoints[ i ].x - allNormals[ i ].x, allPoints[ i ].y - allNormals[ i ].y, 0 );
 				GL.TexCoord( Up );
@@ -80,7 +80,7 @@ namespace AmplifyShaderEditor
 			HigherBoundArray = HigherBoundArray > pointsCount ? HigherBoundArray : pointsCount;
 
 			allv3Points = Handles.MakeBezierPoints( start, end, startTangent, endTangent, pointsCount );
-			if ( allColors.Length < HigherBoundArray )
+			if( allColors.Length < HigherBoundArray )
 			{
 				allColors = new Color[ HigherBoundArray ];
 				allPerpendiculars = new Vector2[ HigherBoundArray ];
@@ -96,8 +96,8 @@ namespace AmplifyShaderEditor
 			float maxX = allv3Points[ 0 ].x;
 			float maxY = allv3Points[ 0 ].y;
 
-			float amount = 1 / ( float ) linesCount;
-			for ( int i = 1; i < pointsCount; i++ )
+			float amount = 1 / (float)linesCount;
+			for( int i = 1; i < pointsCount; i++ )
 			{
 				allColors[ i ] = Color.LerpUnclamped( startColor, endColor, amount * i );
 
@@ -107,14 +107,14 @@ namespace AmplifyShaderEditor
 				maxY = ( allv3Points[ i ].y > maxY ) ? allv3Points[ i ].y : maxY;
 			}
 
-			for ( int i = 0; i < pointsCount; i++ )
+			for( int i = 0; i < pointsCount; i++ )
 			{
-				if ( i == 0 )
+				if( i == 0 )
 				{
 					startPt.Set( startTangent.y, start.x );
 					endPt.Set( start.y, startTangent.x );
 				}
-				else if ( i == pointsCount - 1 )
+				else if( i == pointsCount - 1 )
 				{
 					startPt.Set( end.y, endTangent.x );
 					endPt.Set( endTangent.y, end.x );

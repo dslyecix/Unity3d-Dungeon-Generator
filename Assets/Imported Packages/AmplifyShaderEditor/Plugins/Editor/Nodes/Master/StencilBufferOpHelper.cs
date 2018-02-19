@@ -8,7 +8,61 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	public class StencilBufferOpHelper
 	{
-		private const string FoldoutLabelStr = " Stencil Buffer";
+        public static readonly string[] StencilComparisonValues = 
+        {
+            "<Default>",
+            "Greater" ,
+            "GEqual" ,
+            "Less" ,
+            "LEqual" ,
+            "Equal" ,
+            "NotEqual" ,
+            "Always" ,
+            "Never"
+        };
+
+        public static readonly string[] StencilComparisonLabels =
+        {
+            "<Default>",
+            "Greater" ,
+            "Greater or Equal" ,
+            "Less" ,
+            "Less or Equal" ,
+            "Equal" ,
+            "Not Equal" ,
+            "Always" ,
+            "Never"
+        };
+
+
+        public static readonly string[] StencilOpsValues = 
+        {
+            "<Default>",
+            "Keep",
+            "Zero",
+            "Replace",
+            "IncrSat",
+            "DecrSat",
+            "Invert",
+            "IncrWrap",
+            "DecrWrap"
+        };
+
+        public static readonly string[] StencilOpsLabels =
+        {
+            "<Default>",
+            "Keep",
+            "Zero",
+            "Replace",
+            "IncrSat",
+            "DecrSat",
+            "Invert",
+            "IncrWrap",
+            "DecrWrap"
+        };
+
+
+        private const string FoldoutLabelStr = " Stencil Buffer";
 		private GUIContent ReferenceValueContent = new GUIContent( "Reference", "The value to be compared against (if Comparison is anything else than always) and/or the value to be written to the buffer (if either Pass, Fail or ZFail is set to replace)" );
 		private GUIContent ReadMaskContent = new GUIContent( "Read Mask", "An 8 bit mask as an 0-255 integer, used when comparing the reference value with the contents of the buffer (referenceValue & readMask) comparisonFunction (stencilBufferValue & readMask)" );
 		private GUIContent WriteMaskContent = new GUIContent( "Write Mask", "An 8 bit mask as an 0-255 integer, used when writing to the buffer" );
@@ -27,47 +81,7 @@ namespace AmplifyShaderEditor
 		private const string FailBackStr = "Fail Back";
 		private const string ZFailBackStr = "ZFail Back";
 
-		private readonly string[] ComparisonValues = {  "<Default>",
-														"Greater" ,
-														"GEqual" ,
-														"Less" ,
-														"LEqual" ,
-														"Equal" ,
-														"NotEqual" ,
-														"Always" ,
-														"Never" };
-
-		private readonly string[] ComparisonLabels = {  "<Default>",
-														"Greater" ,
-														"Greater or Equal" ,
-														"Less" ,
-														"Less or Equal" ,
-														"Equal" ,
-														"Not Equal" ,
-														"Always" ,
-														"Never" };
-
-
-		private readonly string[] StencilOpsValues = {  "<Default>",
-														"Keep",
-														"Zero",
-														"Replace",
-														"IncrSat",
-														"DecrSat",
-														"Invert",
-														"IncrWrap",
-														"DecrWrap"};
-
-		private readonly string[] StencilOpsLabels = {  "<Default>",
-														"Keep",
-														"Zero",
-														"Replace",
-														"IncrSat",
-														"DecrSat",
-														"Invert",
-														"IncrWrap",
-														"DecrWrap"};
-
+		
 		[SerializeField]
 		private bool m_active;
 
@@ -128,10 +142,14 @@ namespace AmplifyShaderEditor
 				result += string.Format( "\t\t\tWriteMask {0}\n", m_writeMask );
 			}
 
-			if( ( owner as StandardSurfaceOutputNode ).CurrentCullMode == CullMode.Off )
+			if( ( owner as StandardSurfaceOutputNode ).CurrentCullMode == CullMode.Off &&
+               ( m_comparisonFunctionBackIdx != ComparisonDefaultValue ||
+                m_passStencilOpBackIdx != PassStencilOpDefaultValue ||
+                m_failStencilOpBackIdx != FailStencilOpDefaultValue ||
+                m_zFailStencilOpBackIdx != ZFailStencilOpDefaultValue ) )
 			{
 				if( m_comparisonFunctionIdx != ComparisonDefaultValue )
-					result += string.Format( "\t\t\tCompFront {0}\n", ComparisonValues[ m_comparisonFunctionIdx ] );
+					result += string.Format( "\t\t\tCompFront {0}\n", StencilComparisonValues[ m_comparisonFunctionIdx ] );
 				if( m_passStencilOpIdx != PassStencilOpDefaultValue )
 					result += string.Format( "\t\t\tPassFront {0}\n", StencilOpsValues[ m_passStencilOpIdx ] );
 				if( m_failStencilOpIdx != FailStencilOpDefaultValue )
@@ -140,7 +158,7 @@ namespace AmplifyShaderEditor
 					result += string.Format( "\t\t\tZFailFront {0}\n", StencilOpsValues[ m_zFailStencilOpIdx ] );
 
 				if( m_comparisonFunctionBackIdx != ComparisonDefaultValue )
-					result += string.Format( "\t\t\tCompBack {0}\n", ComparisonValues[ m_comparisonFunctionBackIdx ] );
+					result += string.Format( "\t\t\tCompBack {0}\n", StencilComparisonValues[ m_comparisonFunctionBackIdx ] );
 				if( m_passStencilOpBackIdx != PassStencilOpDefaultValue )
 					result += string.Format( "\t\t\tPassBack {0}\n", StencilOpsValues[ m_passStencilOpBackIdx ] );
 				if( m_failStencilOpBackIdx != FailStencilOpDefaultValue )
@@ -151,7 +169,7 @@ namespace AmplifyShaderEditor
 			else
 			{
 				if ( m_comparisonFunctionIdx != ComparisonDefaultValue )
-					result += string.Format( "\t\t\tComp {0}\n", ComparisonValues[ m_comparisonFunctionIdx ] );
+					result += string.Format( "\t\t\tComp {0}\n", StencilComparisonValues[ m_comparisonFunctionIdx ] );
 				if ( m_passStencilOpIdx != PassStencilOpDefaultValue )
 					result += string.Format( "\t\t\tPass {0}\n", StencilOpsValues[ m_passStencilOpIdx ] );
 				if ( m_failStencilOpIdx != FailStencilOpDefaultValue )
@@ -165,7 +183,7 @@ namespace AmplifyShaderEditor
 			return result;
 		}
 
-		public void Draw( UndoParentNode owner, GUIStyle toolbarstyle )
+		public void Draw( UndoParentNode owner )
 		{
 			bool foldoutValue = EditorVariablesManager.ExpandedStencilOptions.Value;
 			NodeUtils.DrawPropertyGroup( owner, ref foldoutValue, ref m_active, FoldoutLabelStr, () =>
@@ -175,18 +193,18 @@ namespace AmplifyShaderEditor
 				 m_writeMask = owner.EditorGUILayoutIntSlider( WriteMaskContent, m_writeMask, 0, 255 );
 				 if( (owner as StandardSurfaceOutputNode).CurrentCullMode == CullMode.Off )
 				 {
-					 m_comparisonFunctionIdx = owner.EditorGUILayoutPopup( ComparisonFrontStr, m_comparisonFunctionIdx, ComparisonLabels );
+					 m_comparisonFunctionIdx = owner.EditorGUILayoutPopup( ComparisonFrontStr, m_comparisonFunctionIdx, StencilComparisonLabels );
 					 m_passStencilOpIdx = owner.EditorGUILayoutPopup( PassFrontStr, m_passStencilOpIdx, StencilOpsLabels );
 					 m_failStencilOpIdx = owner.EditorGUILayoutPopup( FailFrontStr, m_failStencilOpIdx, StencilOpsLabels );
 					 m_zFailStencilOpIdx = owner.EditorGUILayoutPopup( ZFailFrontStr, m_zFailStencilOpIdx, StencilOpsLabels );
 					 EditorGUILayout.Separator();
-					 m_comparisonFunctionBackIdx = owner.EditorGUILayoutPopup( ComparisonBackStr, m_comparisonFunctionBackIdx, ComparisonLabels );
+					 m_comparisonFunctionBackIdx = owner.EditorGUILayoutPopup( ComparisonBackStr, m_comparisonFunctionBackIdx, StencilComparisonLabels );
 					 m_passStencilOpBackIdx = owner.EditorGUILayoutPopup( PassBackStr, m_passStencilOpBackIdx, StencilOpsLabels );
 					 m_failStencilOpBackIdx = owner.EditorGUILayoutPopup( FailBackStr, m_failStencilOpBackIdx, StencilOpsLabels );
 					 m_zFailStencilOpBackIdx = owner.EditorGUILayoutPopup( ZFailBackStr, m_zFailStencilOpBackIdx, StencilOpsLabels );
 				 } else
 				 {
-					 m_comparisonFunctionIdx = owner.EditorGUILayoutPopup( ComparisonStr, m_comparisonFunctionIdx, ComparisonLabels );
+					 m_comparisonFunctionIdx = owner.EditorGUILayoutPopup( ComparisonStr, m_comparisonFunctionIdx, StencilComparisonLabels );
 					 m_passStencilOpIdx = owner.EditorGUILayoutPopup( PassStr, m_passStencilOpIdx, StencilOpsLabels );
 					 m_failStencilOpIdx = owner.EditorGUILayoutPopup( FailStr, m_failStencilOpIdx, StencilOpsLabels );
 					 m_zFailStencilOpIdx = owner.EditorGUILayoutPopup( ZFailStr, m_zFailStencilOpIdx, StencilOpsLabels );

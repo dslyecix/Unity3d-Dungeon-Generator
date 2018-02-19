@@ -72,6 +72,7 @@ namespace AmplifyShaderEditor
 		public Color m_frameColor = Color.white;
 
 		private List<int> m_nodesIds = new List<int>();
+		private bool m_checkContents = false;
 
 		private bool m_isEditing;
 		private bool m_stopEditing;
@@ -206,6 +207,9 @@ namespace AmplifyShaderEditor
 
 		public void AddNodeToCommentary( ParentNode node )
 		{
+			if( node.UniqueId == UniqueId )
+				return;
+
 			if ( !m_nodesOnCommentaryDict.ContainsKey( node.UniqueId ) )
 			{
 				bool addToNode = false;
@@ -452,13 +456,13 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			if ( drawInfo.CurrentEventType == EventType.Repaint || drawInfo.CurrentEventType == EventType.mouseUp )
+			if ( drawInfo.CurrentEventType == EventType.Repaint || drawInfo.CurrentEventType == EventType.MouseUp )
 			{
 				// Left Button
 				EditorGUIUtility.AddCursorRect( m_resizeLeftIconCoords, MouseCursor.ResizeUpRight );
 				if ( m_isResizingLeft )
 				{
-					if ( drawInfo.CurrentEventType == EventType.mouseUp )
+					if ( drawInfo.CurrentEventType == EventType.MouseUp )
 					{
 						m_isResizingLeft = false;
 						ContainerGraph.ParentWindow.ForceAutoPanDir = false;
@@ -495,7 +499,7 @@ namespace AmplifyShaderEditor
 				EditorGUIUtility.AddCursorRect( m_resizeRightIconCoords, MouseCursor.ResizeUpLeft );
 				if ( m_isResizingRight )
 				{
-					if ( drawInfo.CurrentEventType == EventType.mouseUp )
+					if ( drawInfo.CurrentEventType == EventType.MouseUp )
 					{
 						m_isResizingRight = false;
 						ContainerGraph.ParentWindow.ForceAutoPanDir = false;
@@ -539,7 +543,7 @@ namespace AmplifyShaderEditor
 				m_titleText = m_titleText.Replace( IOUtils.FIELD_SEPARATOR, ' ' );
 			}
 
-			if ( m_focusOnTitle && drawInfo.CurrentEventType == EventType.keyUp )
+			if ( m_focusOnTitle && drawInfo.CurrentEventType == EventType.KeyUp )
 			{
 				m_focusOnTitle = false;
 				m_startEditing = true;
@@ -635,6 +639,23 @@ namespace AmplifyShaderEditor
 		{
 			base.ResetNodeData();
 			m_graphDepthAnalized = false;
+		}
+
+		public override void ReadAdditionalClipboardData( ref string[] nodeParams )
+		{
+			base.ReadAdditionalClipboardData( ref nodeParams );
+			m_nodesIds.Clear();
+			m_checkContents = true;
+		}
+
+		public override void RefreshExternalReferences()
+		{
+			base.RefreshExternalReferences();
+			if( m_checkContents )
+			{
+				m_checkContents = false;
+				OnSelfStoppedMovingEvent();
+			}
 		}
 
 		public override void CalculateCustomGraphDepth()

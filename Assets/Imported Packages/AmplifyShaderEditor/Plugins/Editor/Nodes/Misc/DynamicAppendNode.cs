@@ -330,7 +330,11 @@ namespace AmplifyShaderEditor
 				case WirePortDataType.FLOAT4: m_selectedOutputTypeInt = 2; break;
 				case WirePortDataType.COLOR: m_selectedOutputTypeInt = 3; break;
 			}
-		}
+            for( int i = 0; i < 4; i++ )
+            {
+                m_inputPorts[i].FloatInternalData = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
+            }
+        }
 
 		public override void RefreshExternalReferences()
 		{

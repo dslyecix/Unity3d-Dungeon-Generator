@@ -70,8 +70,8 @@ namespace AmplifyShaderEditor
 		public readonly static Color PortTextColor = new Color( 1f, 1f, 1f, 0.5f );
 		public readonly static Color PortLockedTextColor = new Color( 1f, 1f, 1f, 0.35f );
 		public readonly static Color BoxSelectionColor = new Color( 1f, 1f, 1f, 0.5f );
-
-		public readonly static Color SpecialSelectionColor = new Color( 0.2f, 0.8f, 0.4f, 1f );
+		public readonly static Color SpecialRegisterLocalVarSelectionColor = new Color( 0.27f, 0.52f, 1.0f, 1f );
+		public readonly static Color SpecialGetLocalVarSelectionColor = new Color( 0.2f, 0.8f, 0.4f, 1f );
 		public readonly static Color NodeSelectedColor = new Color( 0.85f, 0.56f, 0f, 1f );
 		public readonly static Color NodeDefaultColor = new Color( 1f, 1f, 1f, 1f );
 		public readonly static Color NodeConnectedColor = new Color( 1.0f, 1f, 0.0f, 1f );
@@ -214,10 +214,11 @@ namespace AmplifyShaderEditor
 
 		public readonly static string[] OverallInvalidChars = { "\r", "\n", "\\", " ", ".", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
 		public readonly static string[] ShaderInvalidChars = { "\r", "\n", "\\", "\'", "\"", };
+		public readonly static string[] EnumInvalidChars = { "\r", "\n", "\\", ".", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
 
 		public readonly static string[] WikiInvalidChars = { "#", "<", ">", "[", "]", "|", "{", "}", "%", "+", "?", "\\", "/", ",", ";", "." };
 
-		public readonly static Dictionary<string, string> UrlReplacementStringValues = new Dictionary<string, string>() { { " ", "_" } };
+		public readonly static Dictionary<string, string> UrlReplacementStringValues = new Dictionary<string, string>() { { " ", "_" }, { "[", "" }, { "]", "" } };
 
 		public readonly static Dictionary<string, string> ReplacementStringValues = new Dictionary<string, string>() {  { " = ", "Equals" },
 																														{ " == ", "Equals" },

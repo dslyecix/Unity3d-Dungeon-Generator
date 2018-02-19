@@ -138,14 +138,18 @@ namespace AmplifyShaderEditor
 			}
 			EditorGUI.EndDisabledGroup();
 		}
+		[SerializeField]
+		private string m_currentTitle = string.Empty;
 
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
 			if( m_previewNode )
-				m_additionalContent.text = "Preview";
+				m_currentTitle = "Preview";
 			else
-				m_additionalContent.text = "";
+				m_currentTitle = string.Empty;
+
+			SetAdditonalTitleTextOnCallback( m_currentTitle, ( instance, newSubTitle ) => instance.AdditonalTitleContent.text = newSubTitle );
 
 			if( ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD3 )
 			{
@@ -283,11 +287,11 @@ namespace AmplifyShaderEditor
 				m_sizeIsDirty = true;
 				if( m_previewNode )
 				{
-					m_additionalContent.text = "Preview";
+					m_currentTitle = "Preview";
 				}
 				else
 				{
-					m_additionalContent.text = "";
+					m_currentTitle = "";
 				}
 			}
 		}

@@ -21,6 +21,10 @@ namespace AmplifyShaderEditor
 
 		private int m_cachedPropertyId = -1;
 
+		private bool m_isEditingFields;
+		private int m_previousValue;
+		private string m_fieldText = "0";
+
 		public IntNode() : base() { }
 		public IntNode( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 		protected override void CommonInit( int uniqueId )
@@ -38,10 +42,10 @@ namespace AmplifyShaderEditor
 		{
 			base.SetPreviewInputs();
 
-			if ( m_cachedPropertyId == -1 )
+			if( m_cachedPropertyId == -1 )
 				m_cachedPropertyId = Shader.PropertyToID( "_InputInt" );
 
-			if ( m_materialMode && m_currentParameterType != PropertyType.Constant )
+			if( m_materialMode && m_currentParameterType != PropertyType.Constant )
 				PreviewMaterial.SetInt( m_cachedPropertyId, m_materialValue );
 			else
 				PreviewMaterial.SetInt( m_cachedPropertyId, m_defaultValue );
@@ -60,12 +64,12 @@ namespace AmplifyShaderEditor
 
 		public override void DrawMaterialProperties()
 		{
-			if ( m_materialMode )
+			if( m_materialMode )
 				EditorGUI.BeginChangeCheck();
 
 			m_materialValue = EditorGUILayoutIntField( Constants.MaterialValueLabel, m_materialValue );
 
-			if ( m_materialMode && EditorGUI.EndChangeCheck() )
+			if( m_materialMode && EditorGUI.EndChangeCheck() )
 			{
 				m_requireMaterialUpdate = true;
 			}
@@ -85,48 +89,44 @@ namespace AmplifyShaderEditor
 		{
 			base.DrawGUIControls( drawInfo );
 
-			if ( drawInfo.CurrentEventType != EventType.MouseDown )
+			if( drawInfo.CurrentEventType != EventType.MouseDown )
 				return;
 
 			Rect hitBox = m_remainingBox;
 			hitBox.xMin -= LabelWidth * drawInfo.InvertedZoom;
 			bool insideBox = hitBox.Contains( drawInfo.MousePosition );
 
-			if ( insideBox )
+			if( insideBox )
 			{
 				GUI.FocusControl( null );
 				m_isEditingFields = true;
 			}
-			else if ( m_isEditingFields && !insideBox )
+			else if( m_isEditingFields && !insideBox )
 			{
 				GUI.FocusControl( null );
 				m_isEditingFields = false;
 			}
 		}
 
-		private bool m_isEditingFields;
-		private int m_previousValue;
-		private string m_fieldText = "0";
-
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
 
-			if ( !m_isVisible )
+			if( !m_isVisible )
 				return;
 
-			if ( m_isEditingFields )
+			if( m_isEditingFields )
 			{
 				float labelWidth = EditorGUIUtility.labelWidth;
 				EditorGUIUtility.labelWidth = LabelWidth * drawInfo.InvertedZoom;
-				if ( m_materialMode && m_currentParameterType != PropertyType.Constant )
+				if( m_materialMode && m_currentParameterType != PropertyType.Constant )
 				{
 					EditorGUI.BeginChangeCheck();
 					m_materialValue = EditorGUIIntField( m_propertyDrawPos, "  ", m_materialValue, UIUtils.MainSkin.textField );
-					if ( EditorGUI.EndChangeCheck() )
+					if( EditorGUI.EndChangeCheck() )
 					{
 						m_requireMaterialUpdate = true;
-						if ( m_currentParameterType != PropertyType.Constant )
+						if( m_currentParameterType != PropertyType.Constant )
 							BeginDelayedDirtyProperty();
 					}
 				}
@@ -136,12 +136,12 @@ namespace AmplifyShaderEditor
 
 					m_defaultValue = EditorGUIIntField( m_propertyDrawPos, "  ", m_defaultValue, UIUtils.MainSkin.textField );
 
-					if ( EditorGUI.EndChangeCheck() )
+					if( EditorGUI.EndChangeCheck() )
 						BeginDelayedDirtyProperty();
 				}
 				EditorGUIUtility.labelWidth = labelWidth;
 			}
-			else if ( drawInfo.CurrentEventType == EventType.Repaint )
+			else if( drawInfo.CurrentEventType == EventType.Repaint )
 			{
 				Rect fakeField = m_propertyDrawPos;
 				fakeField.xMin += LabelWidth * drawInfo.InvertedZoom;
@@ -153,7 +153,7 @@ namespace AmplifyShaderEditor
 				bool currMode = m_materialMode && m_currentParameterType != PropertyType.Constant;
 				int value = currMode ? m_materialValue : m_defaultValue;
 
-				if ( m_previousValue != value )
+				if( m_previousValue != value )
 				{
 					m_previousValue = value;
 					m_fieldText = value.ToString();
@@ -167,7 +167,7 @@ namespace AmplifyShaderEditor
 		{
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
 
-			if ( m_currentParameterType != PropertyType.Constant )
+			if( m_currentParameterType != PropertyType.Constant )
 				return PropertyData;
 
 			return m_defaultValue.ToString();
@@ -181,16 +181,16 @@ namespace AmplifyShaderEditor
 		public override void UpdateMaterial( Material mat )
 		{
 			base.UpdateMaterial( mat );
-			if ( UIUtils.IsProperty( m_currentParameterType ) && !InsideShaderFunction )
+			if( UIUtils.IsProperty( m_currentParameterType ) && !InsideShaderFunction )
 			{
 				mat.SetInt( m_propertyName, m_materialValue );
 			}
 		}
 
-		public override void SetMaterialMode( Material mat , bool fetchMaterialValues )
+		public override void SetMaterialMode( Material mat, bool fetchMaterialValues )
 		{
-			base.SetMaterialMode( mat , fetchMaterialValues );
-			if ( fetchMaterialValues && m_materialMode && UIUtils.IsProperty( m_currentParameterType ) && mat.HasProperty( m_propertyName ) )
+			base.SetMaterialMode( mat, fetchMaterialValues );
+			if( fetchMaterialValues && m_materialMode && UIUtils.IsProperty( m_currentParameterType ) && mat.HasProperty( m_propertyName ) )
 			{
 				m_materialValue = mat.GetInt( m_propertyName );
 			}
@@ -198,7 +198,7 @@ namespace AmplifyShaderEditor
 
 		public override void ForceUpdateFromMaterial( Material material )
 		{
-			if ( UIUtils.IsProperty( m_currentParameterType ) && material.HasProperty( m_propertyName ) )
+			if( UIUtils.IsProperty( m_currentParameterType ) && material.HasProperty( m_propertyName ) )
 				m_materialValue = material.GetInt( m_propertyName );
 		}
 
@@ -206,23 +206,14 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			m_defaultValue = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+				m_materialValue = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue );
-		}
-
-		public override void ReadAdditionalClipboardData( ref string[] nodeParams )
-		{
-			base.ReadAdditionalClipboardData( ref nodeParams );
-			m_materialValue = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
-		}
-
-		public override void WriteAdditionalClipboardData( ref string nodeInfo )
-		{
-			base.WriteAdditionalClipboardData( ref nodeInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_materialValue );
 		}
 

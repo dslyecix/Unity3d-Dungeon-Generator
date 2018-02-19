@@ -19,6 +19,9 @@ namespace AmplifyShaderEditor
 		private ReorderableList m_functionInputsReordableList = null;
 		private int m_functionInputsLastCount = 0;
 
+		private ReorderableList m_functionSwitchesReordableList = null;
+		private int m_functionSwitchesLastCount = 0;
+
 		private ReorderableList m_functionOutputsReordableList = null;
 		private int m_functionOutputsLastCount = 0;
 
@@ -34,6 +37,13 @@ namespace AmplifyShaderEditor
 		public NodeParametersWindow( AmplifyShaderEditorWindow parentWindow ) : base( parentWindow, 0, 0, 250, 0, string.Empty, MenuAnchor.TOP_LEFT, MenuAutoSize.MATCH_VERTICAL )
 		{
 			SetMinimizedArea( -225, 0, 260, 0 );
+		}
+
+		public void OnShaderFunctionLoad()
+		{
+			m_functionInputsReordableList = null;
+			m_functionSwitchesReordableList = null;
+			m_functionOutputsReordableList = null;
 		}
 
 		public bool Draw( Rect parentPosition, ParentNode selectedNode, Vector2 mousePosition, int mouseButtonId, bool hasKeyboardFocus )
@@ -77,6 +87,10 @@ namespace AmplifyShaderEditor
 					if ( m_functionInputsReordableList != null )
 						m_functionInputsReordableList.ReleaseKeyboardFocus();
 					m_functionInputsReordableList = null;
+
+					if( m_functionSwitchesReordableList != null )
+						m_functionSwitchesReordableList.ReleaseKeyboardFocus();
+					m_functionSwitchesReordableList = null;
 
 					if ( m_functionOutputsReordableList != null )
 						m_functionOutputsReordableList.ReleaseKeyboardFocus();
@@ -159,11 +173,18 @@ namespace AmplifyShaderEditor
 							EditorVariablesManager.ExpandedGeneralShaderOptions.Value = generalIsVisible;
 							AmplifyShaderFunction function = ParentWindow.CurrentGraph.CurrentShaderFunction;
 							if( function != null )
+							{
 								function.AdditionalIncludes.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
+								function.AdditionalPragmas.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
+							}
 
 							bool inputIsVisible = EditorVariablesManager.ExpandedFunctionInputs.Value;
 							NodeUtils.DrawPropertyGroup( ref inputIsVisible, " Function Inputs", DrawFunctionInputs );
 							EditorVariablesManager.ExpandedFunctionInputs.Value = inputIsVisible;
+
+							bool swicthIsVisible = EditorVariablesManager.ExpandedFunctionSwitches.Value;
+							NodeUtils.DrawPropertyGroup( ref swicthIsVisible, " Function Switches", DrawFunctionSwitches );
+							EditorVariablesManager.ExpandedFunctionSwitches.Value = swicthIsVisible;
 
 							bool outputIsVisible = EditorVariablesManager.ExpandedFunctionOutputs.Value;
 							NodeUtils.DrawPropertyGroup( ref outputIsVisible, " Function Outputs", DrawFunctionOutputs );
@@ -193,6 +214,9 @@ namespace AmplifyShaderEditor
 			if ( function == null )
 				return;
 
+			float cacheWidth = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = 115;
+
 			SerializedObject serializedObject = new UnityEditor.SerializedObject( function );
 
 			if ( serializedObject != null )
@@ -201,8 +225,9 @@ namespace AmplifyShaderEditor
 				EditorGUILayout.PropertyField( temo, new GUIContent( "    Description" ) );
 
 				SerializedProperty cat = serializedObject.FindProperty( "m_nodeCategory" );
-				//EditorGUILayout.PropertyField( cat, new GUIContent( "Category" ) );
-
+				SerializedProperty ppos = serializedObject.FindProperty( "m_previewPosition" );
+				
+				EditorGUILayout.PropertyField( ppos, new GUIContent( "Preview Position" ) );
 				cat.intValue = ParentWindow.CurrentGraph.CurrentOutputNode.EditorGUILayoutPopup( "Category", cat.intValue, UIUtils.CategoryPresets );
 
 				if( cat.enumValueIndex == 0 )
@@ -212,6 +237,7 @@ namespace AmplifyShaderEditor
 				}
 				serializedObject.ApplyModifiedProperties();
 			}
+			EditorGUIUtility.labelWidth = cacheWidth;
 		}
 
 
@@ -235,10 +261,11 @@ namespace AmplifyShaderEditor
 
 				m_functionInputsReordableList.onChangedCallback = ( list ) =>
 				{
-					for ( int i = 0; i < functionInputNodes.Count; i++ )
-					{
-						functionInputNodes[ i ].OrderIndex = i;
-					}
+					//for ( int i = 0; i < functionInputNodes.Count; i++ )
+					//{
+					//	functionInputNodes[ i ].OrderIndex = i;
+					//}
+					ForceInputReorder( ref functionInputNodes );
 				};
 
 				m_functionInputsLastCount = m_functionInputsReordableList.count;
@@ -255,6 +282,65 @@ namespace AmplifyShaderEditor
 				m_functionInputsReordableList.DoLayoutList();
 				EditorGUILayout.EndVertical();
 			}
+		}
+
+		public void ForceInputReorder( ref List<FunctionInput> functionInputNodes )
+		{
+			for( int i = 0; i < functionInputNodes.Count; i++ )
+			{
+				functionInputNodes[ i ].OrderIndex = i;
+			}
+		}
+
+		public void DrawFunctionSwitches()
+		{
+			List<FunctionSwitch> functionSwitchNodes = UIUtils.FunctionSwitchList();
+
+			if( m_functionSwitchesReordableList == null || functionSwitchNodes.Count != m_functionSwitchesLastCount )
+			{
+				functionSwitchNodes.Sort( ( x, y ) => { return x.OrderIndex.CompareTo( y.OrderIndex ); } );
+
+				UIUtils.UpdateFunctionSwitchArr();
+				
+				m_functionSwitchesReordableList = new ReorderableList( functionSwitchNodes, typeof( FunctionSwitch ), true, false, false, false );
+				m_functionSwitchesReordableList.headerHeight = 0;
+				m_functionSwitchesReordableList.footerHeight = 0;
+				m_functionSwitchesReordableList.showDefaultBackground = false;
+
+				m_functionSwitchesReordableList.drawElementCallback = ( Rect rect, int index, bool isActive, bool isFocused ) =>
+				{
+					EditorGUI.LabelField( rect, functionSwitchNodes[ index ].OptionLabel );
+				};
+
+				m_functionSwitchesReordableList.onChangedCallback = ( list ) =>
+				{
+					ForceSwitchesReorder(ref functionSwitchNodes );
+				};
+
+				m_functionSwitchesLastCount = m_functionSwitchesReordableList.count;
+			}
+
+			if( m_functionSwitchesReordableList != null )
+			{
+				if( m_propertyAdjustment == null )
+				{
+					m_propertyAdjustment = new GUIStyle();
+					m_propertyAdjustment.padding.left = 17;
+				}
+				EditorGUILayout.BeginVertical( m_propertyAdjustment );
+				m_functionSwitchesReordableList.DoLayoutList();
+				EditorGUILayout.EndVertical();
+			}
+		}
+
+		public void ForceSwitchesReorder( ref List<FunctionSwitch> functionSwitchNodes )
+		{
+			for( int i = 0; i < functionSwitchNodes.Count; i++ )
+			{
+				functionSwitchNodes[ i ].OrderIndex = i;
+			}
+
+			UIUtils.UpdateFunctionSwitchArr();
 		}
 
 		public void DrawFunctionOutputs()
@@ -352,6 +438,12 @@ namespace AmplifyShaderEditor
 		{
 			List<PropertyNode> nodes = UIUtils.PropertyNodesList();
 			ReorderList( ref nodes );
+
+			List<FunctionInput> functionInputNodes = UIUtils.FunctionInputList();
+			ForceInputReorder( ref functionInputNodes );
+
+			List<FunctionSwitch> functionSwitchNodes = UIUtils.FunctionSwitchList();
+			ForceSwitchesReorder( ref functionSwitchNodes );
 			//RecursiveLog();
 		}
 

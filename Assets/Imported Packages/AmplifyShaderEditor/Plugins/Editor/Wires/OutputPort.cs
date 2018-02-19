@@ -130,7 +130,36 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public string ConfigOutputLocalValue( PrecisionType precisionType, string value, string customName = null, MasterNodePortCategory category = MasterNodePortCategory.Fragment )
+        public override void ChangePortId( int newPortId )
+        {
+            if( IsConnected )
+            {
+                int count = ExternalReferences.Count;
+                for( int connIdx = 0; connIdx < count; connIdx++ )
+                {
+                    int nodeId = ExternalReferences[ connIdx ].NodeId;
+                    int portId = ExternalReferences[ connIdx ].PortId;
+                    ParentNode node = UIUtils.GetNode( nodeId );
+                    if( node != null )
+                    {
+                        InputPort inputPort = node.GetInputPortByUniqueId( portId );
+                        int inputCount = inputPort.ExternalReferences.Count;
+                        for( int j = 0; j < inputCount; j++ )
+                        {
+                            if( inputPort.ExternalReferences[ j ].NodeId == NodeId &&
+                                inputPort.ExternalReferences[ j ].PortId == PortId )
+                            {
+                                inputPort.ExternalReferences[ j ].PortId = newPortId;
+                            }
+                        }
+                    }
+                }
+            }
+
+            PortId = newPortId;
+        }
+
+        public string ConfigOutputLocalValue( PrecisionType precisionType, string value, string customName = null, MasterNodePortCategory category = MasterNodePortCategory.Fragment )
 		{
 			ParentGraph currentGraph = UIUtils.GetNode( NodeId ).ContainerGraph;
 			string autoGraphId = currentGraph.GraphId > 0 ? "_g" + currentGraph.GraphId : string.Empty;

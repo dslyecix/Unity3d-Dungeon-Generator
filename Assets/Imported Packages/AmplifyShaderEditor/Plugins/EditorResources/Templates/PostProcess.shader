@@ -10,9 +10,11 @@ Shader /*ase_name*/ "ASETemplateShaders/PostProcess" /*end*/
 
 	SubShader
 	{
-		Tags{ /*ase_tags*/ }
+		Tags{ }
 		
-		ZTest Always Cull Off ZWrite Off
+		ZTest Always
+		Cull Off
+		ZWrite Off
 		/*ase_pass*/
 
 		Pass
@@ -56,10 +58,6 @@ Shader /*ase_name*/ "ASETemplateShaders/PostProcess" /*end*/
 				/*ase_vert_code:v=appdata_img_custom;o=v2f_img_custom*/
 				o.pos = UnityObjectToClipPos ( v.vertex );
 				o.uv = float4( v.texcoord.xy, 1, 1 );
-
-				#ifdef UNITY_HALF_TEXEL_OFFSET
-						o.uv.y += _MainTex_TexelSize.y;
-				#endif
 
 				#if UNITY_UV_STARTS_AT_TOP
 					o.uv2 = float4( v.texcoord.xy, 1, 1 );

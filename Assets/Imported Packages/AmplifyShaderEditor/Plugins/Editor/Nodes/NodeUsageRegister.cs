@@ -13,6 +13,8 @@ namespace AmplifyShaderEditor
 	[Serializable] public class UsageListFunctionInputNodes : NodeUsageRegister<FunctionInput> { }
 	[Serializable] public class UsageListFunctionNodes : NodeUsageRegister<FunctionNode> { }
 	[Serializable] public class UsageListFunctionOutputNodes : NodeUsageRegister<FunctionOutput> { }
+	[Serializable] public class UsageListFunctionSwitchNodes : NodeUsageRegister<FunctionSwitch> { }
+	[Serializable] public class UsageListFunctionSwitchCopyNodes : NodeUsageRegister<FunctionSwitch> { }
 
 	[Serializable]
 	public class NodeUsageRegister<T> where T : ParentNode
@@ -81,7 +83,7 @@ namespace AmplifyShaderEditor
 			}
 			return null;
 		}
-		
+
 		public int GetNodeRegisterId( int uniqueId )
 		{
 			int count = m_nodes.Count;
@@ -95,12 +97,12 @@ namespace AmplifyShaderEditor
 			return -1;
 		}
 
-		public void UpdateDataOnNode( int nodeIdx, string data )
+		public void UpdateDataOnNode( int uniqueId, string data )
 		{
 			int count = m_nodes.Count;
 			for ( int i = 0; i < count; i++ )
 			{
-				if ( m_nodes[ i ].UniqueId == nodeIdx )
+				if ( m_nodes[ i ].UniqueId == uniqueId )
 				{
 					m_nodesArr[ i ] = data;
 				}

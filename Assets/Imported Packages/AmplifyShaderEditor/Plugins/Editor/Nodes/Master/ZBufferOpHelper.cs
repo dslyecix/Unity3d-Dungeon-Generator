@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -24,34 +25,64 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	class ZBufferOpHelper
 	{
-		private const string DepthParametersStr = " Depth";
-		private const string ZWriteModeStr = "ZWrite Mode";
-		private const string ZTestModeStr = "ZTest Mode";
-		private const string OffsetStr = "Offset";
-		private const string OffsetFactorStr = "Factor";
-		private const string OffsetUnitsStr = "Units";
+		public static readonly string DepthParametersStr = " Depth";
+		public static readonly string ZWriteModeStr = "ZWrite Mode";
+		public static readonly string ZTestModeStr = "ZTest Mode";
+		public static readonly string OffsetStr = "Offset";
+		public static readonly string OffsetFactorStr = "Factor";
+		public static readonly string OffsetUnitsStr = "Units";
+		private const string ExtraDepthPassStr = "Extra Depth Pass";
+		private const string DepthZTestStr = "Depth ZTest";
 
-		private readonly string[] ZTestModeLabels = {   "<Default>",
-														"Less",
-														"Greater",
-														"Less or Equal",
-														"Greater or Equal",
-														"Equal",
-														"Not Equal",
-														"Always" };
+		public static readonly string[] ZTestModeLabels =
+		{
+			"<Default>",
+			"Less",
+			"Greater",
+			"Less or Equal",
+			"Greater or Equal",
+			"Equal",
+			"Not Equal",
+			"Always"
+		};
 
-		private readonly string[] ZTestModeValues = {   "<Default>",
-														"Less",
-														"Greater",
-														"LEqual",
-														"GEqual",
-														"Equal",
-														"NotEqual",
-														"Always"};
+		public static readonly string[] ZTestModeValues =
+		{
+			"<Default>",
+			"Less",
+			"Greater",
+			"LEqual",
+			"GEqual",
+			"Equal",
+			"NotEqual",
+			"Always"
+		};
 
-		private readonly string[] ZWriteModeValues = {  "<Default>",
-														"On",
-														"Off"};
+		public static readonly string[] ZWriteModeValues =
+		{
+			"<Default>",
+			"On",
+			"Off"
+		};
+
+		public static readonly Dictionary<ZTestMode, int> ZTestModeDict = new Dictionary<ZTestMode, int>
+		{
+			{ZTestMode.Less,1 },
+			{ZTestMode.Greater,2},
+			{ZTestMode.LEqual,3},
+			{ZTestMode.GEqual,4},
+			{ZTestMode.Equal,5},
+			{ZTestMode.NotEqual,6},
+			{ZTestMode.Always,7}
+		};
+
+		public static readonly Dictionary<ZWriteMode, int> ZWriteModeDict = new Dictionary<ZWriteMode, int>
+		{
+			{ ZWriteMode.On,1},
+			{ ZWriteMode.Off,2}
+		};
+
+
 		[SerializeField]
 		private int m_zTestMode = 0;
 
@@ -68,22 +99,35 @@ namespace AmplifyShaderEditor
 		private bool m_offsetEnabled;
 
 		[SerializeField]
+		private bool m_extraDepthPass;
+
+		[SerializeField]
+		private int m_extrazTestMode = 0;
+
+		[SerializeField]
 		private StandardSurfaceOutputNode m_parentSurface;
 
-		public string CreateDepthInfo()
+		public string CreateDepthInfo( bool outlineZWrite, bool outlineZTest )
 		{
 			string result = string.Empty;
-			if ( m_zWriteMode != 0 )
+			if( m_zWriteMode != 0 )
 			{
 				MasterNode.AddRenderState( ref result, "ZWrite", ZWriteModeValues[ m_zWriteMode ] );
+			} else if( outlineZWrite )
+			{
+				MasterNode.AddRenderState( ref result, "ZWrite", ZWriteModeValues[ 1 ] );
 			}
 
-			if ( m_zTestMode != 0 )
+			if( m_zTestMode != 0 )
 			{
 				MasterNode.AddRenderState( ref result, "ZTest", ZTestModeValues[ m_zTestMode ] );
 			}
+			else if( outlineZTest )
+			{
+				MasterNode.AddRenderState( ref result, "ZTest", ZTestModeValues[ 3 ] );
+			}
 
-			if ( m_offsetEnabled )
+			if( m_offsetEnabled )
 			{
 				MasterNode.AddRenderState( ref result, "Offset ", m_offsetFactor + " , " + m_offsetUnits );
 			}
@@ -99,13 +143,13 @@ namespace AmplifyShaderEditor
 			GUI.color = cachedColor;
 			EditorGUI.BeginChangeCheck();
 			m_parentSurface.ContainerGraph.ParentWindow.ExpandedDepth = owner.GUILayoutToggle( m_parentSurface.ContainerGraph.ParentWindow.ExpandedDepth, DepthParametersStr, UIUtils.MenuItemToggleStyle );
-			if ( EditorGUI.EndChangeCheck() )
+			if( EditorGUI.EndChangeCheck() )
 			{
 				EditorPrefs.SetBool( "ExpandedDepth", m_parentSurface.ContainerGraph.ParentWindow.ExpandedDepth );
 			}
 			EditorGUILayout.EndHorizontal();
 
-			if ( m_parentSurface.ContainerGraph.ParentWindow.ExpandedDepth )
+			if( m_parentSurface.ContainerGraph.ParentWindow.ExpandedDepth )
 			{
 				cachedColor = GUI.color;
 				GUI.color = new Color( cachedColor.r, cachedColor.g, cachedColor.b, ( EditorGUIUtility.isProSkin ? 0.5f : 0.25f ) );
@@ -113,7 +157,7 @@ namespace AmplifyShaderEditor
 				GUI.color = cachedColor;
 
 				EditorGUI.indentLevel++;
-				if ( !customBlendAvailable )
+				if( !customBlendAvailable )
 					EditorGUILayout.HelpBox( "Depth Writing is only available for Opaque or Custom blend modes", MessageType.Warning );
 
 				EditorGUILayout.Separator();
@@ -122,11 +166,19 @@ namespace AmplifyShaderEditor
 				m_zWriteMode = owner.EditorGUILayoutPopup( ZWriteModeStr, m_zWriteMode, ZWriteModeValues );
 				m_zTestMode = owner.EditorGUILayoutPopup( ZTestModeStr, m_zTestMode, ZTestModeLabels );
 				m_offsetEnabled = owner.EditorGUILayoutToggle( OffsetStr, m_offsetEnabled );
-				if ( m_offsetEnabled )
+				if( m_offsetEnabled )
 				{
 					EditorGUI.indentLevel++;
 					m_offsetFactor = owner.EditorGUILayoutFloatField( OffsetFactorStr, m_offsetFactor );
 					m_offsetUnits = owner.EditorGUILayoutFloatField( OffsetUnitsStr, m_offsetUnits );
+					EditorGUI.indentLevel--;
+				}
+
+				m_extraDepthPass = owner.EditorGUILayoutToggle( ExtraDepthPassStr, m_extraDepthPass );
+				if( m_extraDepthPass )
+				{
+					EditorGUI.indentLevel++;
+					m_extrazTestMode = owner.EditorGUILayoutPopup( DepthZTestStr, m_extrazTestMode, ZTestModeLabels );
 					EditorGUI.indentLevel--;
 				}
 				EditorGUILayout.Separator();
@@ -138,17 +190,31 @@ namespace AmplifyShaderEditor
 			EditorGUI.EndDisabledGroup();
 		}
 
+		public void DrawExtraDepthPass( ref string shaderBody )
+		{
+			if( m_extraDepthPass )
+			{
+				shaderBody += "\t\tPass\n";
+				shaderBody += "\t\t{\n";
+				shaderBody += "\t\t\tColorMask 0\n";
+				if( m_extrazTestMode != 0 )
+					shaderBody += "\t\t\tZTest " + ZTestModeValues[ m_extrazTestMode ] + "\n";
+				shaderBody += "\t\t\tZWrite On\n";
+				shaderBody += "\t\t}\n\n";
+			}
+		}
+
 		public void ReadFromString( ref uint index, ref string[] nodeParams )
 		{
-			if ( UIUtils.CurrentShaderVersion() < 2502 )
+			if( UIUtils.CurrentShaderVersion() < 2502 )
 			{
 				string zWriteMode = nodeParams[ index++ ];
 				m_zWriteMode = zWriteMode.Equals( "Off" ) ? 2 : 0;
 
 				string zTestMode = nodeParams[ index++ ];
-				for ( int i = 0; i < ZTestModeValues.Length; i++ )
+				for( int i = 0; i < ZTestModeValues.Length; i++ )
 				{
-					if ( zTestMode.Equals( ZTestModeValues[ i ] ) )
+					if( zTestMode.Equals( ZTestModeValues[ i ] ) )
 					{
 						m_zTestMode = i;
 						break;
@@ -162,6 +228,12 @@ namespace AmplifyShaderEditor
 				m_offsetEnabled = Convert.ToBoolean( nodeParams[ index++ ] );
 				m_offsetFactor = Convert.ToSingle( nodeParams[ index++ ] );
 				m_offsetUnits = Convert.ToSingle( nodeParams[ index++ ] );
+
+				if( UIUtils.CurrentShaderVersion() > 14202 )
+				{
+					m_extraDepthPass = Convert.ToBoolean( nodeParams[ index++ ] );
+					m_extrazTestMode = Convert.ToInt32( nodeParams[ index++ ] );
+				}
 			}
 		}
 
@@ -172,6 +244,8 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_offsetEnabled );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_offsetFactor );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_offsetUnits );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_extraDepthPass );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_extrazTestMode );
 		}
 		public bool IsActive { get { return m_zTestMode != 0 || m_zWriteMode != 0 || m_offsetEnabled; } }
 		public StandardSurfaceOutputNode ParentSurface { get { return m_parentSurface; } set { m_parentSurface = value; } }

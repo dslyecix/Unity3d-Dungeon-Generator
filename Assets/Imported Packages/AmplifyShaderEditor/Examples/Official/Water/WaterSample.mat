@@ -133,7 +133,7 @@ Material:
       second: {r: 0, g: 0.048731543, b: 0.22794023, a: 0}
     - first:
         name: _DeepColor
-      second: {r: 0, g: 0.043101683, b: 0.24999824, a: 0}
+      second: {r: 0, g: 0.04310166, b: 0.24999821, a: 0}
     - first:
         name: _ShalowColor
       second: {r: 0, g: 0.80882317, b: 0.8088235, a: 0}

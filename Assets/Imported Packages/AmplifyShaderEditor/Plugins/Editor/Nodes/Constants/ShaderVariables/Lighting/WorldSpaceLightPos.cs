@@ -1,7 +1,7 @@
 // Amplify Shader Editor - Visual Shader Editing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 using UnityEditor;
-
+using UnityEngine;
 namespace AmplifyShaderEditor
 {
 	[System.Serializable]
@@ -60,5 +60,23 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-	}
+
+        public override void RenderNodePreview()
+        {
+            if( !HasPreviewShader || !m_initialized )
+                return;
+
+            SetPreviewInputs();
+
+            RenderTexture temp = RenderTexture.active;
+
+            RenderTexture.active = m_outputPorts[ 0 ].OutputPreviewTexture;
+            Graphics.Blit( null, m_outputPorts[ 0 ].OutputPreviewTexture, PreviewMaterial, 0 );
+            Graphics.Blit( m_outputPorts[ 0 ].OutputPreviewTexture, m_outputPorts[ 1 ].OutputPreviewTexture);
+            
+            RenderTexture.active = m_outputPorts[ 2 ].OutputPreviewTexture;
+            Graphics.Blit( null, m_outputPorts[ 2 ].OutputPreviewTexture, PreviewMaterial, 1 );
+            RenderTexture.active = temp;
+        }
+    }
 }

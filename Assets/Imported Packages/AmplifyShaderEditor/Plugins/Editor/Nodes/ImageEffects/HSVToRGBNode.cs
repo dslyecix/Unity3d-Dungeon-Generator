@@ -27,6 +27,9 @@ namespace AmplifyShaderEditor
 			AddInputPort( WirePortDataType.FLOAT, false, "Saturation" );
 			AddInputPort( WirePortDataType.FLOAT, false, "Value" );
 			AddOutputColorPorts( "RGB", false );
+			m_previewShaderGUID = "fab445eb945d63047822a7a6b81b959d";
+			m_useInternalPortData = true;
+			m_autoWrapProperties = true;
 		}
 
 		public override void DrawProperties()

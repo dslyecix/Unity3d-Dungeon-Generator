@@ -12,6 +12,12 @@ namespace AmplifyShaderEditor
 		private const string ReflectionVecValStr = "newWorldReflection";
 		private const string ReflectionVecDecStr = "float3 {0} = {1};";
 
+		private const string NormalizeOptionStr = "Normalize";
+		private const string NormalizeFunc = "normalize( {0} )";
+
+		[SerializeField]
+		private bool m_normalize = false;
+
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
@@ -19,6 +25,8 @@ namespace AmplifyShaderEditor
 			AddOutputVectorPorts( WirePortDataType.FLOAT3, "XYZ" );
 			m_drawPreviewAsSphere = true;
 			m_previewShaderGUID = "8e267e9aa545eeb418585a730f50273e";
+			m_autoWrapProperties = true;
+			m_textLabelWidth = 80;
 			//UIUtils.AddNormalDependentCount();
 		}
 
@@ -30,6 +38,12 @@ namespace AmplifyShaderEditor
 				m_previewMaterialPassId = 1;
 			else
 				m_previewMaterialPassId = 0;
+		}
+
+		public override void DrawProperties()
+		{
+			base.DrawProperties();
+			m_normalize = EditorGUILayoutToggle( NormalizeOptionStr, m_normalize );
 		}
 
 		//public override void Destroy()
@@ -52,16 +66,32 @@ namespace AmplifyShaderEditor
 				if( m_inputPorts[ 0 ].IsConnected )
 				{
 					if( m_outputPorts[ 0 ].IsLocalValue )
-						return m_outputPorts[ 0 ].LocalValue;
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
 
 
 					string value = dataCollector.TemplateDataCollectorInstance.GetWorldReflection( m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) );
+					if( m_normalize )
+					{
+						value = string.Format( NormalizeFunc, value );
+					}
 					RegisterLocalVariable( 0, value, ref dataCollector, "worldRefl" + OutputId );
-					return m_outputPorts[ 0 ].LocalValue;
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue);
 				}
 				else
 				{
-					return GetOutputVectorItem( 0, outputId, dataCollector.TemplateDataCollectorInstance.GetWorldReflection() );
+					string name;
+					string value = dataCollector.TemplateDataCollectorInstance.GetWorldReflection();
+					if( m_normalize )
+					{
+						name = "normalizedWorldRefl";
+						value = string.Format( NormalizeFunc, value );
+						RegisterLocalVariable( 0, value, ref dataCollector, name );
+					}
+					else
+					{
+						name = value;
+					}
+					return GetOutputVectorItem( 0, outputId, name );
 				}
 			}
 
@@ -82,7 +112,13 @@ namespace AmplifyShaderEditor
 					string viewDir = GeneratorUtils.GenerateViewDirection( ref dataCollector, UniqueId );
 					dataCollector.AddToVertexLocalVariables( UniqueId, "float3 modWorldNormal" + OutputId + " = ( tangentToWorld[0] * tangentNormal" + OutputId + ".x + tangentToWorld[1] * tangentNormal" + OutputId + ".y + tangentToWorld[2] * tangentNormal" + OutputId + ".z);" );
 
-					RegisterLocalVariable( 0, "reflect( -" + viewDir + ", modWorldNormal"+ OutputId + " )", ref dataCollector, "modReflection" + OutputId );
+					string value = "reflect( -" + viewDir + ", modWorldNormal" + OutputId + " )";
+					if( m_normalize )
+					{
+						value = string.Format( NormalizeFunc, value );
+					}
+
+					RegisterLocalVariable( 0, value, ref dataCollector, "modReflection" + OutputId );
 					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
 				}
 				else
@@ -93,7 +129,12 @@ namespace AmplifyShaderEditor
 					string worldNormal = GeneratorUtils.GenerateWorldNormal( ref dataCollector, UniqueId );
 					string viewDir = GeneratorUtils.GenerateViewDirection( ref dataCollector, UniqueId );
 
-					RegisterLocalVariable( 0, "reflect( -"+ viewDir + ", "+ worldNormal + " )", ref dataCollector, ReflectionVecValStr + OutputId );
+					string value = "reflect( -" + viewDir + ", " + worldNormal + " )";
+					if( m_normalize )
+					{
+						value = string.Format( NormalizeFunc, value );
+					}
+					RegisterLocalVariable( 0, value, ref dataCollector, ReflectionVecValStr + OutputId );
 					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
 				}
 			}
@@ -111,17 +152,19 @@ namespace AmplifyShaderEditor
 					dataCollector.ForceNormal = true;
 
 					result = "WorldReflectionVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalVar ) + " )";
-
+					if( m_normalize )
+					{
+						result = String.Format( NormalizeFunc, result );
+					}
 					int connCount = 0;
 					for( int i = 0; i < m_outputPorts.Count; i++ )
 					{
 						connCount += m_outputPorts[ i ].ConnectionCount;
 					}
 
-					if( connCount > 1 || outputId > 0 )
+					if( connCount > 1 )
 					{
 						dataCollector.AddToLocalVariables( UniqueId, string.Format( ReflectionVecDecStr, ReflectionVecValStr + OutputId, result ) );
-
 						RegisterLocalVariable( 0, result, ref dataCollector, ReflectionVecValStr + OutputId );
 						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
 					}
@@ -129,7 +172,9 @@ namespace AmplifyShaderEditor
 				else
 				{
 					dataCollector.AddToInput( UniqueId, SurfaceInputs.INTERNALDATA, addSemiColon: false );
-					result = GeneratorUtils.GenerateWorldReflection( ref dataCollector, UniqueId );
+					result = GeneratorUtils.GenerateWorldReflection( ref dataCollector, UniqueId , m_normalize );
+					if( dataCollector.DirtyNormal )
+						dataCollector.ForceNormal = true;
 				}
 
 				return GetOutputVectorItem( 0, outputId, result );
@@ -138,5 +183,31 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public override void ReadFromString( ref string[] nodeParams )
+		{
+			base.ReadFromString( ref nodeParams );
+			if( UIUtils.CurrentShaderVersion() > 14202 )
+			{
+				m_normalize = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+			}
+		}
+
+		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
+		{
+			base.WriteToString( ref nodeInfo, ref connectionsInfo );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_normalize );
+		}
+
+		public override void RefreshExternalReferences()
+		{
+			base.RefreshExternalReferences();
+			if( UIUtils.CurrentShaderVersion() <= 14202 )
+			{
+				if( !m_inputPorts[ 0 ].IsConnected )
+				{
+					m_normalize = true;
+				}
+			}
+		}
 	}
 }

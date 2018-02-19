@@ -2,7 +2,6 @@
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 
 using System;
-using System.Text;
 using UnityEditor;
 using System.Collections.Generic;
 
@@ -16,10 +15,11 @@ namespace AmplifyShaderEditor
 		public MasterNodePortCategory PortCategory;
 		public int PortUniqueId;
 		public int OrderId;
+		public int TagStartIdx;
 		public string TagId;
 		public string DefaultValue;
 
-		public TemplateInputData( string tagId, string portName, string defaultValue, WirePortDataType dataType, MasterNodePortCategory portCategory, int portUniqueId, int orderId )
+		public TemplateInputData( int tagStartIdx, string tagId, string portName, string defaultValue, WirePortDataType dataType, MasterNodePortCategory portCategory, int portUniqueId, int orderId )
 		{
 			DefaultValue = defaultValue;
 			PortName = portName;
@@ -28,6 +28,7 @@ namespace AmplifyShaderEditor
 			PortUniqueId = portUniqueId;
 			OrderId = orderId;
 			TagId = tagId;
+			TagStartIdx = tagStartIdx;
 		}
 	}
 
@@ -87,10 +88,19 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	public class TemplateTagData
 	{
+		public int StartIdx;
 		public string Id;
 		public bool SearchIndentation;
 		public string CustomIndentation;
 
+
+		public TemplateTagData( int startIdx, string id, bool searchIndentation )
+		{
+			StartIdx = startIdx;
+			Id = id;
+			SearchIndentation = searchIndentation;
+			CustomIndentation = string.Empty;
+		}
 
 		public TemplateTagData( string id, bool searchIndentation)
 		{
@@ -124,12 +134,12 @@ namespace AmplifyShaderEditor
 		Pragmas		= 4,
 		Pass		= 5,
 		Params_Vert = 6,
-		Params_Frag = 7,
-		CullMode	= 8,
-		BlendMode   = 9,
-		BlendOp		= 10,
-		ColorMask	= 11,
-		StencilOp	= 12
+		Params_Frag = 7
+		//CullMode	= 8,
+		//BlendMode   = 9,
+		//BlendOp		= 10,
+		//ColorMask	= 11,
+		//StencilOp	= 12
 	}
 
 	public class TemplatesManager
@@ -145,13 +155,13 @@ namespace AmplifyShaderEditor
 		public static readonly string TemplateVertexDataTag = "/*ase_vdata:";
 
 		public static readonly string TemplateFunctionsTag = "/*ase_functions*/\n";
-		public static readonly string TemplateTagsTag = "/*ase_tags*/";
+		//public static readonly string TemplateTagsTag = "/*ase_tags*/";
 
-		public static readonly string TemplateCullModeTag = "/*ase_cull_mode*/";
-		public static readonly string TemplateBlendModeTag = "/*ase_blend_mode*/";
-		public static readonly string TemplateBlendOpTag = "/*ase_blend_op*/";
-		public static readonly string TemplateColorMaskTag = "/*ase_color_mask*/";
-		public static readonly string TemplateStencilOpTag = "/*ase_stencil*/";
+		//public static readonly string TemplateCullModeTag = "/*ase_cull_mode*/";
+		//public static readonly string TemplateBlendModeTag = "/*ase_blend_mode*/";
+		//public static readonly string TemplateBlendOpTag = "/*ase_blend_op*/";
+		//public static readonly string TemplateColorMaskTag = "/*ase_color_mask*/";
+		//public static readonly string TemplateStencilOpTag = "/*ase_stencil*/";
 
 		public static readonly string TemplateCodeSnippetAttribBegin = "#CODE_SNIPPET_ATTRIBS_BEGIN#";
 		public static readonly string TemplateCodeSnippetAttribEnd = "#CODE_SNIPPET_ATTRIBS_END#\n";
@@ -180,16 +190,16 @@ namespace AmplifyShaderEditor
 		public static readonly TemplateTagData[] CommonTags = { new TemplateTagData( TemplatePropertyTag,true),
 																new TemplateTagData( TemplateGlobalsTag,true),
 																new TemplateTagData( TemplateFunctionsTag,true),
-																new TemplateTagData( TemplateTagsTag,false," "),
+																//new TemplateTagData( TemplateTagsTag,false," "),
 																new TemplateTagData( TemplatePragmaTag,true),
 																new TemplateTagData( TemplatePassTag,true),
 																new TemplateTagData( TemplateInputsVertParamsTag,false),
-																new TemplateTagData( TemplateInputsFragParamsTag,false),
-																new TemplateTagData( TemplateCullModeTag,false),
-																new TemplateTagData( TemplateBlendModeTag,false),
-																new TemplateTagData( TemplateBlendOpTag,false),
-																new TemplateTagData( TemplateColorMaskTag,false),
-																new TemplateTagData( TemplateStencilOpTag,false),
+																new TemplateTagData( TemplateInputsFragParamsTag,false)
+																//new TemplateTagData( TemplateCullModeTag,false),
+																//new TemplateTagData( TemplateBlendModeTag,false),
+																//new TemplateTagData( TemplateBlendOpTag,false),
+																//new TemplateTagData( TemplateColorMaskTag,false),
+																//new TemplateTagData( TemplateStencilOpTag,true),
 																};
 
 		
@@ -277,7 +287,7 @@ namespace AmplifyShaderEditor
 			if ( m_sortedTemplates == null || m_sortedTemplates.Count == 0 )
 				return;
 
-			StringBuilder fileContents = new StringBuilder();
+			System.Text.StringBuilder fileContents = new System.Text.StringBuilder();
 			fileContents.Append( "// Amplify Shader Editor - Visual Shader Editing Tool\n" );
 			fileContents.Append( "// Copyright (c) Amplify Creations, Lda <info@amplify.pt>\n" );
 			fileContents.Append( "using UnityEditor;\n" );

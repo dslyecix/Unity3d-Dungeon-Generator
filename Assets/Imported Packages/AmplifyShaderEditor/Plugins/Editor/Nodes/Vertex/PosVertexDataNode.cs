@@ -27,6 +27,7 @@ namespace AmplifyShaderEditor
 			m_drawPreviewAsSphere = true;
 			m_outputPorts[ 4 ].Visible = false;
 			m_hasLeftDropdown = true;
+			m_autoWrapProperties = true;
 			m_previewShaderGUID = "a5c14f759dd021b4b8d4b6eeb85ac227";
 		}
 

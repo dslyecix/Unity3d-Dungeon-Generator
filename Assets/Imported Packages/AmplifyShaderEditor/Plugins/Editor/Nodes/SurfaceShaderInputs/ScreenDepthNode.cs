@@ -8,7 +8,7 @@ using System;
 namespace AmplifyShaderEditor
 {
     [Serializable]
-    [NodeAttributes( "Screen Depth", "Camera And Screen", "Given a screen postion returns the depth of the scene to the object as seen by the camera" )]
+    [NodeAttributes( "Screen Depth", "Camera And Screen", "Given a screen position returns the depth of the scene to the object as seen by the camera" )]
     public sealed class ScreenDepthNode : ParentNode
     {
         [SerializeField]
@@ -122,7 +122,7 @@ namespace AmplifyShaderEditor
         {
             base.ReadFromString( ref nodeParams );
             m_viewSpaceInt = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
-            if( UIUtils.CurrentShaderVersion() > 13803 )
+            if( UIUtils.CurrentShaderVersion() >= 13901 )
             {
                 m_convertToLinear = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
             }

@@ -229,34 +229,13 @@ namespace AmplifyShaderEditor
 		public override void ReadFromString( ref string[] nodeParams )
 		{
 			base.ReadFromString( ref nodeParams );
-			string[] matrixVals = GetCurrentParam( ref nodeParams ).Split( IOUtils.VECTOR_SEPARATOR );
-			if( matrixVals.Length == 9 )
-			{
-				m_defaultValue[ 0, 0 ] = Convert.ToSingle( matrixVals[ 0 ] );
-				m_defaultValue[ 0, 1 ] = Convert.ToSingle( matrixVals[ 1 ] );
-				m_defaultValue[ 0, 2 ] = Convert.ToSingle( matrixVals[ 2 ] );
-
-				m_defaultValue[ 1, 0 ] = Convert.ToSingle( matrixVals[ 3 ] );
-				m_defaultValue[ 1, 1 ] = Convert.ToSingle( matrixVals[ 4 ] );
-				m_defaultValue[ 1, 2 ] = Convert.ToSingle( matrixVals[ 5 ] );
-
-				m_defaultValue[ 2, 0 ] = Convert.ToSingle( matrixVals[ 6 ] );
-				m_defaultValue[ 2, 1 ] = Convert.ToSingle( matrixVals[ 7 ] );
-				m_defaultValue[ 2, 2 ] = Convert.ToSingle( matrixVals[ 8 ] );
-			}
-			else
-			{
-				UIUtils.ShowMessage( "Incorrect number of matrix4x4 values", MessageSeverity.Error );
-			}
+			m_defaultValue = IOUtils.StringToMatrix3x3( GetCurrentParam( ref nodeParams ) );
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
-
-			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue[ 0, 0 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 0, 1 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 0, 2 ].ToString() + IOUtils.VECTOR_SEPARATOR +
-												m_defaultValue[ 1, 0 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 1, 1 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 1, 2 ].ToString() + IOUtils.VECTOR_SEPARATOR +
-												m_defaultValue[ 2, 0 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 2, 1 ].ToString() + IOUtils.VECTOR_SEPARATOR + m_defaultValue[ 2, 2 ].ToString() );
+			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Matrix3x3ToString( m_defaultValue ) );
 		}
 
 		public override void ReadAdditionalClipboardData( ref string[] nodeParams )

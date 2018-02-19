@@ -24,9 +24,17 @@ namespace AmplifyShaderEditor
 		private readonly static GUIContent IgnoreProjectorContent = new GUIContent( " Ignore Projector", "\nIf True then an object that uses this shader will not be affected by Projectors Default: False" );
 		private readonly static GUIContent ForceNoShadowCastingContent = new GUIContent( " Force No Shadow Casting", "\nIf True then an object that is rendered using this subshader will never cast shadows Default: False" );
 		private readonly static GUIContent EnableInstancingContent = new GUIContent( " Enable Instancing", "\nIf True enables instancing on shader independent of having instanced properties" );
+		private readonly static GUIContent SpecularHightlightsContent = new GUIContent( " Fwd Specular Highlights Toggle", "\nIf True creates a material toggle to set Unity's internal specular highlight rendering keyword" );
+		private readonly static GUIContent ReflectionsContent = new GUIContent( " Fwd Reflections Toggle", "\nIf True creates a material toggle to set Unity's internal reflections rendering keyword" );
 
 		[SerializeField]
 		private bool m_enableInstancing = false;
+
+		[SerializeField]
+		private bool m_specularHighlightToggle = false;
+
+		[SerializeField]
+		private bool m_reflectionsToggle = false;
 
 		[SerializeField]
 		private bool m_lodCrossfade = false;
@@ -60,6 +68,11 @@ namespace AmplifyShaderEditor
 			m_codeGenerationDataList.Add( new CodeGenerationData( " Add Pass", "noforwardadd" ) );
 		}
 
+		public bool IsOptionActive(string option)
+		{
+			return !m_codeGenerationDataList.Find( x => x.Name.Equals(option) ).IsActive;
+		}
+
 		public void Draw( ParentNode owner )
 		{
 			bool value = EditorVariablesManager.ExpandedRenderingOptions.Value;
@@ -84,6 +97,8 @@ namespace AmplifyShaderEditor
 				{
 					m_enableInstancing = owner.EditorGUILayoutToggleLeft( EnableInstancingContent, m_enableInstancing );
 				}
+				m_specularHighlightToggle = owner.EditorGUILayoutToggleLeft( SpecularHightlightsContent, m_specularHighlightToggle );
+				m_reflectionsToggle = owner.EditorGUILayoutToggleLeft( ReflectionsContent, m_reflectionsToggle );
 				m_disableBatching = ( DisableBatchingTagValues ) owner.EditorGUILayoutEnumPopup( DisableBatchingContent, m_disableBatching );
 			} );
 			EditorVariablesManager.ExpandedRenderingOptions.Value = value;
@@ -158,6 +173,8 @@ namespace AmplifyShaderEditor
 
 		public bool LodCrossfade { get { return m_lodCrossfade; } }
 		public bool IgnoreProjectorValue { get { return m_ignoreProjector; } set{ m_ignoreProjector = value; } }
+		public bool SpecularHighlightToggle { get { return m_specularHighlightToggle; } set { m_specularHighlightToggle = value; } }
+		public bool ReflectionsToggle { get { return m_reflectionsToggle; } set { m_reflectionsToggle = value; } }
 
 		public string DisableBatchingTag { get { return ( m_disableBatching != DisableBatchingTagValues.False ) ? string.Format( Constants.TagFormat, "DisableBatching", m_disableBatching ) : string.Empty; } }
 		public string IgnoreProjectorTag { get { return ( m_ignoreProjector ) ? string.Format( Constants.TagFormat, "IgnoreProjector",  "True" )  : string.Empty; } }

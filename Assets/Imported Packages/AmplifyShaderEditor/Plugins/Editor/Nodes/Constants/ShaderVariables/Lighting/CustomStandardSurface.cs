@@ -104,14 +104,12 @@ namespace AmplifyShaderEditor
 			dataCollector.AddLocalVariable( UniqueId, "s" + OutputId + ".Smoothness = " + m_inputPorts[ 4 ].GeneratePortInstructions( ref dataCollector ) + ";" );
 			dataCollector.AddLocalVariable( UniqueId, "s" + OutputId + ".Occlusion = " + m_inputPorts[ 5 ].GeneratePortInstructions( ref dataCollector ) + ";\n" );
 
-			dataCollector.AddLocalVariable( UniqueId, "gi.light.ndotl = LambertTerm( s" + OutputId + ".Normal, gi.light.dir );" );
 			dataCollector.AddLocalVariable( UniqueId, "data.light = gi.light;\n", true );
 
 			dataCollector.AddLocalVariable( UniqueId, "UnityGI gi" + OutputId + " = gi;" );
 			dataCollector.AddLocalVariable( UniqueId, "#ifdef UNITY_PASS_FORWARDBASE", true );
-			dataCollector.AddLocalVariable( UniqueId, "Unity_GlossyEnvironmentData g" + OutputId + ";" );
-			dataCollector.AddLocalVariable( UniqueId, "g" + OutputId + ".roughness = 1 - s" + OutputId + ".Smoothness;" );
-			dataCollector.AddLocalVariable( UniqueId, "g" + OutputId + ".reflUVW = reflect( -data.worldViewDir, s" + OutputId + ".Normal );" );
+		
+			dataCollector.AddLocalVariable( UniqueId, "Unity_GlossyEnvironmentData g" + OutputId + " = UnityGlossyEnvironmentSetup( s" + OutputId + ".Smoothness, data.worldViewDir, s" + OutputId + ".Normal, float3(0,0,0));" );
 			dataCollector.AddLocalVariable( UniqueId, "gi" + OutputId + " = UnityGlobalIllumination( data, s" + OutputId + ".Occlusion, s" + OutputId + ".Normal, g" + OutputId + " );" );
 			dataCollector.AddLocalVariable( UniqueId, "#endif\n", true );
 			dataCollector.AddLocalVariable( UniqueId, "float3 surfResult" + OutputId + " = LightingStandard" + specularMode + " ( s" + OutputId + ", viewDir, gi" + OutputId + " ).rgb;" );

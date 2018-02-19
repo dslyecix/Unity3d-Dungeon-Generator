@@ -21,6 +21,10 @@ namespace AmplifyShaderEditor
 
 		private int m_cachedPropertyId = -1;
 
+		private bool m_isEditingFields;
+		private Vector2 m_previousValue = Vector2.zero;
+		private string[] m_fieldText = new string[] { "0", "0" };
+		
 		public Vector2Node() : base() { }
 		public Vector2Node( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 		protected override void CommonInit( int uniqueId )
@@ -98,11 +102,7 @@ namespace AmplifyShaderEditor
 				m_isEditingFields = false;
 			}
 		}
-
-		private bool m_isEditingFields;
-		private Vector2 m_previousValue = Vector2.zero;
-		private string[] m_fieldText = new string[] { "0", "0" };
-
+		
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
@@ -258,37 +258,18 @@ namespace AmplifyShaderEditor
 		public override void ReadFromString( ref string[] nodeParams )
 		{
 			base.ReadFromString( ref nodeParams );
-			string[] components = GetCurrentParam( ref nodeParams ).Split( IOUtils.VECTOR_SEPARATOR );
-			if ( components.Length == 2 )
-			{
-				m_defaultValue.x = Convert.ToSingle( components[ 0 ] );
-				m_defaultValue.y = Convert.ToSingle( components[ 1 ] );
-			}
-			else
-			{
-				UIUtils.ShowMessage( "Incorrect number of float2 values", MessageSeverity.Error );
-			}
+			m_defaultValue = IOUtils.StringToVector2( GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+				m_materialValue = IOUtils.StringToVector2( GetCurrentParam( ref nodeParams ) );
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
-			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue.x.ToString() + IOUtils.VECTOR_SEPARATOR +
-														m_defaultValue.y.ToString() );
-		}
-
-		public override void ReadAdditionalClipboardData( ref string[] nodeParams )
-		{
-			base.ReadAdditionalClipboardData( ref nodeParams );
-			m_materialValue = IOUtils.StringToVector2( GetCurrentParam( ref nodeParams ) );
-		}
-
-		public override void WriteAdditionalClipboardData( ref string nodeInfo )
-		{
-			base.WriteAdditionalClipboardData( ref nodeInfo );
+			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector2ToString( m_defaultValue ) );
 			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector2ToString( m_materialValue ) );
 		}
-
+		
 		public override string GetPropertyValStr()
 		{
 			return ( m_materialMode && m_currentParameterType != PropertyType.Constant ) ? m_materialValue.x.ToString( Mathf.Abs( m_materialValue.x ) > 1000 ? Constants.PropertyBigVectorFormatLabel : Constants.PropertyVectorFormatLabel ) + IOUtils.VECTOR_SEPARATOR +

@@ -40,15 +40,17 @@ public class PauseMenu : MonoBehaviour {
     public void OpenMenu()
     {
         Debug.Log("Opening Menu...");
-        SceneManager.LoadSceneAsync("Menu");
-        SceneManager.UnloadSceneAsync("PlaygroundScene");
+        pauseMenuUI.SetActive(false);
+        SceneManager.LoadScene("Menu");
+        //SceneManager.UnloadSceneAsync("PlaygroundScene");
     }
 
     public void CloseMenu()
     {
         Debug.Log("Closing Menu...");
-        SceneManager.LoadSceneAsync("PlaygroundScene");
-        SceneManager.UnloadSceneAsync("Menu");
+        SceneManager.LoadScene("PlaygroundScene");
+        //SceneManager.UnloadSceneAsync("Menu");
+        pauseMenuUI.SetActive(false);
     }
 
     public void QuitGame()

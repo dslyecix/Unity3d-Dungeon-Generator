@@ -15,8 +15,10 @@ namespace AmplifyShaderEditor
 		private GUIStyle m_leftToggleColorMask;
 		private GUIStyle m_middleToggleColorMask;
 		private GUIStyle m_rightToggleColorMask;
-		
-		[SerializeField]
+
+        public TemplateColorMaskModule() : base("Color Mask"){ }
+
+        [ SerializeField]
 		private bool[] m_colorMask = { true, true, true, true };
 		
 		public void ConfigureFromTemplateData( TemplateColorMaskData data )
@@ -27,7 +29,7 @@ namespace AmplifyShaderEditor
 			}
 		}
 		
-		public override void Draw( UndoParentNode owner )
+		public override void Draw( ParentNode owner )
 		{
 			if( m_leftToggleColorMask == null || m_leftToggleColorMask.normal.background == null )
 			{

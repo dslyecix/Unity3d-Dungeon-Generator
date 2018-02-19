@@ -41,6 +41,11 @@ namespace AmplifyShaderEditor
 		private int m_cachedFloatShaderID = -1;
 		private int m_cachedVectorShaderID = -1;
 		private int m_cachedColorShaderID = -1;
+		private int m_cached2DShaderID = -1;
+		private int m_cachedDefaultTexShaderID = -1;
+
+		[SerializeField]
+		private bool m_drawInternalData = true;
 
 		//[SerializeField]
 		//private RenderTexture m_inputPreview = null;
@@ -297,6 +302,14 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		private string SamplerWrappedData( ref MasterNodeDataCollector dataCollector )
+		{
+			m_internalData = "sampler"+ PortId + UIUtils.GetNode( m_nodeId ).OutputId;
+			dataCollector.AddToUniforms( m_nodeId, "uniform sampler2D "+ m_internalData + ";" );
+
+			return m_internalData;
+		}
+
 		//TODO: Replace GenerateShaderForOutput(...) calls to this one
 		// This is a new similar method to GenerateShaderForOutput(...) which always autocasts
 		public string GeneratePortInstructions( ref MasterNodeDataCollector dataCollector )
@@ -315,6 +328,8 @@ namespace AmplifyShaderEditor
 				UpdateInternalData();
 				if( DataType == WirePortDataType.FLOAT3x3 )
 					result = Matrix3x3WrappedData();
+				else if( DataType == WirePortDataType.SAMPLER2D )
+					result = SamplerWrappedData( ref dataCollector );
 				else
 					result = !String.IsNullOrEmpty( m_internalDataWrapper ) ? String.Format( m_internalDataWrapper, m_internalData ) : m_internalData;
 			}
@@ -380,7 +395,7 @@ namespace AmplifyShaderEditor
 		{
 			if( connID < m_externalReferences.Count )
 			{
-				return UIUtils.GetNode( m_externalReferences[ connID ].NodeId ).OutputPorts[ m_externalReferences[ connID ].PortId ];
+				return UIUtils.GetNode( m_externalReferences[ connID ].NodeId ).GetOutputPortByUniqueId( m_externalReferences[ connID ].PortId );
 			}
 			return null;
 		}
@@ -744,6 +759,18 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public string SamplerInternalData
+		{
+			set
+			{
+				InternalData = UIUtils.RemoveInvalidCharacters( value );
+			}
+			get
+			{
+				return m_internalData;
+			}
+		}
+
 		public override void ForceClearConnection()
 		{
 			UIUtils.DeleteConnection( true, m_nodeId, m_portId, false, true );
@@ -834,6 +861,26 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		private int CachedDefaultTexPropertyID
+		{
+			get
+			{
+				if( m_cachedDefaultTexShaderID == -1 )
+					m_cachedDefaultTexShaderID = Shader.PropertyToID( "_Default" );
+				return m_cachedDefaultTexShaderID;
+			}
+		}
+
+		private int Cached2DPropertyID
+		{
+			get
+			{
+				if( m_cached2DShaderID == -1 )
+					m_cached2DShaderID = Shader.PropertyToID( "_Input2D" );
+				return m_cached2DShaderID;
+			}
+		}
+
 		public int CachedPropertyId
 		{
 			get { return m_cachedPropertyId; }
@@ -841,7 +888,12 @@ namespace AmplifyShaderEditor
 
 		public bool InputNodeHasPreview()
 		{
-			return GetOutputNode( 0 ).HasPreviewShader;
+			ParentNode node = GetOutputNode( 0 );
+
+			if( node != null )
+				return node.HasPreviewShader;
+
+			return false;
 		}
 
 		public void PreparePortCacheID()
@@ -866,6 +918,15 @@ namespace AmplifyShaderEditor
 			m_node.PreviewMaterial.SetTexture( m_cachedPropertyId, GetOutputConnection( 0 ).OutputPreviewTexture );
 		}
 
+		private void SetPortPreviewShader( Shader portShader )
+		{
+			if( m_inputPreviewShader != portShader )
+			{
+				m_inputPreviewShader = portShader;
+				InputPreviewMaterial.shader = portShader;
+			}
+		}
+
 		public void SetPreviewInputValue()
 		{
 			if( m_inputPreviewTexture == null )
@@ -878,35 +939,21 @@ namespace AmplifyShaderEditor
 			{
 				case WirePortDataType.INT:
 				{
-					if( m_inputPreviewShader != UIUtils.IntShader )
-					{
-						m_inputPreviewShader = UIUtils.IntShader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.IntShader );
 
-					int i = m_previewInternalInt;
-					InputPreviewMaterial.SetInt( CachedIntPropertyID, i );
+					InputPreviewMaterial.SetInt( CachedIntPropertyID, m_previewInternalInt );
 				}
 				break;
 				case WirePortDataType.FLOAT:
 				{
-					if( m_inputPreviewShader != UIUtils.FloatShader )
-					{
-						m_inputPreviewShader = UIUtils.FloatShader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.FloatShader );
 
-					float f = m_previewInternalFloat;// FloatInternalData;
-					InputPreviewMaterial.SetFloat( CachedFloatPropertyID, f );
+					InputPreviewMaterial.SetFloat( CachedFloatPropertyID, m_previewInternalFloat );
 				}
 				break;
 				case WirePortDataType.FLOAT2:
 				{
-					if( m_inputPreviewShader != UIUtils.Vector2Shader )
-					{
-						m_inputPreviewShader = UIUtils.Vector2Shader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.Vector2Shader );
 
 					Vector2 v2 = m_previewInternalVec2;// Vector2InternalData;
 					InputPreviewMaterial.SetVector( CachedVectorPropertyID, new Vector4( v2.x, v2.y, 0, 0 ) );
@@ -914,11 +961,7 @@ namespace AmplifyShaderEditor
 				break;
 				case WirePortDataType.FLOAT3:
 				{
-					if( m_inputPreviewShader != UIUtils.Vector3Shader )
-					{
-						m_inputPreviewShader = UIUtils.Vector3Shader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.Vector3Shader );
 
 					Vector3 v3 = m_previewInternalVec3;// Vector3InternalData;
 					InputPreviewMaterial.SetVector( CachedVectorPropertyID, new Vector4( v3.x, v3.y, v3.z, 0 ) );
@@ -926,45 +969,34 @@ namespace AmplifyShaderEditor
 				break;
 				case WirePortDataType.FLOAT4:
 				{
-					if( m_inputPreviewShader != UIUtils.Vector4Shader )
-					{
-						m_inputPreviewShader = UIUtils.Vector4Shader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.Vector4Shader );
 
-					InputPreviewMaterial.SetVector( CachedVectorPropertyID, m_previewInternalVec4/*Vector4InternalData*/ );
+					InputPreviewMaterial.SetVector( CachedVectorPropertyID, m_previewInternalVec4 );
 				}
 				break;
 				case WirePortDataType.COLOR:
 				{
-					if( m_inputPreviewShader != UIUtils.ColorShader )
-					{
-						m_inputPreviewShader = UIUtils.ColorShader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.ColorShader );
 
-					InputPreviewMaterial.SetColor( CachedColorPropertyID, m_previewInternalColor/*ColorInternalData*/ );
+					InputPreviewMaterial.SetColor( CachedColorPropertyID, m_previewInternalColor );
 				}
 				break;
 				case WirePortDataType.FLOAT3x3:
 				case WirePortDataType.FLOAT4x4:
 				{
-					if( m_inputPreviewShader != UIUtils.FloatShader )
-					{
-						m_inputPreviewShader = UIUtils.FloatShader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.FloatShader );
 
 					InputPreviewMaterial.SetFloat( CachedFloatPropertyID, 1 );
 				}
 				break;
+				case WirePortDataType.SAMPLER2D:
+				{
+					SetPortPreviewShader( UIUtils.Texture2DShader );
+				}
+				break;
 				default:
 				{
-					if( m_inputPreviewShader != UIUtils.FloatShader )
-					{
-						m_inputPreviewShader = UIUtils.FloatShader;
-						InputPreviewMaterial.shader = m_inputPreviewShader;
-					}
+					SetPortPreviewShader( UIUtils.FloatShader );
 
 					InputPreviewMaterial.SetFloat( CachedFloatPropertyID, 0 );
 				}
@@ -983,7 +1015,36 @@ namespace AmplifyShaderEditor
 			m_node.PreviewMaterial.SetTexture( m_propertyName, m_inputPreviewTexture );
 		}
 
-		private int m_propertyNameInt = 0;
+        public override void ChangePortId( int newPortId )
+        {
+            if( IsConnected )
+            {
+                int count = ExternalReferences.Count;
+                for( int connIdx = 0; connIdx < count; connIdx++ )
+                {
+                    int nodeId = ExternalReferences[ connIdx ].NodeId;
+                    int portId = ExternalReferences[ connIdx ].PortId;
+                    ParentNode node = UIUtils.GetNode( nodeId );
+                    if( node != null )
+                    {
+                        OutputPort outputPort = node.GetOutputPortByUniqueId( portId );
+                        int outputCount = outputPort.ExternalReferences.Count;
+                        for( int j = 0; j < outputCount; j++ )
+                        {
+                            if( outputPort.ExternalReferences[ j ].NodeId == NodeId &&
+                                outputPort.ExternalReferences[ j ].PortId == PortId )
+                            {
+                                outputPort.ExternalReferences[ j ].PortId = newPortId;
+                            }
+                        }
+                    }
+                }
+            }
+
+            PortId = newPortId;
+        }
+
+        private int m_propertyNameInt = 0;
 		private ParentNode m_node = null;
 
 		public override void Destroy()
@@ -1054,6 +1115,12 @@ namespace AmplifyShaderEditor
 		{
 			get { return m_internalDataPropertyLabel; }
 			set { m_internalDataPropertyLabel = value; }
+		}
+
+		public bool AutoDrawInternalData
+		{
+			get { return m_drawInternalData; }
+			set { m_drawInternalData = value; }
 		}
 
 		public PortGenType GenType

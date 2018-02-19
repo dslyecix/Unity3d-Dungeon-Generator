@@ -36,7 +36,9 @@ namespace AmplifyShaderEditor
 			AddOutputPort( WirePortDataType.FLOAT, "Hue" );
 			AddOutputPort( WirePortDataType.FLOAT, "Saturation" );
 			AddOutputPort( WirePortDataType.FLOAT, "Value" );
-			
+			m_previewShaderGUID = "0f2f09b49bf4954428aafa2dfe1a9a09";
+			m_useInternalPortData = true;
+			m_autoWrapProperties = true;
 		}
 
 		public override void DrawProperties()

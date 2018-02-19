@@ -8,11 +8,13 @@ using UnityEditor;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	[NodeAttributes( "Indirect Diffuse Light", "Light", "Indirect Lighting", NodeAvailabilityFlags = ( int ) NodeAvailability.CustomLighting )]
+	[NodeAttributes( "Indirect Diffuse Light", "Light", "Indirect Lighting", NodeAvailabilityFlags = (int)NodeAvailability.CustomLighting )]
 	public sealed class IndirectDiffuseLighting : ParentNode
 	{
 		[SerializeField]
 		private ViewSpace m_normalSpace = ViewSpace.Tangent;
+
+		private int m_cachedIntensityId = -1;
 
 		protected override void CommonInit( int uniqueId )
 		{
@@ -22,6 +24,23 @@ namespace AmplifyShaderEditor
 			m_autoWrapProperties = true;
 			m_errorMessageTypeIsError = NodeMessageType.Warning;
 			m_errorMessageTooltip = "This node only returns correct information using a custom light model, otherwise returns 0";
+			m_previewShaderGUID = "b45d57fa606c1ea438fe9a2c08426bc7";
+			m_drawPreviewAsSphere = true;
+		}
+
+		public override void SetPreviewInputs()
+		{
+			base.SetPreviewInputs();
+
+			if( m_inputPorts[ 0 ].IsConnected )
+				m_previewMaterialPassId = 1;
+			else
+				m_previewMaterialPassId = 0;
+
+			if( m_cachedIntensityId == -1 )
+				m_cachedIntensityId = Shader.PropertyToID( "_Intensity" );
+
+			PreviewMaterial.SetFloat( m_cachedIntensityId, RenderSettings.ambientIntensity );
 		}
 
 		public override void PropagateNodeData( NodeData nodeData, ref MasterNodeDataCollector dataCollector )
@@ -29,7 +48,7 @@ namespace AmplifyShaderEditor
 			base.PropagateNodeData( nodeData, ref dataCollector );
 			// This needs to be rechecked
 			//if( m_inputPorts[ 0 ].IsConnected )
-				dataCollector.DirtyNormal = true;
+			dataCollector.DirtyNormal = true;
 		}
 
 		public override void DrawProperties()
@@ -37,7 +56,7 @@ namespace AmplifyShaderEditor
 			base.DrawProperties();
 
 			EditorGUI.BeginChangeCheck();
-			m_normalSpace = ( ViewSpace ) EditorGUILayoutEnumPopup( "Normal Space", m_normalSpace );
+			m_normalSpace = (ViewSpace)EditorGUILayoutEnumPopup( "Normal Space", m_normalSpace );
 			if( EditorGUI.EndChangeCheck() )
 			{
 				UpdatePort();
@@ -95,15 +114,16 @@ namespace AmplifyShaderEditor
 			}
 
 
-			if(dataCollector.PortCategory == MasterNodePortCategory.Vertex || dataCollector.PortCategory == MasterNodePortCategory.Tessellation )
+			if( dataCollector.PortCategory == MasterNodePortCategory.Vertex || dataCollector.PortCategory == MasterNodePortCategory.Tessellation )
 			{
 				dataCollector.AddLocalVariable( UniqueId, m_currentPrecisionType, WirePortDataType.FLOAT3, "indirectDiffuse" + OutputId, "ShadeSH9( float4( " + normal + ", 1 ) )" );
 			}
 			else
 			{
 				dataCollector.AddLocalVariable( UniqueId, "UnityGI gi" + OutputId + " = gi;" );
-				dataCollector.AddLocalVariable( UniqueId, "gi" + OutputId + " = UnityGI_Base( data, 1, "+ normal + " );" );
-				dataCollector.AddLocalVariable( UniqueId, m_currentPrecisionType, WirePortDataType.FLOAT3, "indirectDiffuse" + OutputId, "gi" + OutputId+".indirect.diffuse" );
+				dataCollector.AddLocalVariable( UniqueId, PrecisionType.Float, WirePortDataType.FLOAT3, "diffNorm"+ OutputId, normal );
+				dataCollector.AddLocalVariable( UniqueId, "gi" + OutputId + " = UnityGI_Base( data, 1, diffNorm" + OutputId + " );" );
+				dataCollector.AddLocalVariable( UniqueId, m_currentPrecisionType, WirePortDataType.FLOAT3, "indirectDiffuse" + OutputId, "gi" + OutputId + ".indirect.diffuse + diffNorm"+ OutputId+" * 0.0001" );
 			}
 
 			return "indirectDiffuse" + OutputId;
@@ -113,7 +133,7 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			if( UIUtils.CurrentShaderVersion() > 13002 )
-				m_normalSpace = ( ViewSpace ) Enum.Parse( typeof( ViewSpace ), GetCurrentParam( ref nodeParams ) );
+				m_normalSpace = (ViewSpace)Enum.Parse( typeof( ViewSpace ), GetCurrentParam( ref nodeParams ) );
 
 			UpdatePort();
 		}

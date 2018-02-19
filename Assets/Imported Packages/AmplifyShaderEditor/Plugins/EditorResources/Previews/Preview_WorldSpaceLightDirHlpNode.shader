@@ -9,14 +9,12 @@ Shader "Hidden/WorldSpaceLightDirHlpNode"
 			#pragma fragment frag
 			#include "UnityCG.cginc"
 
+			float4 _EditorWorldLightPos;
+
 			float4 frag( v2f_img i ) : SV_Target
 			{
-				float2 xy = 2 * i.uv - 1;
-				float z = -sqrt(1-saturate(dot(xy,xy)));
-				float3 vertexPos = float3(xy, z);
-				float3 worldPos = mul(unity_ObjectToWorld, float4(vertexPos,1)).xyz;
-
-				return float4 ( normalize( UnityWorldSpaceLightDir(worldPos) ), 1);
+				float3 lightDir = normalize( _EditorWorldLightPos.xyz );
+				return float4 ( lightDir, 1);
 			}
 			ENDCG
 		}

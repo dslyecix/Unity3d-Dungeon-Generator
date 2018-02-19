@@ -11,6 +11,8 @@ using System.Collections.Generic;
 
 namespace AmplifyShaderEditor
 {
+// Disabling Substance Deprecated warning
+
 	public class AmplifyShaderEditorWindow : SearchableEditorWindow, ISerializationCallbackReceiver
 	{
 		public const double InactivitySaveTime = 1.0;
@@ -113,6 +115,7 @@ namespace AmplifyShaderEditor
 
 		private bool m_ctrlSCallback = false;
 
+		private bool m_altBoxSelection = false;
 		private bool m_altDragStarted = false;
 		private bool m_altPressDown = false;
 		private bool m_altAvailable = true;
@@ -290,6 +293,8 @@ namespace AmplifyShaderEditor
 		private float m_zoomToFocus = 1.0f;
 		private bool m_selectNodeToFocus = true;
 		private bool m_isLoading = false;
+
+		public bool CheckFunctions = false;
 
 		// Unity Menu item
 		[MenuItem( "Window/Amplify Shader Editor/Open Canvas", false, 1000 )]
@@ -575,8 +580,11 @@ namespace AmplifyShaderEditor
 			m_genericMessageUI.OnMessageDisplayEvent += ShowMessageImmediately;
 
 			Selection.selectionChanged += OnProjectSelectionChanged;
+#if UNITY_2018_1_OR_NEWER
+			EditorApplication.projectChanged += OnProjectWindowChanged;
+#else
 			EditorApplication.projectWindowChanged += OnProjectWindowChanged;
-
+#endif
 			m_focusOnSelectionTimestamp = EditorApplication.timeSinceStartup;
 			m_focusOnMasterNodeTimestamp = EditorApplication.timeSinceStartup;
 
@@ -636,9 +644,9 @@ namespace AmplifyShaderEditor
 			} );
 
 			m_shortcutManager.RegisterEditorShortcut( true, EventModifiers.None, KeyCode.Space, "Open Node Palette", null, () =>
-			  {
-				  m_contextPalette.Show( m_currentMousePos2D, m_cameraInfo );
-			  } );
+			{
+				m_contextPalette.Show( m_currentMousePos2D, m_cameraInfo );
+			} );
 
 
 			m_shortcutManager.RegisterEditorShortcut( true, KeyCode.W, "Toggle Colored Line Mode", () =>
@@ -869,8 +877,11 @@ namespace AmplifyShaderEditor
 			UIUtils.CurrentWindow = null;
 			m_duplicatePreventionBuffer.ReleaseAllData();
 			m_duplicatePreventionBuffer = null;
-
+#if UNITY_2018_1_OR_NEWER
+			EditorApplication.projectChanged -= OnProjectWindowChanged;
+#else
 			EditorApplication.projectWindowChanged -= OnProjectWindowChanged;
+#endif
 			Selection.selectionChanged -= OnProjectSelectionChanged;
 
 			IOUtils.AllOpenedWindows.Remove( this );
@@ -1193,15 +1204,6 @@ namespace AmplifyShaderEditor
 				SaveToDisk( false );
 			}
 
-			if( shader != null || material != null )
-			{
-				LoadDroppedObject( true, shader, material );
-			}
-			else if( function != null )
-			{
-				LoadDroppedObject( true, null, null, function );
-			}
-
 			return value ? ShaderLoadResult.LOADED : ShaderLoadResult.FILE_NOT_FOUND;
 		}
 
@@ -1211,7 +1213,6 @@ namespace AmplifyShaderEditor
 			m_cameraOffset = new Vector2( m_cameraInfo.width * 0.5f, m_cameraInfo.height * 0.5f );
 			CameraZoom = 1;
 		}
-
 
 		public void Reset()
 		{
@@ -1285,7 +1286,7 @@ namespace AmplifyShaderEditor
 			}
 
 
-			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
 			m_customGraph = null;
 			m_cacheSaveOp = false;
@@ -1316,7 +1317,7 @@ namespace AmplifyShaderEditor
 					IOUtils.StartSaveThread( GenerateGraphInfo(), newShader );
 					AssetDatabase.Refresh();
 					LoadFromDisk( newShader );
-					Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+					System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 					return true;
 				}
 			}
@@ -1330,7 +1331,7 @@ namespace AmplifyShaderEditor
 					Material material = m_mainGraphInstance.CurrentMaterial;
 					m_lastpath = ( material != null ) ? AssetDatabase.GetAssetPath( material ) : AssetDatabase.GetAssetPath( currShader );
 					EditorPrefs.SetString( IOUtils.LAST_OPENED_OBJ_ID, m_lastpath );
-					Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+					System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 					return true;
 				}
 				else
@@ -1344,7 +1345,7 @@ namespace AmplifyShaderEditor
 						m_mainGraphInstance.FireMasterNode( pathName, true );
 						m_lastpath = pathName;
 						EditorPrefs.SetString( IOUtils.LAST_OPENED_OBJ_ID, pathName );
-						Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+						System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 						return true;
 					}
 				}
@@ -1385,11 +1386,11 @@ namespace AmplifyShaderEditor
 				AssetDatabase.Refresh();
 				IOUtils.FunctionNodeChanged = true;
 				m_lastpath = AssetDatabase.GetAssetPath( m_mainGraphInstance.CurrentShaderFunction );
-				Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+				System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 				//EditorPrefs.SetString( IOUtils.LAST_OPENED_OBJ_ID, AssetDatabase.GetAssetPath( m_mainGraphInstance.CurrentShaderFunction ) );
 				return true;
 			}
-			Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 			return false;
 		}
 
@@ -1617,7 +1618,7 @@ namespace AmplifyShaderEditor
 
 		void PreTestLeftMouseDown()
 		{
-			if( m_currentEvent.type == EventType.mouseDown && m_currentEvent.button == ButtonClickId.LeftMouseButton )
+			if( m_currentEvent.type == EventType.MouseDown && m_currentEvent.button == ButtonClickId.LeftMouseButton )
 			{
 				ParentNode node = m_mainGraphInstance.CheckNodeAt( m_currentMousePos );
 				if( node != null )
@@ -1637,11 +1638,17 @@ namespace AmplifyShaderEditor
 			Focus();
 			m_mouseDownOnValidArea = true;
 			m_lmbPressed = true;
+			if( m_currentEvent.alt )
+			{
+				m_altBoxSelection = true;
+			}
+
 			UIUtils.ShowContextOnPick = true;
 			ParentNode node = ( m_mainGraphInstance.NodeClicked < 0 ) ? m_mainGraphInstance.CheckNodeAt( m_currentMousePos ) : m_mainGraphInstance.GetClickedNode();
 			if( node != null )
 			{
 				m_mainGraphInstance.NodeClicked = node.UniqueId;
+				m_altBoxSelection = false;
 
 				if( m_contextMenu.CheckShortcutKey() )
 				{
@@ -1697,23 +1704,6 @@ namespace AmplifyShaderEditor
 						if( node.InputPorts.Count > 0 && node.OutputPorts.Count > 0 && node.InputPorts[ 0 ].IsConnected && node.OutputPorts[ 0 ].IsConnected )
 						{
 							m_altDragStarted = true;
-
-							//OutputPort outputPort = node.InputPorts[ 0 ].GetOutputConnection( 0 );
-							//List<InputPort> inputPorts = new List<InputPort>();
-							//for ( int i = 0; i < node.OutputPorts[ 0 ].ConnectionCount; i++ )
-							//{
-							//	inputPorts.Add(node.OutputPorts[ 0 ].GetInputConnection( i ));
-							//}
-
-							//for ( int i = 0; i < inputPorts.Count; i++ )
-							//{
-							//	m_mainGraphInstance.CreateConnection( inputPorts[i].NodeId, inputPorts[i].PortId, outputPort.NodeId, outputPort.PortId );
-							//}
-
-							//UIUtils.DeleteConnection( true, node.UniqueId, node.InputPorts[0].PortId, false, true );
-
-							//SetSaveIsDirty();
-							//ForceRepaint();
 						}
 					}
 
@@ -1794,7 +1784,7 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			if( m_currentEvent.modifiers != EventModifiers.Shift && m_currentEvent.modifiers != EventModifiers.Control )
+			if( m_currentEvent.modifiers != EventModifiers.Shift && m_currentEvent.modifiers != EventModifiers.Control && !m_altBoxSelection )
 				m_mainGraphInstance.DeSelectAll();
 
 			if( m_wireReferenceUtils.ValidReferences() )
@@ -1803,7 +1793,7 @@ namespace AmplifyShaderEditor
 				return;
 			}
 
-			if( !m_contextMenu.CheckShortcutKey() && m_currentEvent.modifiers != EventModifiers.Shift && m_currentEvent.modifiers != EventModifiers.Control )
+			if( !m_contextMenu.CheckShortcutKey() && m_currentEvent.modifiers != EventModifiers.Shift && m_currentEvent.modifiers != EventModifiers.Control || m_altBoxSelection )
 			{
 				// Only activate multiple selection if no node is selected and shift key not pressed
 				m_multipleSelectionActive = true;
@@ -1828,7 +1818,7 @@ namespace AmplifyShaderEditor
 			{
 				m_altDragStarted = false;
 
-				if( m_currentEvent.alt && CurrentGraph.SelectedNodes.Count == 1 )
+				if( m_currentEvent.modifiers == EventModifiers.Alt && CurrentGraph.SelectedNodes.Count == 1 )
 				{
 					ParentNode node = CurrentGraph.SelectedNodes[ 0 ];
 					int lastId = 0;
@@ -1845,11 +1835,22 @@ namespace AmplifyShaderEditor
 					if( conn > 1 )
 						lastId = 0;
 
+
+
 					OutputPort outputPort = node.InputPorts[ lastId ].GetOutputConnection( 0 );
+					ParentNode outputNode = m_mainGraphInstance.GetNode( outputPort.NodeId );
+
+					Undo.RegisterCompleteObjectUndo( this, Constants.UndoCreateConnectionId );
+					Undo.RecordObject( node, Constants.UndoCreateConnectionId );
+					Undo.RecordObject( outputNode, Constants.UndoCreateConnectionId );
+
 					List<InputPort> inputPorts = new List<InputPort>();
 					for( int i = 0; i < node.OutputPorts[ 0 ].ConnectionCount; i++ )
 					{
-						inputPorts.Add( node.OutputPorts[ 0 ].GetInputConnection( i ) );
+						InputPort inputPort = node.OutputPorts[ 0 ].GetInputConnection( i );
+						ParentNode inputNode = m_mainGraphInstance.GetNode( inputPort.NodeId );
+						Undo.RecordObject( inputNode, Constants.UndoCreateConnectionId );
+						inputPorts.Add( inputPort );
 					}
 
 					for( int i = 0; i < inputPorts.Count; i++ )
@@ -1864,11 +1865,11 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			if( !m_wireReferenceUtils.ValidReferences() )
+			if( !m_wireReferenceUtils.ValidReferences() && !m_altBoxSelection)
 			{
 				if( m_mouseDownOnValidArea && m_insideEditorWindow )
 				{
-					if( m_currentEvent.control && m_currentEvent.shift )
+					if( m_currentEvent.control )
 					{
 						m_mainGraphInstance.MoveSelectedNodes( m_cameraZoom * m_currentEvent.delta, true );
 					}
@@ -1980,9 +1981,18 @@ namespace AmplifyShaderEditor
 			m_lmbPressed = false;
 			if( m_multipleSelectionActive )
 			{
-				m_multipleSelectionActive = false;
+				//m_multipleSelectionActive = false;
 				UpdateSelectionArea();
-				m_mainGraphInstance.MultipleSelection( m_multipleSelectionArea, ( m_currentEvent.modifiers == EventModifiers.Shift || m_currentEvent.modifiers == EventModifiers.Control ), true );
+				//m_mainGraphInstance.MultipleSelection( m_multipleSelectionArea, ( m_currentEvent.modifiers == EventModifiers.Shift || m_currentEvent.modifiers == EventModifiers.Control ), true );
+				if( m_currentEvent.alt && m_altBoxSelection )
+				{
+					m_mainGraphInstance.MultipleSelection( m_multipleSelectionArea, !m_currentEvent.shift );
+				}
+				else
+				{
+					m_mainGraphInstance.DeSelectAll();
+					m_mainGraphInstance.MultipleSelection( m_multipleSelectionArea );
+				}
 			}
 
 			if( m_wireReferenceUtils.ValidReferences() )
@@ -2168,7 +2178,7 @@ namespace AmplifyShaderEditor
 						m_wireReferenceUtils.InvalidateReferences();
 				}
 			}
-			else if( m_currentEvent.alt && m_altAvailable && CurrentGraph.SelectedNodes.Count == 1 )
+			else if( m_currentEvent.modifiers == EventModifiers.Alt && m_altAvailable && CurrentGraph.SelectedNodes.Count == 1 && !m_altBoxSelection && !m_multipleSelectionActive )
 			{
 				List<WireBezierReference> wireRefs = m_mainGraphInstance.GetWireBezierListInPos( m_currentMousePos2D );
 				if( wireRefs != null && wireRefs.Count > 0 )
@@ -2229,6 +2239,9 @@ namespace AmplifyShaderEditor
 						{
 							Undo.RegisterCompleteObjectUndo( this, Constants.UndoCreateConnectionId );
 							Undo.RecordObject( selectedNode, Constants.UndoCreateConnectionId );
+							Undo.RecordObject( inNode, Constants.UndoCreateConnectionId );
+							Undo.RecordObject( outNode, Constants.UndoCreateConnectionId );
+
 							m_mainGraphInstance.CreateConnection( selectedNode.UniqueId, selectedNode.InputPorts[ 0 ].PortId, outputPort.NodeId, outputPort.PortId );
 							m_mainGraphInstance.CreateConnection( inputPort.NodeId, inputPort.PortId, selectedNode.UniqueId, selectedNode.OutputPorts[ 0 ].PortId );
 						}
@@ -2239,6 +2252,8 @@ namespace AmplifyShaderEditor
 				}
 			}
 			UIUtils.ShowContextOnPick = true;
+			m_altBoxSelection = false;
+			m_multipleSelectionActive = false;
 			UseCurrentEvent();
 		}
 
@@ -2338,9 +2353,20 @@ namespace AmplifyShaderEditor
 				if( newShader == null )
 				{
 					newMaterial = droppedObjs[ 0 ] as Material;
+#if UNITY_2018_1_OR_NEWER
+					bool isProcedural = ( newMaterial != null );
+#else
+// Disabling Substance Deprecated warning
+#pragma warning disable 0618
 					bool isProcedural = ( newMaterial != null && newMaterial is ProceduralMaterial );
+#pragma warning restore 0618
+#endif
 					if( newMaterial != null && !isProcedural )
 					{
+						if( UIUtils.IsUnityNativeShader( AssetDatabase.GetAssetPath( newMaterial.shader ) ) )
+						{
+							return;
+						}
 						//newShader = newMaterial.shader;
 						LoadMaterialToASE( newMaterial );
 						//m_mainGraphInstance.UpdateMaterialOnMasterNode( newMaterial );
@@ -2447,6 +2473,7 @@ namespace AmplifyShaderEditor
 				titleContent.text = GenerateTabTitle( shaderFunction.FunctionName );
 				titleContent.image = UIUtils.ShaderFunctionIcon;
 				m_lastpath = assetDatapath;
+				m_nodeParametersWindow.OnShaderFunctionLoad();
 				//EditorPrefs.SetString( IOUtils.LAST_OPENED_OBJ_ID, assetDatapath );
 			}
 			else if( value && shader != null )
@@ -2527,14 +2554,14 @@ namespace AmplifyShaderEditor
 			{
 				m_contextMenu.UpdateKeyPress( m_currentEvent.keyCode );
 			}
-			else if( m_currentEvent.type == EventType.keyUp )
+			else if( m_currentEvent.type == EventType.KeyUp )
 			{
 				m_contextMenu.UpdateKeyReleased( m_currentEvent.keyCode );
 			}
 
 			if( InsideMenus( m_currentMousePos2D ) )
 			{
-				if( m_currentEvent.type == EventType.mouseDown )
+				if( m_currentEvent.type == EventType.MouseDown )
 				{
 					m_mouseDownOnValidArea = false;
 					UseCurrentEvent();
@@ -2611,12 +2638,12 @@ namespace AmplifyShaderEditor
 					OnScrollWheel();
 				}
 				break;
-				case EventType.keyDown:
+				case EventType.KeyDown:
 				{
 					OnKeyboardDown();
 				}
 				break;
-				case EventType.keyUp:
+				case EventType.KeyUp:
 				{
 					OnKeyboardUp();
 				}
@@ -2891,9 +2918,14 @@ namespace AmplifyShaderEditor
 			ForceRepaint();
 		}
 
-		void OnLostFocus()
+		private void OnFocus()
 		{
 			EditorGUI.FocusTextInControl( null );
+		}
+
+		void OnLostFocus()
+		{
+
 			m_lostFocus = true;
 			m_multipleSelectionActive = false;
 			m_wireReferenceUtils.InvalidateReferences();
@@ -3018,6 +3050,7 @@ namespace AmplifyShaderEditor
 				Undo.RegisterCompleteObjectUndo( this, Constants.UndoPasteNodeId );
 			}
 
+			List<ParentNode> createdNodes = new List<ParentNode>();
 			for( int i = 0; i < m_clipboard.CurrentClipboardStrData.Count; i++ )
 			{
 				ParentNode node = CreateNodeFromClipboardData( i );
@@ -3026,10 +3059,19 @@ namespace AmplifyShaderEditor
 					m_clipboard.CurrentClipboardStrData[ i ].NewNodeId = node.UniqueId;
 					Vector2 pos = node.Vec2Position;
 					node.Vec2Position = pos + deltaPos + m_copyPasteDeltaMul * Constants.CopyPasteDeltaPos;
-					node.RefreshExternalReferences();
+					//node.RefreshExternalReferences();
+					createdNodes.Add( node );
 					m_mainGraphInstance.SelectNode( node, true, false );
 				}
 			}
+
+			// Refresh external references must always be called after all nodes are created
+			for( int i = 0; i < createdNodes.Count; i++ )
+			{
+				createdNodes[ i ].RefreshExternalReferences();
+			}
+			createdNodes.Clear();
+			createdNodes = null;
 
 			if( copyConnections )
 			{
@@ -3235,7 +3277,7 @@ namespace AmplifyShaderEditor
 									}
 									else
 									{
-										//ShowMessage( string.Format( "{0} is not a valid ASE node ", parameters[ IOUtils.NodeTypeId ] ), MessageSeverity.Error );
+										UIUtils.ShowMessage( string.Format( "{0} is not a valid ASE node ", parameters[ IOUtils.NodeTypeId ] ), MessageSeverity.Error );
 									}
 								}
 								break;
@@ -3390,7 +3432,7 @@ namespace AmplifyShaderEditor
 		public ShaderLoadResult LoadFromDisk( string pathname, AmplifyShaderFunction shaderFunction = null )
 		{
 			m_isLoading = true;
-			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
 			FullCleanUndoStack();
 			m_performFullUndoRegister = true;
@@ -3766,7 +3808,7 @@ namespace AmplifyShaderEditor
 			m_mainGraphInstance.RefreshExternalReferences();
 			m_mainGraphInstance.LoadedShaderVersion = m_versionInfo.FullNumber;
 
-			Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 
 			m_isLoading = false;
 			return loadResult;
@@ -3856,7 +3898,7 @@ namespace AmplifyShaderEditor
 			else
 				m_currentCommandName = string.Empty;
 
-			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
 			MouseInteracted = false;
 
@@ -3877,7 +3919,7 @@ namespace AmplifyShaderEditor
 				m_previousShaderFunction = CurrentGraph.CurrentShaderFunction;
 			}
 
-			if( m_nodeToFocus != null && m_currentEvent.type == EventType.layout )
+			if( m_nodeToFocus != null && m_currentEvent.type == EventType.Layout )
 			{
 				FocusOnNode( m_nodeToFocus, m_zoomToFocus, m_selectNodeToFocus );
 				m_nodeToFocus = null;
@@ -3979,7 +4021,7 @@ namespace AmplifyShaderEditor
 			m_cameraInfo = position;
 
 			//if( m_currentEvent.type == EventType.keyDown )
-			if( m_currentEvent.type == EventType.repaint )
+			if( m_currentEvent.type == EventType.Repaint )
 				m_keyEvtMousePos2D = m_currentEvent.mousePosition;
 
 			m_currentMousePos2D = m_currentEvent.mousePosition;
@@ -4018,10 +4060,10 @@ namespace AmplifyShaderEditor
 			bool restoreMouse = false;
 			if( InsideMenus( m_currentMousePos2D ) /*|| _confirmationWindow.IsActive*/ )
 			{
-				if( Event.current.type == EventType.mouseDown )
+				if( Event.current.type == EventType.MouseDown )
 				{
 					restoreMouse = true;
-					Event.current.type = EventType.ignore;
+					Event.current.type = EventType.Ignore;
 				}
 
 				// Must guarantee that mouse up ops on menus will reset auto pan if it is set
@@ -4105,8 +4147,8 @@ namespace AmplifyShaderEditor
 
 			if( restoreMouse )
 			{
-				Event.current.type = EventType.mouseDown;
-				m_drawInfo.CurrentEventType = EventType.mouseDown;
+				Event.current.type = EventType.MouseDown;
+				m_drawInfo.CurrentEventType = EventType.MouseDown;
 			}
 
 			m_toolsWindow.InitialX = m_nodeParametersWindow.RealWidth;
@@ -4131,10 +4173,10 @@ namespace AmplifyShaderEditor
 
 			// Test to ignore mouse on main palette when inside context palette ... IsInside also takes active state into account 
 			bool ignoreMouseForPalette = m_contextPalette.IsInside( m_currentMousePos2D );
-			if( ignoreMouseForPalette && Event.current.type == EventType.mouseDown )
+			if( ignoreMouseForPalette && Event.current.type == EventType.MouseDown )
 			{
-				Event.current.type = EventType.ignore;
-				m_drawInfo.CurrentEventType = EventType.ignore;
+				Event.current.type = EventType.Ignore;
+				m_drawInfo.CurrentEventType = EventType.Ignore;
 			}
 			if( autoMinimize )
 				m_paletteWindow.IsMaximized = false;
@@ -4149,8 +4191,8 @@ namespace AmplifyShaderEditor
 			{
 				if( restoreMouse )
 				{
-					Event.current.type = EventType.mouseDown;
-					m_drawInfo.CurrentEventType = EventType.mouseDown;
+					Event.current.type = EventType.MouseDown;
+					m_drawInfo.CurrentEventType = EventType.MouseDown;
 				}
 			}
 
@@ -4204,7 +4246,7 @@ namespace AmplifyShaderEditor
 			if( !MouseInteracted )
 				HandleGUIEvents();
 
-			if( m_currentEvent.type == EventType.repaint )
+			if( m_currentEvent.type == EventType.Repaint )
 			{
 				m_mainGraphInstance.UpdateMarkForDeletion();
 			}
@@ -4250,7 +4292,7 @@ namespace AmplifyShaderEditor
 					}
 				}
 				m_cameraOffset += autoPanDir;
-				if( !m_wireReferenceUtils.ValidReferences() && m_insideEditorWindow )
+				if( !m_wireReferenceUtils.ValidReferences() && m_insideEditorWindow && !m_altBoxSelection )
 				{
 					m_mainGraphInstance.MoveSelectedNodes( -autoPanDir );
 				}
@@ -4339,7 +4381,7 @@ namespace AmplifyShaderEditor
 			if( CheckFunctions )
 				CheckFunctions = false;
 
-			Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 
 			UIUtils.CurrentWindow = cacheWindow;
 			if( !m_nodesLoadedCorrectly )
@@ -4355,7 +4397,7 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public bool CheckFunctions = false;
+		
 		void OnInspectorUpdate()
 		{
 			if( m_afterDeserializeFlag )
@@ -4606,7 +4648,13 @@ namespace AmplifyShaderEditor
 			//EditorWindow gameView = ( array.Length <= 0 ) ? null : ( ( EditorWindow ) array[ 0 ] );
 			//gameView.Repaint();
 
-			//Shader.SetGlobalFloat( "_ProjectInLinear", ( float ) ( PlayerSettings.colorSpace == ColorSpace.Linear ? 1 : 0 ) );
+			if( RenderSettings.sun != null )
+			{
+				Vector3 lightdir = -RenderSettings.sun.transform.forward;//.rotation.eulerAngles;
+
+				Shader.SetGlobalVector( "_EditorWorldLightPos", new Vector4( lightdir.x, lightdir.y, lightdir.z, 0 ) );
+				Shader.SetGlobalColor( "_EditorLightColor", RenderSettings.sun.color.linear );
+			}
 			Shader.SetGlobalFloat( "_EditorTime", (float)m_time );
 			Shader.SetGlobalFloat( "_EditorDeltaTime", (float)deltaTime );
 		}
@@ -4805,7 +4853,7 @@ namespace AmplifyShaderEditor
 				return m_mainGraphInstance;
 			}
 		}
-		
+
 		public void RefreshAvaibleNodes()
 		{
 			if( m_contextMenu != null && m_mainGraphInstance != null )
@@ -4926,7 +4974,6 @@ namespace AmplifyShaderEditor
 		public NodeParametersWindow ParametersWindow { get { return m_nodeParametersWindow; } }
 		public NodeExporterUtils CurrentNodeExporterUtils { get { return m_nodeExporterUtils; } }
 		public AmplifyShaderFunction OpenedShaderFunction { get { return m_openedShaderFunction; } set { m_openedShaderFunction = value; } }
-		public UnityEngine.Object DelayedObjToLoad { set { m_delayedLoadObject = value; } }
 		public DrawInfo CameraDrawInfo { get { return m_drawInfo; } }
 		public VersionInfo CurrentVersionInfo { get { return m_versionInfo; } }
 		public string Lastpath { get { return m_lastpath; } set { m_lastpath = value; } }

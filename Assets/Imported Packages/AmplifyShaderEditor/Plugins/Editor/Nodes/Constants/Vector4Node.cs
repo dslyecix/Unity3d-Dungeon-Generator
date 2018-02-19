@@ -21,6 +21,10 @@ namespace AmplifyShaderEditor
 
 		private int m_cachedPropertyId = -1;
 
+		private bool m_isEditingFields;
+		private Vector4 m_previousValue = Vector4.zero;
+		private string[] m_fieldText = new string[] { "0", "0", "0", "0" };
+		
 		public Vector4Node() : base() { }
 		public Vector4Node( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 		protected override void CommonInit( int uniqueId )
@@ -99,10 +103,6 @@ namespace AmplifyShaderEditor
 				m_isEditingFields = false;
 			}
 		}
-
-		private bool m_isEditingFields;
-		private Vector4 m_previousValue = Vector4.zero;
-		private string[] m_fieldText = new string[] { "0", "0", "0", "0" };
 
 		public override void Draw( DrawInfo drawInfo )
 		{
@@ -272,38 +272,15 @@ namespace AmplifyShaderEditor
 		public override void ReadFromString( ref string[] nodeParams )
 		{
 			base.ReadFromString( ref nodeParams );
-			string[] components = GetCurrentParam( ref nodeParams ).Split( IOUtils.VECTOR_SEPARATOR );
-			if ( components.Length == 4 )
-			{
-				m_defaultValue.x = Convert.ToSingle( components[ 0 ] );
-				m_defaultValue.y = Convert.ToSingle( components[ 1 ] );
-				m_defaultValue.z = Convert.ToSingle( components[ 2 ] );
-				m_defaultValue.w = Convert.ToSingle( components[ 3 ] );
-			}
-			else
-			{
-				UIUtils.ShowMessage( "Incorrect number of float4 values", MessageSeverity.Error );
-			}
+			m_defaultValue = IOUtils.StringToVector4( GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+				m_materialValue = IOUtils.StringToVector4( GetCurrentParam( ref nodeParams ) );
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
-			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue.x.ToString() + IOUtils.VECTOR_SEPARATOR +
-														m_defaultValue.y.ToString() + IOUtils.VECTOR_SEPARATOR +
-														m_defaultValue.z.ToString() + IOUtils.VECTOR_SEPARATOR +
-														m_defaultValue.w.ToString() );
-		}
-
-		public override void ReadAdditionalClipboardData( ref string[] nodeParams )
-		{
-			base.ReadAdditionalClipboardData( ref nodeParams );
-			m_materialValue = IOUtils.StringToVector4( GetCurrentParam( ref nodeParams ) );
-		}
-
-		public override void WriteAdditionalClipboardData( ref string nodeInfo )
-		{
-			base.WriteAdditionalClipboardData( ref nodeInfo );
+			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector4ToString( m_defaultValue ) );
 			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector4ToString( m_materialValue ) );
 		}
 

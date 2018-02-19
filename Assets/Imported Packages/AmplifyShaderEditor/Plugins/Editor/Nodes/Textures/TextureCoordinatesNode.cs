@@ -223,11 +223,17 @@ namespace AmplifyShaderEditor
 			m_sizeIsDirty = true;
 		}
 
-		public override void Draw( DrawInfo drawInfo )
+		public override void OnNodeLogicUpdate( DrawInfo drawInfo )
 		{
-			base.Draw( drawInfo );
+			base.OnNodeLogicUpdate( drawInfo );
 			CheckReference();
 		}
+
+		//public override void Draw( DrawInfo drawInfo )
+		//{
+		//	base.Draw( drawInfo );
+		//	//CheckReference();
+		//}
 
 		void CheckReference()
 		{
@@ -292,7 +298,8 @@ namespace AmplifyShaderEditor
 				if ( UIUtils.CurrentShaderVersion() > 2404 )
 				{
 					m_referenceNode = UIUtils.GetNode( m_referenceNodeId ) as TexturePropertyNode;
-					m_referenceArrayId = UIUtils.GetTexturePropertyNodeRegisterId( m_referenceNodeId );
+					if( m_referenceNodeId > -1 )
+						m_referenceArrayId = UIUtils.GetTexturePropertyNodeRegisterId( m_referenceNodeId );
 				}
 				else
 				{

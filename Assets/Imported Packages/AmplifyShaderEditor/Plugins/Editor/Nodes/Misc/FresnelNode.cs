@@ -119,6 +119,9 @@ namespace AmplifyShaderEditor
 				}
 
 				normal = dataCollector.IsTemplate ? dataCollector.TemplateDataCollectorInstance.GetWorldNormal() : GeneratorUtils.GenerateWorldNormal( ref dataCollector, UniqueId );
+				normal = string.Format( "normalize( {0} )", normal );
+				if( dataCollector.DirtyNormal )
+					dataCollector.ForceNormal = true;
 			}
 
 			string bias = m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT, ignoreLocalvar, true );
@@ -134,6 +137,13 @@ namespace AmplifyShaderEditor
 
 			RegisterLocalVariable( 0, result, ref dataCollector, fresnelFinalVar );
 			return m_outputPorts[ 0 ].LocalValue;
+		}
+		
+		public override void PropagateNodeData( NodeData nodeData, ref MasterNodeDataCollector dataCollector )
+		{
+			base.PropagateNodeData( nodeData, ref dataCollector );
+			if( m_normalSpace == ViewSpace.Tangent && m_inputPorts[0].IsConnected )
+				dataCollector.DirtyNormal = true;
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

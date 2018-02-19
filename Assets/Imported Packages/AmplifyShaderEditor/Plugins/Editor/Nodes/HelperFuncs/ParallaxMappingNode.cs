@@ -64,7 +64,7 @@ namespace AmplifyShaderEditor
 			string height = m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT, false, true );
 			string scale = m_inputPorts[ 2 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT, false, true );
 			string viewDirTan = m_inputPorts[ 3 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, false, true );
-			string localVarName = "Offset" + UniqueId;
+			string localVarName = "Offset" + OutputId;
 			string calculation = "";
 
 			switch( m_selectedParallaxType )

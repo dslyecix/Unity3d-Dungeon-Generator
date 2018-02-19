@@ -27,7 +27,10 @@ namespace AmplifyShaderEditor
 		private bool m_previouslyDragging = false;
 		private int m_beforePreviewCount = 0;
 
-		protected WirePortDataType[] m_dynamicRestrictions =
+        [UnityEngine.SerializeField]
+        protected WirePortDataType m_mainDataType = WirePortDataType.FLOAT;
+
+        protected WirePortDataType[] m_dynamicRestrictions =
 		{
 			WirePortDataType.OBJECT,
 			WirePortDataType.FLOAT,
@@ -37,10 +40,7 @@ namespace AmplifyShaderEditor
 			WirePortDataType.COLOR,
 			WirePortDataType.INT
 		};
-
-		[UnityEngine.SerializeField]
-		protected WirePortDataType m_mainDataType = WirePortDataType.FLOAT;
-
+        
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );

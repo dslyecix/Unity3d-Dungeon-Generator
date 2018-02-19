@@ -210,7 +210,7 @@ namespace AmplifyShaderEditor
 				
 				if ( dataCollector.IsTemplate )
 				{
-					viewDirTan = dataCollector.TemplateDataCollectorInstance.GetTangenViewDir();
+					viewDirTan = dataCollector.TemplateDataCollectorInstance.GetTangentViewDir();
 				}
 				else
 				{

@@ -1,4 +1,4 @@
-Shader /*ase_name*/ "Particles Alpha Blended" /*end*/
+Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
 {
 	Properties
 	{
@@ -10,13 +10,14 @@ Shader /*ase_name*/ "Particles Alpha Blended" /*end*/
 
 	Category 
 	{
-		Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "PreviewType"="Plane" /*ase_tags*/ }
-		Blend SrcAlpha OneMinusSrcAlpha
-		ColorMask RGB
-		Cull Off Lighting Off ZWrite Off
-		
 		SubShader
 		{
+			Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" "PreviewType" = "Plane" }
+			Blend SrcAlpha OneMinusSrcAlpha
+			ColorMask RGB
+			Cull Off 
+			Lighting Off 
+			ZWrite Off
 			/*ase_pass*/
 			Pass {
 			
@@ -35,6 +36,7 @@ Shader /*ase_name*/ "Particles Alpha Blended" /*end*/
 					float4 vertex : POSITION;
 					fixed4 color : COLOR;
 					float4 texcoord : TEXCOORD0;
+					UNITY_VERTEX_INPUT_INSTANCE_ID
 					/*ase_vdata:p=p;uv0=tc0;c=c*/
 				};
 
@@ -47,6 +49,7 @@ Shader /*ase_name*/ "Particles Alpha Blended" /*end*/
 					#ifdef SOFTPARTICLES_ON
 					float4 projPos : TEXCOORD2;
 					#endif
+					UNITY_VERTEX_OUTPUT_STEREO
 					/*ase_interp(3,7):sp=sp.xyzw;uv0=tc0;c=c*/
 				};
 				
@@ -60,6 +63,8 @@ Shader /*ase_name*/ "Particles Alpha Blended" /*end*/
 				v2f vert ( appdata_t v /*ase_vert_input*/ )
 				{
 					v2f o;
+					UNITY_SETUP_INSTANCE_ID(v);
+					UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 					/*ase_vert_code:v=appdata_t;o=v2f*/
 
 					v.vertex.xyz += /*ase_vert_out:Offset;Float3*/ float3( 0, 0, 0 ) /*end*/;

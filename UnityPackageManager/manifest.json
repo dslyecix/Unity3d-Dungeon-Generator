@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "com.unity.probuilder": "3.0.1",
+    "com.unity.package-manager-ui": "1.7.2",
+    "com.unity.textmeshpro": "1.2.1",
+    "com.unity.cinemachine": "2.1.11-beta.1",
+    "com.unity.ads": "2.0.4"
+  }
+}

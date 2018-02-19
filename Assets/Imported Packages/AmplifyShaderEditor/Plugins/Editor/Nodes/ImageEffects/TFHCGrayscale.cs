@@ -91,15 +91,19 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
+			if( m_outputPorts[ 0 ].IsLocalValue )
+				return m_outputPorts[ 0 ].LocalValue;
+
 			string i = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 			string grayscale = string.Empty;
-			switch ( m_grayscaleStyle )
+			switch( m_grayscaleStyle )
 			{
 				case 1: { grayscale = "dot(" + i + ", float3(0.299,0.587,0.114))"; } break;
 				case 2: { grayscale = "(" + i + ".r + " + i + ".g + " + i + ".b) / 3"; } break;
 				default: { grayscale = "Luminance(" + i + ")"; } break;
 			}
-			return grayscale;
+			RegisterLocalVariable( 0, grayscale, ref dataCollector, "grayscale" + OutputId );
+			return m_outputPorts[ 0 ].LocalValue;
 		}
 	}
 }

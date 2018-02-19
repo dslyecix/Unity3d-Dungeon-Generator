@@ -59,15 +59,86 @@ namespace AmplifyShaderEditor
 		Type = 1,
 		Name = 2
 	}
+	public enum TemplateDataCheck
+	{
+		Valid,
+		Invalid,
+		Unreadable
+	}
 
 	[Serializable]
-	public class TemplateStencilData
+	public class TemplatesTagData
 	{
-		public bool ValidStencilData = false;
+		public string Name;
+		public string Value;
+		public TemplatesTagData( string name, string value )
+		{
+			Name = name;
+			Value = value;
+		}
+	}
 
+	[Serializable]
+	public class TemplateModuleData
+	{
+		public TemplateDataCheck DataCheck = TemplateDataCheck.Invalid;
+		public int StartIdx;
+	}
+
+	[Serializable]
+	public class TemplateTagsModuleData : TemplateModuleData
+	{
+		public string TagsId;
+		public List<TemplatesTagData> Tags = new List<TemplatesTagData>();
+		public void Destroy()
+		{
+			Tags.Clear();
+			Tags = null;
+		}
+
+		public void Reset()
+		{
+			Tags.Clear();
+		}
+
+		public void Dump()
+		{
+			string dump = string.Empty;
+			for( int i = 0; i < Tags.Count; i++ )
+			{
+				dump += string.Format( "[{0}] Name: {1} Value: {2}\n", i, Tags[ i ].Name, Tags[ i ].Value );
+			}
+			Debug.Log( dump );
+		}
+	}
+
+	[Serializable]
+	public class TemplateDepthData : TemplateModuleData
+	{
+		public bool ValidZWrite;
+		public string ZWriteModeId;
+		public ZWriteMode ZWriteModeValue;
+		public int ZWriteStartIndex;
+
+		public bool ValidZTest;
+		public string ZTestModeId;
+		public ZTestMode ZTestModeValue;
+		public int ZTestStartIndex;
+
+		public bool ValidOffset;
+		public string OffsetId;
+		public float OffsetFactor;
+		public float OffsetUnits;
+		public int OffsetStartIndex;
+	}
+
+	[Serializable]
+	public sealed class TemplateStencilData : TemplateModuleData
+	{
+		public string StencilBufferId;
 		public int Reference;
-		public int ReadMask;
-		public int WriteMask;
+		public int ReadMask = 255;
+		public int WriteMask = 255;
 
 		public string ComparisonFront;
 		public string PassFront;
@@ -79,40 +150,39 @@ namespace AmplifyShaderEditor
 		public string FailBack;
 		public string ZFailBack;
 	}
-	
-	[Serializable]
-	public class TemplateBlendData
-	{
-		public bool ValidBlendData = false;
 
+	[Serializable]
+	public sealed class TemplateBlendData : TemplateModuleData
+	{
 		public bool ValidBlendMode = false;
 		public string BlendModeId;
 		public bool SeparateBlendFactors = false;
 		public AvailableBlendFactor SourceFactorRGB = AvailableBlendFactor.One;
 		public AvailableBlendFactor DestFactorRGB = AvailableBlendFactor.Zero;
+		public int BlendRGBStartIndex;
 
 		public AvailableBlendFactor SourceFactorAlpha = AvailableBlendFactor.One;
 		public AvailableBlendFactor DestFactorAlpha = AvailableBlendFactor.Zero;
+		public int BlendAlphaStartIndex;
 
 		public bool ValidBlendOp = false;
 		public string BlendOpId;
 		public bool SeparateBlendOps = false;
 		public AvailableBlendOps BlendOpRGB = AvailableBlendOps.OFF;
 		public AvailableBlendOps BlendOpAlpha = AvailableBlendOps.OFF;
+		public int BlendOpStartIndex;
 	}
 
 	[Serializable]
-	public class TemplateCullModeData
+	public sealed class TemplateCullModeData : TemplateModuleData
 	{
-		public bool ValidCullData = false;
 		public string CullModeId;
 		public CullMode CullModeData = CullMode.Front;
 	}
 
 	[Serializable]
-	public class TemplateColorMaskData
+	public sealed class TemplateColorMaskData : TemplateModuleData
 	{
-		public bool ValidColorMaskData = false;
 		public string ColorMaskId;
 		public bool[] ColorMaskData = { true, true, true, true };
 	}
@@ -265,6 +335,11 @@ namespace AmplifyShaderEditor
 			{"samplerCUBE"      ,WirePortDataType.SAMPLERCUBE}
 		};
 
+		public static readonly string TagsPattern = "\"(\\w +)\"\\s*=\\s*\"(\\w+\\+*\\w*)\"";
+		public static readonly string ZTestPattern = @"\s*ZTest\s+(\w+)";
+		public static readonly string ZWritePattern = @"\s*ZWrite\s+(\w+)";
+		public static readonly string ZOffsetPattern = @"\s*Offset\s+([-+]?[0-9]*\.?[0-9]+)\s*,\s*([-+]?[0-9]*\.?[0-9]+)";
+
 		//public static readonly string VertexDataPattern = @"(\w+)[ \t](\w+)[ \t]:[ \t]([A-Z0-9_]+);";
 		public static readonly string VertexDataPattern = @"(\w+)\s*(\w+)\s*:\s*([A-Z0-9_]+);";
 		public static readonly string InterpRangePattern = @"ase_interp\((\d\.{0,1}\w{0,4}),(\d)\)";
@@ -356,16 +431,23 @@ namespace AmplifyShaderEditor
 
 		public static void CreateStencilOps( string stencilData, ref TemplateStencilData stencilDataObj )
 		{
+			stencilDataObj.DataCheck = TemplateDataCheck.Unreadable;
 			MatchCollection overallGlobalMatch = Regex.Matches( stencilData, StencilOpGlobalPattern );
 			if( overallGlobalMatch.Count == 1 && overallGlobalMatch[ 0 ].Groups.Count == 2 )
 			{
 				string value = overallGlobalMatch[ 0 ].Groups[ 1 ].Value;
 				foreach( Match match in Regex.Matches( value, StencilOpLinePattern ) )
 				{
+					stencilDataObj.DataCheck = TemplateDataCheck.Valid;
 					if( match.Groups.Count == 3 )
 					{
 						switch( match.Groups[ 1 ].Value )
 						{
+							default:
+							{
+								stencilDataObj.DataCheck = TemplateDataCheck.Unreadable;
+								return;
+							}
 							case "Ref":
 							{
 								try
@@ -375,6 +457,8 @@ namespace AmplifyShaderEditor
 								catch( Exception e )
 								{
 									Debug.LogException( e );
+									stencilDataObj.DataCheck = TemplateDataCheck.Unreadable;
+									return;
 								}
 							}
 							break;
@@ -382,11 +466,13 @@ namespace AmplifyShaderEditor
 							{
 								try
 								{
-								stencilDataObj.ReadMask =  Convert.ToInt32( match.Groups[ 2 ].Value );
+									stencilDataObj.ReadMask = Convert.ToInt32( match.Groups[ 2 ].Value );
 								}
 								catch( Exception e )
 								{
 									Debug.LogException( e );
+									stencilDataObj.DataCheck = TemplateDataCheck.Unreadable;
+									return;
 								}
 							}
 							break;
@@ -394,11 +480,13 @@ namespace AmplifyShaderEditor
 							{
 								try
 								{
-								stencilDataObj.WriteMask = Convert.ToInt32( match.Groups[ 2 ].Value );
+									stencilDataObj.WriteMask = Convert.ToInt32( match.Groups[ 2 ].Value );
 								}
 								catch( Exception e )
 								{
 									Debug.LogException( e );
+									stencilDataObj.DataCheck = TemplateDataCheck.Unreadable;
+									return;
 								}
 							}
 							break;
@@ -454,7 +542,7 @@ namespace AmplifyShaderEditor
 
 		public static void CreateColorMask( string colorMaskData, ref TemplateColorMaskData colorMaskObj )
 		{
-			colorMaskObj.ValidColorMaskData = true;
+			colorMaskObj.DataCheck = TemplateDataCheck.Unreadable;
 			foreach( Match match in Regex.Matches( colorMaskData, ColorMaskPattern ) )
 			{
 				if( match.Groups.Count == 2 )
@@ -464,53 +552,61 @@ namespace AmplifyShaderEditor
 						colorMaskObj.ColorMaskData[ i ] = false;
 					}
 
+					colorMaskObj.DataCheck = TemplateDataCheck.Valid;
 					try
 					{
-						bool breakCycle = false;
 						for( int i = 0; i < match.Groups[ 1 ].Value.Length; i++ )
 						{
-							if( breakCycle )
-								break;
-							
 							switch( Char.ToLower( match.Groups[ 1 ].Value[ i ] ) )
 							{
-								case'0':
+								case 'r': colorMaskObj.ColorMaskData[ 0 ] = true; break;
+								case 'g': colorMaskObj.ColorMaskData[ 1 ] = true; break;
+								case 'b': colorMaskObj.ColorMaskData[ 2 ] = true; break;
+								case 'a': colorMaskObj.ColorMaskData[ 3 ] = true; break;
+								case '0':
 								{
-									breakCycle = true;
 									for( int j = 0; j < 4; j++ )
 									{
 										colorMaskObj.ColorMaskData[ j ] = false;
 									}
-								}break;
-								case 'r': colorMaskObj.ColorMaskData[ 0 ] = true;break;
-								case 'g': colorMaskObj.ColorMaskData[ 1 ] = true;break;
-								case 'b': colorMaskObj.ColorMaskData[ 2 ] = true;break;
-								case 'a': colorMaskObj.ColorMaskData[ 3 ] = true;break;
+									return;
+								}
+								default:
+								{
+									colorMaskObj.DataCheck = TemplateDataCheck.Unreadable;
+									return;
+								}
 							}
 						}
 					}
 					catch( Exception e )
 					{
 						Debug.LogException( e );
+						colorMaskObj.DataCheck = TemplateDataCheck.Unreadable;
+						return;
 					}
 				}
 			}
+
 		}
 
 		public static void CreateCullMode( string cullModeData, ref TemplateCullModeData cullDataObj )
 		{
-			cullDataObj.ValidCullData = true;
+			cullDataObj.DataCheck = TemplateDataCheck.Unreadable;
 			foreach( Match match in Regex.Matches( cullModeData, CullModePattern ) )
 			{
 				if( match.Groups.Count == 2 )
 				{
+					cullDataObj.DataCheck = TemplateDataCheck.Valid;
 					try
 					{
-						cullDataObj.CullModeData = (CullMode)Enum.Parse( typeof( CullMode ), match.Groups[1].Value );
+						cullDataObj.CullModeData = (CullMode)Enum.Parse( typeof( CullMode ), match.Groups[ 1 ].Value );
 					}
 					catch( Exception e )
 					{
+						cullDataObj.DataCheck = TemplateDataCheck.Unreadable;
 						Debug.LogException( e );
+						return;
 					}
 				}
 			}
@@ -535,6 +631,9 @@ namespace AmplifyShaderEditor
 					catch( Exception e )
 					{
 						Debug.LogException( e );
+						blendDataObj.DataCheck = TemplateDataCheck.Unreadable;
+						return;
+
 					}
 					break;
 				}
@@ -563,6 +662,8 @@ namespace AmplifyShaderEditor
 					catch( Exception e )
 					{
 						Debug.LogException( e );
+						blendDataObj.DataCheck = TemplateDataCheck.Unreadable;
+						return;
 					}
 					break;
 				}
@@ -573,7 +674,7 @@ namespace AmplifyShaderEditor
 		{
 			blendDataObj.ValidBlendOp = true;
 			// TODO: OPTIMIZE REGEX EXPRESSIONS TO NOT CATCH EMPTY GROUPS 
-			foreach( Match match in Regex.Matches( blendOpData, BlendOpPattern,RegexOptions.None) )
+			foreach( Match match in Regex.Matches( blendOpData, BlendOpPattern, RegexOptions.None ) )
 			{
 				if( match.Groups.Count == 2 )
 				{
@@ -586,6 +687,8 @@ namespace AmplifyShaderEditor
 					catch( Exception e )
 					{
 						Debug.LogException( e );
+						blendDataObj.DataCheck = TemplateDataCheck.Unreadable;
+						return;
 					}
 					break;
 				}
@@ -605,13 +708,98 @@ namespace AmplifyShaderEditor
 						{
 							blendDataObj.SeparateBlendOps = false;
 						}
-						
+
 					}
 					catch( Exception e )
 					{
 						Debug.LogException( e );
+						blendDataObj.DataCheck = TemplateDataCheck.Unreadable;
+						return;
 					}
 					break;
+				}
+			}
+		}
+
+		public static void CreateZWriteMode( string zWriteData, ref TemplateDepthData depthDataObj )
+		{
+			depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+			MatchCollection matchColl = Regex.Matches( zWriteData, ZWritePattern );
+			if( matchColl.Count > 0 )
+			{
+				if( matchColl[ 0 ].Groups.Count == 2 )
+				{
+					try
+					{
+						depthDataObj.ZWriteModeValue = (ZWriteMode)Enum.Parse( typeof( ZWriteMode ), matchColl[ 0 ].Groups[ 1 ].Value );
+						depthDataObj.DataCheck = TemplateDataCheck.Valid;
+						depthDataObj.ValidZWrite = true;
+					}
+					catch
+					{
+						depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+					}
+				}
+			}
+		}
+
+		public static void CreateTags( ref TemplateTagsModuleData tagsObj )
+		{
+			MatchCollection matchColl = Regex.Matches( tagsObj.TagsId, TagsPattern, RegexOptions.IgnorePatternWhitespace );
+			int count = matchColl.Count;
+			if( count > 0 )
+			{
+				for( int i = 0; i < count; i++ )
+				{
+					if( matchColl[ i ].Groups.Count == 3 )
+					{
+						tagsObj.Tags.Add( new TemplatesTagData( matchColl[ i ].Groups[ 1 ].Value, matchColl[ i ].Groups[ 2 ].Value ));
+					}
+				}
+			}
+		}
+
+		public static void CreateZTestMode( string zTestData, ref TemplateDepthData depthDataObj )
+		{
+			depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+			MatchCollection matchColl = Regex.Matches( zTestData, ZTestPattern );
+			if( matchColl.Count > 0 )
+			{
+				if( matchColl[ 0 ].Groups.Count == 2 )
+				{
+					try
+					{
+						depthDataObj.ZTestModeValue = (ZTestMode)Enum.Parse( typeof( ZTestMode ), matchColl[ 0 ].Groups[ 1 ].Value );
+						depthDataObj.DataCheck = TemplateDataCheck.Valid;
+						depthDataObj.ValidZTest = true;
+					}
+					catch
+					{
+						depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+					}
+				}
+			}
+		}
+
+		public static void CreateZOffsetMode( string zOffsetData, ref TemplateDepthData depthDataObj )
+		{
+			depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+			MatchCollection matchColl = Regex.Matches( zOffsetData, ZOffsetPattern );
+			if( matchColl.Count > 0 )
+			{
+				if( matchColl[ 0 ].Groups.Count == 3 )
+				{
+					try
+					{
+						depthDataObj.OffsetFactor = Convert.ToSingle( matchColl[ 0 ].Groups[ 1 ].Value );
+						depthDataObj.OffsetUnits = Convert.ToSingle( matchColl[ 0 ].Groups[ 2 ].Value );
+						depthDataObj.ValidOffset = true;
+						depthDataObj.DataCheck = TemplateDataCheck.Valid;
+					}
+					catch
+					{
+						depthDataObj.DataCheck = TemplateDataCheck.Unreadable;
+					}
 				}
 			}
 		}

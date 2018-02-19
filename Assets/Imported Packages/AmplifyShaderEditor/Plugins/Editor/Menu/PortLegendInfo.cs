@@ -34,7 +34,7 @@ namespace AmplifyShaderEditor
 		private const float WindowPosX = 5;
 		private const float WindowPosY = 5;
 
-		private const int TitleLabelWidth = 150;
+		private int TitleLabelWidth = 150;
 		private Rect m_availableArea;
 
 		private bool m_portAreaFoldout = true;
@@ -67,7 +67,7 @@ namespace AmplifyShaderEditor
 		{
 			PortLegendInfo currentWindow = ( PortLegendInfo ) PortLegendInfo.GetWindow( typeof( PortLegendInfo ), false );
 			currentWindow.minSize = new Vector2( WindowSizeX, WindowSizeY );
-			currentWindow.maxSize = new Vector2( WindowSizeX, 2 * WindowSizeY ); ;
+			currentWindow.maxSize = new Vector2( WindowSizeX * 2, 2 * WindowSizeY ); ;
 			currentWindow.wantsMouseMove = true;
 			return currentWindow;
 		}
@@ -139,6 +139,8 @@ namespace AmplifyShaderEditor
 			{
 				Init();
 			}
+
+			TitleLabelWidth = (int)(this.position.width * 0.42f);
 
 			KeyCode key = Event.current.keyCode;
 			if ( key == ShortcutsManager.ScrollUpKey )
@@ -246,9 +248,14 @@ namespace AmplifyShaderEditor
 					DrawItem( m_editorShortcuts[ i ].Name, m_editorShortcuts[ i ].Description );
 				}
 				DrawItem( "LMB Drag", "Box selection" );
-				DrawItem( "RMB Drag", "Camera Pan" );
-				DrawItem( "Alt + RMB Drag", "Scroll Menu" );
-				DrawItem( "Ctrl + Shift + Drag", "Node move with snap" );
+				DrawItem( "MMB/RMB Drag", "Camera pan" );
+				DrawItem( "Alt + MMB/RMB Drag", "Zoom graph" );
+				DrawItem( "Shift/Ctrl + Node Select", "Add/Remove from selection" );
+				DrawItem( "Shift + Node Drag", "Node move with offset" );
+				DrawItem( "Ctrl + Node Drag", "Node move with snap" );
+				DrawItem( "MMB/RMB + Drag Panel", "Scroll panel" );
+				DrawItem( "Alt + LMB Drag", "Additive box selection" );
+				DrawItem( "Alt + Shift + Drag", "Subtractive box selection" );
 				DrawItem( "Alt + Node Drag", "Auto-(Dis)Connect node on existing wire connection" );
 				EditorGUI.indentLevel++;
 

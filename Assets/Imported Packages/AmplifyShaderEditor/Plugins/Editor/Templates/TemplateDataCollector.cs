@@ -478,13 +478,17 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public string GetWorldNormal( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
+		public string GetWorldNormal( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment , bool normalize = false )
 		{
-			string varName = "worldNormal";
+			string varName = normalize? "normalizeWorldNormal":"worldNormal";
 			if ( HasCustomInterpolatedData( varName, useMasterNodeCategory, customCategory ) )
 				return varName;
 			string vertexTangent = GetVertexNormal( false, MasterNodePortCategory.Vertex );
 			string worldNormalValue = string.Format( "UnityObjectToWorldNormal({0})", vertexTangent );
+
+			if( normalize )
+				worldNormalValue = string.Format( "normalize( {0} )", worldNormalValue );
+
 			RegisterCustomInterpolatedData( varName, WirePortDataType.FLOAT3, PrecisionType.Float, worldNormalValue, useMasterNodeCategory, customCategory );
 			return varName;
 		}
@@ -512,6 +516,20 @@ namespace AmplifyShaderEditor
 				string name = "ase_tangent";
 				return RegisterInfoOnSemantic( category, TemplateInfoOnSematics.TANGENT, TemplateSemantics.TANGENT, name, WirePortDataType.FLOAT4, false );
 			}
+		}
+
+		public string GetVertexBitangent( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
+		{
+			string varName = "vertexBitangent";
+			if( HasCustomInterpolatedData( varName, useMasterNodeCategory, customCategory ) )
+				return varName;
+
+			string tangentValue = GetVertexTangent( false, MasterNodePortCategory.Vertex );
+			string normalValue = GetVertexNormal( false, MasterNodePortCategory.Vertex );
+
+			string bitangentValue = string.Format( "cross({0},{1})",normalValue, tangentValue );
+			RegisterCustomInterpolatedData( varName, WirePortDataType.FLOAT, PrecisionType.Float, bitangentValue, useMasterNodeCategory, customCategory );
+			return varName;
 		}
 
 		public string GetWorldTangent( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
@@ -552,15 +570,22 @@ namespace AmplifyShaderEditor
 			return varName;
 		}
 
-		public string GetWorldReflection( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
+		public string GetWorldReflection( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment, bool normalize = false )
 		{
 			string varName = UIUtils.GetInputValueFromType( SurfaceInputs.WORLD_REFL );
+			if( normalize )
+				varName = "normalized" + varName;
+
 			if ( HasCustomInterpolatedData( varName, useMasterNodeCategory, customCategory ) )
 				return varName;
 
 			string worldNormal = GetWorldNormal( false, MasterNodePortCategory.Vertex );
 			string worldViewDir = GetViewDir( false, MasterNodePortCategory.Vertex );
 			string worldRefl = string.Format( "reflect(-{0}, {1})", worldViewDir, worldNormal );
+
+			if( normalize )
+				worldRefl = string.Format( "normalize( {0} )", worldRefl );
+
 			RegisterCustomInterpolatedData( varName, WirePortDataType.FLOAT3, PrecisionType.Float, worldRefl, useMasterNodeCategory, customCategory );
 			return varName;
 		}
@@ -652,7 +677,7 @@ namespace AmplifyShaderEditor
 			return varName;
 		}
 
-		public string GetTangenViewDir( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
+		public string GetTangentViewDir( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
 		{
 			string varName = "tanViewDir";
 			if ( HasCustomInterpolatedData( varName, useMasterNodeCategory, customCategory ) )
@@ -720,13 +745,18 @@ namespace AmplifyShaderEditor
 			return varName;
 		}
 
-		public string GetEyeDepth( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
+		public string GetEyeDepth( bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment , int viewSpace = 0 )
 		{
 			string varName = "eyeDepth";
 			if ( HasCustomInterpolatedData( varName, useMasterNodeCategory, customCategory ) )
 				return varName;
 			string objectToView = GetObjectToViewPos( false, MasterNodePortCategory.Vertex );
 			string eyeDepthValue = string.Format( "-{0}.z", objectToView );
+			if( viewSpace == 1 )
+			{
+				eyeDepthValue += " * _ProjectionParams.w";
+			}
+
 			RegisterCustomInterpolatedData( varName, WirePortDataType.FLOAT, PrecisionType.Float, eyeDepthValue, useMasterNodeCategory, customCategory );
 			return varName;
 		}

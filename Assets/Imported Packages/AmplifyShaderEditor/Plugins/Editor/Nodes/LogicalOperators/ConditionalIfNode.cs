@@ -41,6 +41,7 @@ namespace AmplifyShaderEditor
 			m_textLabelWidth = 131;
 			//m_useInternalPortData = true;
 			m_autoWrapProperties = true;
+			m_previewShaderGUID = "f6fb4d46bddf29e45a8a3ddfed75d0c0";
 		}
 
 		public override void OnConnectedOutputNodeChanges( int inputPortId, int otherNodeId, int otherPortId, string name, WirePortDataType type )

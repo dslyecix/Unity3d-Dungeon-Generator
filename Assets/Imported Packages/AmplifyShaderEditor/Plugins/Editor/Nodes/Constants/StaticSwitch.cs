@@ -1,4 +1,4 @@
-// Amplify Shader Editor - Visual Shader Editing Tool
+// Amplify Shader Editor - Visual Shader vEditing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 
 using UnityEngine;
@@ -11,6 +11,7 @@ namespace AmplifyShaderEditor
 	[NodeAttributes( "Static Switch", "Logical Operators", "Creates a shader keyword toggle", Available = true )]
 	public sealed class StaticSwitch : PropertyNode
 	{
+
 		[SerializeField]
 		private bool m_defaultValue = false;
 
@@ -33,9 +34,28 @@ namespace AmplifyShaderEditor
 
 		private int m_conditionId = -1;
 
+		private Rect m_varRect;
+		private bool m_editing;
+
+		enum ToggleType
+		{
+			Toggle,
+			ToggleOff
+		}
+
+		private ToggleType m_toggleType = ToggleType.Toggle;
+		private const string StaticSwitchStr = "Static Switch";
+		private const string MaterialToggleStr = "Material Toggle";
+
+		private const string ToggleMaterialValueStr = "Material Value";
+		private const string ToggleDefaultValueStr = "Default Value";
+
 		private const string KeywordStr = "Keyword";
 		private const string CustomStr = "Custom";
+		private const string ToggleTypeStr = "Toggle Type";
+		private const string TypeStr = "Type";
 
+		private const string KeywordNameStr = "Keyword Name";
 		public readonly static string[] KeywordTypeStr = { "Shader Feature Keyword", "Multi Compile Keyword", "Define Symbol" };
 		public readonly static int[] KeywordTypeInt = { 0, 1, 2 };
 
@@ -43,8 +63,8 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			AddOutputPort( WirePortDataType.FLOAT, Constants.EmptyPortValue );
-			AddInputPort( WirePortDataType.FLOAT, false, "True" );
-			AddInputPort( WirePortDataType.FLOAT, false, "False" );
+			AddInputPort( WirePortDataType.FLOAT, false, "False", - 1, MasterNodePortCategory.Fragment, 1 );
+			AddInputPort( WirePortDataType.FLOAT, false, "True", - 1, MasterNodePortCategory.Fragment, 0 );
 			m_headerColor = new Color( 0.0f, 0.55f, 0.45f, 1f );
 			m_customPrefix = "Keyword ";
 			m_autoWrapProperties = false;
@@ -54,7 +74,9 @@ namespace AmplifyShaderEditor
 			m_showTitleWhenNotEditing = false;
 			m_currentParameterType = PropertyType.Property;
 			m_dummyContent = new GUIContent();
+			m_dummyContent.image = UIUtils.CheckmarkIcon;
 			m_previewShaderGUID = "0b708c11c68e6a9478ac97fe3643eab1";
+			m_showAutoRegisterUI = false;
 		}
 
 		public override void SetPreviewInputs()
@@ -128,9 +150,9 @@ namespace AmplifyShaderEditor
 		{
 			if( m_createToggle )
 				if( m_multiCompile == 2 )
-					return "[Toggle]" + m_currentKeyword + "(\"" + m_currentKeyword + "\", Int) = " + ( m_defaultValue ? 1 : 0 );
+					return "["+ m_toggleType.ToString() + "] " + m_currentKeyword + "(\"" + m_currentKeyword + "\", Float) = " + ( m_defaultValue ? "1.0" : "0.0" );
 				else
-					return "[Toggle]" + m_propertyName + "(\"" + m_propertyInspectorName + "\", Int) = " + ( m_defaultValue ? 1 : 0 );
+					return "[" + m_toggleType.ToString() + "] " + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + ( m_defaultValue ? "1.0" : "0.0" );
 			else
 				return string.Empty;
 		}
@@ -151,7 +173,7 @@ namespace AmplifyShaderEditor
 			if( m_multiCompile == 2 )
 				return m_currentKeyword;
 			else
-				return PropertyName + "_ON";
+				return PropertyName + ( m_createToggle ? OnOffStr : "_ON" );
 		}
 
 		public override string GetUniformValue()
@@ -176,7 +198,7 @@ namespace AmplifyShaderEditor
 		void PropertyGroup()
 		{
 			EditorGUI.BeginChangeCheck();
-			m_multiCompile = EditorGUILayoutIntPopup( "Type", m_multiCompile, KeywordTypeStr, KeywordTypeInt );
+			m_multiCompile = EditorGUILayoutIntPopup( TypeStr, m_multiCompile, KeywordTypeStr, KeywordTypeInt );
 			if( EditorGUI.EndChangeCheck() )
 			{
 				BeginPropertyFromInspectorCheck();
@@ -188,7 +210,7 @@ namespace AmplifyShaderEditor
 				ShowPropertyNameGUI( true );
 				bool guiEnabledBuffer = GUI.enabled;
 				GUI.enabled = false;
-				EditorGUILayoutTextField( "Keyword Name", PropertyName + "_ON" );
+				EditorGUILayoutTextField( KeywordNameStr, PropertyName + "_ON" );
 				GUI.enabled = guiEnabledBuffer;
 			}
 			else
@@ -213,19 +235,37 @@ namespace AmplifyShaderEditor
 					}
 				}
 			}
-
-			m_createToggle = EditorGUILayoutToggle( "Material Toggle", m_createToggle );
+			
+			m_createToggle = EditorGUILayoutToggle( MaterialToggleStr, m_createToggle );
 			if( m_createToggle )
-				m_defaultValue = EditorGUILayoutToggle( "Default Value", m_defaultValue );
+			{
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.Space( 20 );
+				m_propertyTab = GUILayout.Toolbar( m_propertyTab, LabelToolbarTitle );
+				EditorGUILayout.EndHorizontal();
+				m_toggleType = (ToggleType)EditorGUILayoutEnumPopup( ToggleTypeStr, m_toggleType );
+				switch( m_propertyTab )
+				{
+					default:
+					case 0:
+					{
+						m_materialValue = EditorGUILayoutToggle( ToggleMaterialValueStr, m_materialValue );
+					}
+					break;
+					case 1:
+					{
+						m_defaultValue = EditorGUILayoutToggle( ToggleDefaultValueStr, m_defaultValue );
+					}break;
+				} 
+			}
+			
 			EditorGUILayout.HelpBox( "Keyword Type:\n" +
 				"The difference is that unused variants of \"Shader Feature\" shaders will not be included into game build while \"Multi Compile\" variants are included regardless of their usage.\n\n" +
 				"So \"Shader Feature\" makes most sense for keywords that will be set on the materials, while \"Multi Compile\" for keywords that will be set from code globally.\n\n" +
 				"You can set keywords using the material property using the \"Property Name\" or you can set the keyword directly using the \"Keyword Name\".", MessageType.None );
 		}
 
-		private Rect m_varRect;
-		private bool m_editing;
-
+		
 		public override void OnNodeLayout( DrawInfo drawInfo )
 		{
 			base.OnNodeLayout( drawInfo );
@@ -241,7 +281,7 @@ namespace AmplifyShaderEditor
 		{
 			base.DrawGUIControls( drawInfo );
 
-			if( drawInfo.CurrentEventType != EventType.MouseDown || !m_createToggle || !m_materialMode )
+			if( drawInfo.CurrentEventType != EventType.MouseDown || !m_createToggle )
 				return;
 
 			if( m_varRect.Contains( drawInfo.MousePosition ) )
@@ -260,11 +300,33 @@ namespace AmplifyShaderEditor
 
 			if( m_editing )
 			{
-				if( GUI.Button( m_varRect, GUIContent.none ) )
+				if( GUI.Button( m_varRect, GUIContent.none, UIUtils.GraphButton ) )
 				{
-					m_materialValue = !m_materialValue;
-					m_requireMaterialUpdate = true;
+					if( m_materialMode )
+					{
+						m_materialValue = !m_materialValue;
+						m_requireMaterialUpdate = true;
+					}
+					else
+					{
+						m_defaultValue = !m_defaultValue;
+					}
 					m_editing = false;
+				}
+
+				if( m_materialMode )
+				{
+					if( m_materialValue )
+					{
+						GUI.Label( m_varRect, m_dummyContent, UIUtils.GraphButtonIcon );
+					}
+				}
+				else
+				{
+					if( m_defaultValue )
+					{
+						GUI.Label( m_varRect, m_dummyContent, UIUtils.GraphButtonIcon );
+					}
 				}
 			}
 		}
@@ -276,18 +338,31 @@ namespace AmplifyShaderEditor
 			if( !m_isVisible )
 				return;
 
-			if( m_createToggle && m_materialMode )
+			if( m_createToggle && ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD2 )
 			{
 				if( !m_editing )
-					GUI.Label( m_varRect, GUIContent.none, UIUtils.Button );
-
-				if( m_materialValue )
 				{
-					m_dummyContent.image = UIUtils.CheckmarkIcon;
-					GUI.Label( m_varRect, m_dummyContent );
+					GUI.Label( m_varRect, GUIContent.none, UIUtils.GraphButton );
+
+					if( m_materialMode )
+					{
+						if( m_materialValue )
+						{
+							GUI.Label( m_varRect, m_dummyContent, UIUtils.GraphButtonIcon );
+						}
+					}
+					else
+					{
+						if( m_defaultValue )
+						{
+							GUI.Label( m_varRect, m_dummyContent, UIUtils.GraphButtonIcon );
+						}
+					}
 				}
 			}
 		}
+
+		private string OnOffStr { get { return m_toggleType == ToggleType.ToggleOff ? "_OFF" : "_ON"; } }
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
@@ -295,18 +370,18 @@ namespace AmplifyShaderEditor
 				return m_outputPorts[ 0 ].LocalValue;
 
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
-			string trueCode = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
-			string falseCode = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
+			string falseCode = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+			string trueCode = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
 			if( m_multiCompile == 1 )
-				dataCollector.AddToPragmas( UniqueId, "multi_compile __ " + PropertyName + "_ON" );
+				dataCollector.AddToPragmas( UniqueId, "multi_compile __ " + PropertyName + OnOffStr );
 			else if( m_multiCompile == 0 )
-				dataCollector.AddToPragmas( UniqueId, "shader_feature " + PropertyName + "_ON" );
+				dataCollector.AddToPragmas( UniqueId, "shader_feature " + PropertyName + OnOffStr );
 
 			string outType = UIUtils.PrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 			if( m_multiCompile == 2 )
 				dataCollector.AddLocalVariable( UniqueId, "#ifdef " + m_currentKeyword, true );
 			else
-				dataCollector.AddLocalVariable( UniqueId, "#ifdef " + PropertyName + "_ON", true );
+				dataCollector.AddLocalVariable( UniqueId, "#ifdef " + PropertyName + OnOffStr, true );
 			dataCollector.AddLocalVariable( UniqueId, "\t" + outType + " staticSwitch" + OutputId + " = " + trueCode + ";", true );
 			dataCollector.AddLocalVariable( UniqueId, "#else", true );
 			dataCollector.AddLocalVariable( UniqueId, "\t" + outType + " staticSwitch" + OutputId + " = " + falseCode + ";", true );
@@ -329,7 +404,7 @@ namespace AmplifyShaderEditor
 
 			if( !m_isEditing && ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD3 )
 			{
-				GUI.Label( titlePos, "Static Switch", UIUtils.GetCustomStyle( CustomStyle.NodeTitle ) );
+				GUI.Label( titlePos, StaticSwitchStr, UIUtils.GetCustomStyle( CustomStyle.NodeTitle ) );
 			}
 		}
 
@@ -338,7 +413,7 @@ namespace AmplifyShaderEditor
 			base.UpdateMaterial( mat );
 			if( UIUtils.IsProperty( m_currentParameterType ) && !InsideShaderFunction )
 			{
-				mat.SetInt( m_propertyName, m_materialValue ? 1 : 0 );
+				mat.SetFloat( m_propertyName, m_materialValue ? 1 : 0 );
 				if( m_materialValue )
 					mat.EnableKeyword( PropertyName + "_ON" );
 				else
@@ -358,7 +433,7 @@ namespace AmplifyShaderEditor
 		public override void ForceUpdateFromMaterial( Material material )
 		{
 			if( UIUtils.IsProperty( m_currentParameterType ) && material.HasProperty( m_propertyName ) )
-				m_materialValue = material.GetInt( m_propertyName ) == 1;
+				m_materialValue = material.GetFloat( m_propertyName ) == 1;
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )
@@ -366,12 +441,21 @@ namespace AmplifyShaderEditor
 			base.ReadFromString( ref nodeParams );
 			m_multiCompile = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
 			m_defaultValue = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+			{
+				m_materialValue = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+			}
 
 			if( UIUtils.CurrentShaderVersion() > 13104 )
 			{
 				m_createToggle = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
 				m_currentKeyword = GetCurrentParam( ref nodeParams );
 				m_currentKeywordId = UIUtils.GetKeywordId( m_currentKeyword );
+			}
+
+			if( UIUtils.CurrentShaderVersion() > 14001 )
+			{
+				m_toggleType = (ToggleType)Enum.Parse( typeof( ToggleType ), GetCurrentParam( ref nodeParams ) );
 			}
 		}
 
@@ -384,6 +468,7 @@ namespace AmplifyShaderEditor
 				m_currentKeywordId = UIUtils.GetKeywordId( m_currentKeyword );
 				m_createToggle = false;
 				m_multiCompile = 2;
+				m_toggleType = ToggleType.Toggle;
 			}
 		}
 
@@ -392,8 +477,10 @@ namespace AmplifyShaderEditor
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_multiCompile );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_materialValue );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_createToggle );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_currentKeyword );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_toggleType );
 		}
 	}
 }

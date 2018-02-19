@@ -35,6 +35,10 @@ namespace AmplifyShaderEditor
 
 		private int m_cachedPropertyId = -1;
 
+		private bool m_isEditingFields;
+		private Vector3 m_previousValue = Vector3.zero;
+		private string[] m_fieldText = new string[] { "0", "0", "0" };
+
 		public RangedFloatNode() : base() { }
 		public RangedFloatNode( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 
@@ -181,10 +185,6 @@ namespace AmplifyShaderEditor
 				m_isEditingFields = false;
 			}
 		}
-
-		private bool m_isEditingFields;
-		private Vector3 m_previousValue = Vector3.zero;
-		private string[] m_fieldText = new string[] { "0", "0", "0" };
 
 		public override void Draw( DrawInfo drawInfo )
 		{
@@ -375,7 +375,7 @@ namespace AmplifyShaderEditor
 			sliderBackRect.height = 5 * drawInfo.InvertedZoom;
 			sliderBackRect.center = new Vector2( sliderValRect.center.x, Mathf.Round( sliderValRect.center.y ));
 			GUI.Label( sliderBackRect, string.Empty, UIUtils.GetCustomStyle( CustomStyle.SliderStyle ) );
-			value = GUI.HorizontalSlider( sliderValRect, value, m_min, m_max, GUIStyle.none, UIUtils.RangedFloatSliderThumbStyle );
+			value = GUIHorizontalSlider( sliderValRect, value, m_min, m_max, GUIStyle.none, UIUtils.RangedFloatSliderThumbStyle );
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
@@ -429,6 +429,11 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			m_defaultValue = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 14101 )
+			{
+				m_materialValue = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
+			}
+
 			m_min = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
 			m_max = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
 			SetFloatMode( m_min == m_max );
@@ -438,20 +443,9 @@ namespace AmplifyShaderEditor
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultValue );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_materialValue );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_min );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_max );
-		}
-
-		public override void ReadAdditionalClipboardData( ref string[] nodeParams )
-		{
-			base.ReadAdditionalClipboardData( ref nodeParams );
-			m_materialValue = Convert.ToSingle( GetCurrentParam( ref nodeParams ) );
-		}
-
-		public override void WriteAdditionalClipboardData( ref string nodeInfo )
-		{
-			base.WriteAdditionalClipboardData( ref nodeInfo );
-			IOUtils.AddFieldValueToString( ref nodeInfo, m_materialValue );
 		}
 
 		public override string GetPropertyValStr()

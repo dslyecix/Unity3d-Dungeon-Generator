@@ -44,6 +44,14 @@ public class AmplifyShaderFunction : ScriptableObject
 	}
 
 	[SerializeField]
+	private AdditionalPragmasHelper m_additionalPragmas = new AdditionalPragmasHelper();
+	public AdditionalPragmasHelper AdditionalPragmas
+	{
+		get { return m_additionalPragmas; }
+		set { m_additionalPragmas = value; }
+	}
+
+	[SerializeField]
 	private FunctionNodeCategories m_nodeCategory = FunctionNodeCategories.Functions;
 	public FunctionNodeCategories NodeCategory
 	{
@@ -70,6 +78,14 @@ public class AmplifyShaderFunction : ScriptableObject
 				//return new SerializedObject( this ).FindProperty( "m_nodeCategory" ).enumDisplayNames[ (int)m_nodeCategory ];
 			}
 		}
+	}
+
+	[SerializeField]
+	private PreviewLocation m_previewPosition = PreviewLocation.Auto;
+	public PreviewLocation PreviewPosition
+	{
+		get { return m_previewPosition; }
+		set { m_previewPosition = value; }
 	}
 }
 

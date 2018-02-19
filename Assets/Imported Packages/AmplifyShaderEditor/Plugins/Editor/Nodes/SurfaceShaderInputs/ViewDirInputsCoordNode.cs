@@ -87,7 +87,7 @@ namespace AmplifyShaderEditor
 			if ( dataCollector.IsTemplate )
 			{
 				string varName = ( m_viewDirSpace == ViewSpace.World )?	dataCollector.TemplateDataCollectorInstance.GetNormalizedViewDir():
-																			dataCollector.TemplateDataCollectorInstance.GetTangenViewDir();
+																			dataCollector.TemplateDataCollectorInstance.GetTangentViewDir();
 				return GetOutputVectorItem( 0, outputId, varName );
 			}
 

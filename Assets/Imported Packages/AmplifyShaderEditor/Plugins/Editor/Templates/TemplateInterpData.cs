@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AmplifyShaderEditor
 {
@@ -119,6 +120,12 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	public class TemplateInterpData
 	{
+		[SerializeField]
+		private string m_interpDataId = string.Empty;
+
+		[SerializeField]
+		private int m_interpDataStartIdx = -1;
+
 		public List<TemplateInterpElement> AvailableInterpolators = new List<TemplateInterpElement>();
 		public List<TemplateVertexData> Interpolators = new List<TemplateVertexData>();
 
@@ -156,5 +163,9 @@ namespace AmplifyShaderEditor
 			Interpolators.Clear();
 			Interpolators = null;
 		}
+		
+		public string InterpDataId { get { return m_interpDataId; } set { m_interpDataId = value; } }
+		public int InterpDataStartIdx { get { return m_interpDataStartIdx; } set { m_interpDataStartIdx = value; } }
+
 	}
 }

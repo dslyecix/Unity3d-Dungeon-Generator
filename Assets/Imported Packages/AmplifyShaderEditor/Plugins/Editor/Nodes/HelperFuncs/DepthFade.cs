@@ -71,7 +71,7 @@ namespace AmplifyShaderEditor
         public override void ReadFromString( ref string[] nodeParams )
         {
             base.ReadFromString( ref nodeParams );
-            if( UIUtils.CurrentShaderVersion() > 13803 )
+            if( UIUtils.CurrentShaderVersion() >= 13901 )
             {
                 m_convertToLinear = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
             }

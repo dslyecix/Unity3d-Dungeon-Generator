@@ -14,7 +14,7 @@ namespace AmplifyShaderEditor
 
 		[SerializeField]
 		private List<string> m_additionalIncludes = new List<string>();
-		public List<string> AdditionalList { get { return m_additionalIncludes; } set { m_additionalIncludes = value; } }
+		public List<string> IncludeList { get { return m_additionalIncludes; } set { m_additionalIncludes = value; } }
 
 		[SerializeField]
 		private List<string> m_outsideIncludes = new List<string>();
@@ -50,8 +50,6 @@ namespace AmplifyShaderEditor
 				}
 			}
 		}
-
-		//List<string> m_drawElements = new List<string>();
 
 		void DrawMainBody()
 		{
@@ -100,6 +98,7 @@ namespace AmplifyShaderEditor
 				}
 				EditorGUILayout.EndHorizontal();
 			}
+
 			if( markedToDelete > -1 )
 			{
 				if( m_additionalIncludes.Count > markedToDelete )

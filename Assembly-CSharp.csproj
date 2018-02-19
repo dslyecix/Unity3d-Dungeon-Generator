@@ -15,14 +15,14 @@
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <BaseDirectory>Assets</BaseDirectory>
+    <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_1_0;UNITY_2017_1;UNITY_2017;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;ENABLE_SPRITE_MASKING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_VIDEO;ENABLE_RMGUI;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_STYLE_SHEETS;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;AMPLIFY_SHADER_EDITOR</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_1_0;UNITY_2018_1;UNITY_2018;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_VIDEO;ENABLE_PACKMAN;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;UNITY_TEAM_LICENSE;AMPLIFY_SHADER_EDITOR;UNITY_POST_PROCESSING_STACK_V1</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -39,19 +39,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
-      <HintPath>D:/Program Files/Unity2017/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>C:\Program Files\Unity 2018.1.0b7\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>D:/Program Files/Unity2017/Editor/Data/Managed/UnityEditor.dll</HintPath>
+      <HintPath>C:\Program Files\Unity 2018.1.0b7\Editor\Data\Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\BarFill.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\Ability.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityCaster.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Ability System\AbilityHelper.cs" />
@@ -68,10 +67,6 @@
      <Compile Include="Assets\Game Resources\Scripts\Ability System\PlayerToMouseRaycast.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\CameraController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Camera System\SetSaddlePosition.cs" />
-     <Compile Include="Assets\Game Resources\Scripts\CharacterStat.cs" />
-     <Compile Include="Assets\Game Resources\Scripts\CharacterStats.cs" />
-     <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnData.cs" />
-     <Compile Include="Assets\Game Resources\Scripts\Data\RoomSpawnManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\DUtils\Billboard.cs" />
      <Compile Include="Assets\Game Resources\Scripts\DUtils\DDebugTimer.cs" />
      <Compile Include="Assets\Game Resources\Scripts\DUtils\DLogger.cs" />
@@ -92,12 +87,15 @@
      <Compile Include="Assets\Game Resources\Scripts\Generation System\FeatureSet.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\GeneratorDoor.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\Room.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Generation System\RoomSpawnData.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Generation System\RoomSpawnManager.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\TextureScale.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Generation System\Volume.cs" />
      <Compile Include="Assets\Game Resources\Scripts\IDamageable.cs" />
      <Compile Include="Assets\Game Resources\Scripts\IHealthSystem.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\BaseCharacterController.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\BaseMoverController.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\Movement System\KinematicCharacterMotor.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\KinematicCharacterSystem.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PhysicsMover.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\PlayerAnimationController.cs" />
@@ -107,8 +105,11 @@
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ReadOnlyAttribute.cs" />
      <Compile Include="Assets\Game Resources\Scripts\Movement System\ResetObject.cs" />
      <Compile Include="Assets\Game Resources\Scripts\StatModifier.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\StatSystem\CharacterStat.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\StatSystem\CharacterStats.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\UI\BarFill.cs" />
      <Compile Include="Assets\Game Resources\Scripts\UI\PauseMenu.cs" />
-     <Compile Include="Assets\Glow.cs" />
+     <Compile Include="Assets\Game Resources\Scripts\UIManager.cs" />
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\ForceShield\ForceShieldDestroyBall.cs" />
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\ForceShield\ForceShieldImpactDetection.cs" />
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\ForceShield\ForceShieldShootBall.cs" />
@@ -118,54 +119,6 @@
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Smear\Smear.cs" />
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\PostProcess\Sobel\PostProcessExample.cs" />
      <Compile Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\Sprites\SpriteMask\SpriteMaskController.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBlendListCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineBrain.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineClearShot.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineCollider.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineConfiner.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineDollyCart.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineExternalCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineFollowZoom.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineFreeLook.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineMixingCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachinePath.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachinePipeline.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineSmoother.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineSmoothPath.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineStateDrivenCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineTargetGroup.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Behaviours\CinemachineVirtualCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineBasicMultiChannelPerlin.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineComposer.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineFramingTransposer.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineGroupComposer.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineHardLockToTarget.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineHardLookAt.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineOrbitalTransposer.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachinePOV.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineTrackedDolly.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Components\CinemachineTransposer.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\AxisState.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CameraState.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineBlend.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineBlenderSettings.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineComponentBase.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineCore.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineDebugLogger.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineExtension.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachinePathBase.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachinePropertyAttribute.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\CinemachineVirtualCameraBase.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\GaussianFilter.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\ICinemachineCamera.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\ICinemachineComponent.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\LensSettings.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\NoiseSettings.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\Predictor.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\ReflectionHelpers.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\SplineHelpers.cs" />
-     <Compile Include="Assets\Imported Packages\Cinemachine\Base\Runtime\Core\UnityVectorExtensions.cs" />
-     <Compile Include="Assets\Imported Packages\KinematicCharacterController\Core\KinematicCharacterMotor.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Attributes\MinAttribute.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Attributes\TrackballAttribute.cs" />
@@ -211,47 +164,15 @@
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
      <Compile Include="Assets\Imported Packages\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
-     <Compile Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\LowPolyWater\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Templates\Sprites-Default.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ScreenSpaceDetail\ScreenSpaceDetail.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\DepthOfField.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleTerrain\SimpleTerrainBase.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SimpleSubtractOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FmodOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Translucency\Translucency.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Shaders\ASESShaderSelectorUnlit.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_NegateNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SmoothstepOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WireNode.shader" />
@@ -260,11 +181,12 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ExpOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WorldTransformParams.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_CosOpNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FunctionNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\AnimatedUVDistortion\AnimatedUVDistortion.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\Portals\Portal03\StencilDiffuse03.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_LightColorNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_Vector4Node.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_IndirectSpecularLight.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SimpleDivideOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_StaticSwitchNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\PostProcess\Sobel\Sobel.shader" />
@@ -273,7 +195,6 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FunctionOutputNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WorldSpaceCameraPos.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ATan2OpNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\MotionBlur.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Templates\DefaultUnlit.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Fog.shader" />
@@ -288,19 +209,16 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ObjectToWorldTransfNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\HologramSimple\Hologram Simple.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SnowAccum\SnowAccum.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TangentSignVertexDataNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_CeilOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_VertexBinormalNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\PositionCutoff\LocalPosCutoff.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\Sprites\SpriteMask\SpritesMask.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ScreenPosInputsNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TangentVertexDataNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_PiNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FloorOpNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\UI\CurveBackground.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\Dissolve Burn\DissolveBurn.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ObjSpaceLightDirHlpNode.shader" />
@@ -314,8 +232,6 @@
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\ACES.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\ChangeLog.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\ShaderLibrary\ShaderLibrary.txt" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_VertexTangentNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_RoundOpNode.shader" />
@@ -326,6 +242,7 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Water\WaterSample.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Shaders\Unlit-ColoredAlpha.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_LightAttenuation.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TexturePropertyNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SinOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WorldNormalVector.shader" />
@@ -333,6 +250,7 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\PostProcess\FilmGrain\FilmGrain.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SignOpNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_RGBToHSVNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Outline\Outline.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ClampOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Credits.txt" />
@@ -341,7 +259,6 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\Sprites\SimpleSprite\SimpleSprite.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_Log10OpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_LengthOpNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WorldSpaceViewDirHlpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_PosVertexDataNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\RefractionsPanels\AnimatedRefraction.shader" />
@@ -349,6 +266,7 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TauNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Blit.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_IntNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\RadialUVDistortion\RadialUVDistortion.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\EnvironmentGradient\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleRefraction\SimpleRefraction.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_DegreesOpNode.shader" />
@@ -363,28 +281,25 @@
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\FXAA3.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\MotionBlur.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ParallaxOffsetFakeInterior\ParallaxWindow.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ConditionalIfNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\AmbientOcclusion.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Extrusion\NormalExtrusion.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Burn\BurnEffect.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TruncOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\VertexNormalReconstruction\VertexNormalReconstruction.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ReadFromAtlasTiled\ImprovedReadFromAtlasTiled.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TextureArray\TextureArray.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SinhOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\ForceShield\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ScreenSpaceCurvature\ScreenSpaceCurvature.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ParallaxMappingNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\AnimatedFire\AnimatedFire.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleBlur\SimpleBlur.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Bluenoise64\LICENSE.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TexCoordVertexDataNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\BuiltinDebugViews.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald Bold - OFL.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\UI\SimpleUI\SimpleUI.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleNoise\SimpleNoise.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_LinearToGammaNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ParallaxOcclusionMappingPOM\SandPOM.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SaturateNode.shader" />
@@ -395,31 +310,27 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleTexture\SimpleTexture.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\Portals\Portal03\StencilMask03.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Common.cginc" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SimpleMinNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Bluenoise64\COPYING.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ViewDirInputsCoordNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\NotoSans - License.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SamplerNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\LowPolyWater\LowPolyWater.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleGPUInstancing\SimpleGPUInstancing.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_PowerNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FractNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Editor Resources\UI\Trackball.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_DynamicAppendNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SimpleRemainderNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ComponentMaskNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\Portals\Portal01\StencilMask01.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\UISpriteFX\UISpriteFX.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\PostProcess\FilmGrain\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_RelayNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TerrainSnowCoverage\TerrainSnowCoverageFirstPass.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Dithering\DitheringFade.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\2Sided\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_PannerNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ScaleNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\LiberationSans - OFL.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\Bloom.cginc" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\TAA.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\HologramSimple\Credits.txt" />
@@ -437,6 +348,8 @@
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\EyeAdaptation.cginc" />
      <None Include="Assets\Game Resources\Materials\WorldGrid.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\LinearPreviews.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleTerrain\SimpleWater.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_IndirectDiffuseLight.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_AbsOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\ForceShield\ForceShield.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_OneMinusNode.shader" />
@@ -444,7 +357,6 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ACosOpNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\GrainGen.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TextureCoordinatesNode.shader" />
-     <None Include="Assets\Imported Packages\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TriplanarProjection\TriplanarProjection.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\FXAA.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FunctionInputNode.shader" />
@@ -457,9 +369,11 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_VertexColorNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\ScreenSpaceRaytrace.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FresnelNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_HSVToRGBNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SqrtOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TimeNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ObjectScaleNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_Texture2D.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_CrossProductOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_NormalVertexDataNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Tessellation\Tessellation.shader" />
@@ -472,6 +386,7 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\Portals\Portal02\StencilMask02.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SubstanceSamplerNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_ScaleAndOffsetNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\CustomOutlineToon\CustomOutlineToon.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_DdxOpNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TextureArrayNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TemplateExamples\UI\MaskedUI\MaskedUI.shader" />
@@ -484,6 +399,7 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_StepOpNode.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\EyeAdaptation.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\AnimatedFire-ShaderFunction\AnimatedFire-ShaderFunction.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\UISpriteFX\UISpriteFX 3.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_Vector2Node.shader" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\ColorGrading.cginc" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SimpleMultiplyOpNode.shader" />
@@ -492,18 +408,21 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_UnpackScaleNormalNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TriplanarNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_WorldSpaceLightDirHlpNode.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Substance\Readme.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_NodeMasking.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SinTimeNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_RadiansOpNode.shader" />
-     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Substance\SubstanceExample.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\DoubleLayerCustomSurface\DoubleLayerCustomSurface.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TFHCFlipBookUVAnimation.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_TFHCRemap.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\OrientationBasedSprite\OrientationBasedSprite.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Community\Dissolve Burn\Credits.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Water\Ground.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Transparency\Transparency.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Readme.txt" />
      <None Include="Assets\Imported Packages\PostProcessing\Resources\Shaders\AmbientOcclusion.cginc" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\TerrainSnowCoverage\TerrainBase.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\SimpleTerrain\SimpleTerrainFirstPass.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_SwitchNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_BlendNormalsNode.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_FWidthOpNode.shader" />
@@ -516,34 +435,269 @@
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_Vector3Node.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\Transmission\Transmission.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\StencilExample\Portals\Portal01\StencilDiffuse01.shader" />
+     <None Include="Assets\Imported Packages\AmplifyShaderEditor\CreatingTerrainsWithASE.txt" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Examples\Official\ReadFromAtlasTiled\ReadFromAtlasTiled.shader" />
      <None Include="Assets\Imported Packages\AmplifyShaderEditor\Plugins\EditorResources\Previews\Preview_NormalizeNode.shader" />
+ <Reference Include="Unity.PackageManagerUI.Editor">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.ProBuilder.AddOns.Editor">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Library/ScriptAssemblies/Unity.ProBuilder.AddOns.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.TextMeshPro">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.TextMeshPro.Editor">
+ <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.AIModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ARModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ARModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.AccessibilityModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.AccessibilityModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.AnimationModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.AnimationModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.AssetBundleModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.AssetBundleModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.AudioModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.AudioModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.BaselibModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.BaselibModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ClothModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ClothModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.CloudWebServicesModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.CloudWebServicesModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ClusterInputModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterInputModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ClusterRendererModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.CoreModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.CrashReportingModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.CrashReportingModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.DirectorModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.DirectorModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.FacebookModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.FacebookModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.GameCenterModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.GameCenterModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.GridModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.GridModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.HotReloadModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.HotReloadModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.IMGUIModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.IMGUIModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ImageConversionModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ImageConversionModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.InputModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.InputModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.JSONSerializeModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ParticleSystemModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ParticlesLegacyModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ParticlesLegacyModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.PerformanceReportingModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.PhysicsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Physics2DModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.Physics2DModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.ScreenCaptureModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.SharedInternalsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.SpatialTrackingModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.SpatialTrackingModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.SpriteMaskModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.SpriteShapeModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.StyleSheetsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.StyleSheetsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.SubstanceModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.SubstanceModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TLSModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TLSModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TerrainModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TerrainPhysicsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TextRenderingModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TextRenderingModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TilemapModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TilemapModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TimelineModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.TimelineModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UIModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UIModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UIElementsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UIElementsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UNETModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UNETModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UmbraModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UmbraModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityAnalyticsModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityConnectModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConnectModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityWebRequestModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.VRModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.VRModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.VehiclesModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.VehiclesModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.VideoModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.VideoModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.WebModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.WebModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.WindModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.WindModule.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.XRModule">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Locator">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/Managed/Unity.Locator.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.TestRunner">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
- </Reference>
- <Reference Include="nunit.framework">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Timeline">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
  </Reference>
- <Reference Include="UnityEngine.Analytics">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ <Reference Include="UnityEngine.UIAutomation">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.GoogleAudioSpatializer">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
- <HintPath>D:/Program Files/Unity2017/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
- <Reference Include="TextMeshPro-2017.1-1.0.56-Editor">
- <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Editor.dll</HintPath>
+ <Reference Include="UnityEngine.SpatialTracking">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
- <Reference Include="TextMeshPro-2017.1-1.0.56-Runtime">
- <HintPath>C:/Users/Public/Unity Projects/Unity3d-Dungeon-Generator/Assets/Imported Packages/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.1-1.0.56-Runtime.dll</HintPath>
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Purchasing">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/UnityEngine.Purchasing.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.StandardEvents">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll</HintPath>
+ </Reference>
+ <Reference Include="KdTreeLib">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.probuilder@3.0.1/ProBuilder/Classes/ClassesLib/KdTreeLib.dll</HintPath>
+ </Reference>
+ <Reference Include="ProBuilderCore">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.probuilder@3.0.1/ProBuilder/Classes/ProBuilderCore.dll</HintPath>
+ </Reference>
+ <Reference Include="ProBuilderMeshOps">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.probuilder@3.0.1/ProBuilder/Classes/ProBuilderMeshOps.dll</HintPath>
+ </Reference>
+ <Reference Include="pb_Stl">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.probuilder@3.0.1/ProBuilder/Classes/ClassesLib/pb_Stl.dll</HintPath>
+ </Reference>
+ <Reference Include="Poly2Tri">
+ <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.probuilder@3.0.1/ProBuilder/Classes/ClassesLib/Poly2Tri.dll</HintPath>
+ </Reference>
+ <Reference Include="mscorlib">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>
+ </Reference>
+ <Reference Include="System">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/System.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Core">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/System.Core.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Runtime.Serialization">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/System.Runtime.Serialization.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Xml">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/System.Xml.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Xml.Linq">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/System.Xml.Linq.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityScript">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/UnityScript.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityScript.Lang">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/UnityScript.Lang.dll</HintPath>
+ </Reference>
+ <Reference Include="Boo.Lang">
+ <HintPath>C:/Program Files/Unity 2018.1.0b7/Editor/Data/MonoBleedingEdge/lib/mono/unity/Boo.Lang.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
